@@ -46,8 +46,9 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        $user->assignRole('User');
         Mail::to($user->email)->send(new \App\Mail\Registered($user, $request->password));
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect(RouteServiceProvider::HOME)->with('success','Check your mail');
     }
 }

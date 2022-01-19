@@ -16,7 +16,7 @@
     <x-alert/>
     @yield('content')
 </div>
-<x-footer>
+<x-footer/>
 <!-- Дополнительный JavaScript; выберите один из двух! -->
 
 <!-- Вариант 1: Bootstrap в связке с Popper -->
