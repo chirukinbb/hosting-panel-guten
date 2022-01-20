@@ -8,17 +8,17 @@ use Illuminate\View\Component;
 class Header extends Component
 {
     public array $menuItems = [
-        'home'=>'Главная'
+        'home'
     ];
 
     private array $clientMenuItems = [
-        'account'=>'Личный кабинет',
-        'logout'=>'Выйти'
+        'account',
+        'logout'
     ];
 
     private array $guestMenuItems = [
-        'login'=>'Вход',
-        'register'=>'Регистрация'
+        'login',
+        'register'
     ];
     /**
      * Create a new component instance.

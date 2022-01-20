@@ -20,6 +20,13 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/logout',[\App\Http\Controllers\Auth\AuthenticatedSessionController::class,'destroy'])->name('logout');
 });
+
+Route::middleware('role:admin')->group(function (){
+
+    Route::get('/admin/settings',[\App\Http\Controllers\Admin\SettingsController::class,'index'])->name('admin.settings');
+    Route::get('/admin/settings',[\App\Http\Controllers\Admin\SettingsController::class,'save'])->name('admin.settings.save');
+});
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');

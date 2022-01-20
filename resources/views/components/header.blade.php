@@ -7,9 +7,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    @foreach($menuItems as $routeName => $label)
+                    @foreach($menuItems as $item)
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs($routeName) ? 'active' : '' }}" href="{{ route($routeName) }}">{{ $label }}</a>
+                        <a class="nav-link {{ request()->routeIs($item) ? 'active' : '' }}" href="{{ route($item) }}">{{ __('header.'.$item) }}</a>
                     </li>
                     @endforeach
                 </ul>

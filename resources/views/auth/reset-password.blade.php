@@ -8,11 +8,11 @@
     <form  method="POST" action="{{ route('password.update') }}">
         @csrf
         <div class="mb-3">
-            <label for="password" class="form-label">{{ __('Password') }}</label>
+            <label for="password" class="form-label">{{ __('guest.password') }}</label>
             <input type="password" class="form-control" id="password" name="password">
         </div>
         <div class="mb-3">
-            <label for="password_confirmation" class="form-label">{{ __('Confirm Password') }}</label>
+            <label for="password_confirmation" class="form-label">{{ __('guest.confirm') }}</label>
             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
         </div>
         <input type="hidden" name="token" value="{{ $request->route('token') }}">

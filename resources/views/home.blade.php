@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    {{ config('app.name') }} - {{ __('Home') }}
+    {{ config('app.name') }} - {{ __('header.home') }}
 @endsection
 
 @section('content')
