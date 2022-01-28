@@ -5,5 +5,6 @@ return [
     'logout'=>'Log Out',
     'login'=>'Log In',
     'register'=>'Sign In',
-    'account'=>'Account'
+    'account'=>'Account',
+    'admin'=>'Admin-panel'
 ];

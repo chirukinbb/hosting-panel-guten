@@ -29,7 +29,13 @@ class Header extends Component
     {
         $this->menuItems = array_merge(
             $this->menuItems,
-            Auth::check() ? $this->clientMenuItems : $this->guestMenuItems
+            Auth::check() ?
+                (Auth::user()->hasRole('Admin') ?
+                    array_merge(
+                        $this->clientMenuItems,
+                        ['admin']
+                    ) : $this->clientMenuItems) :
+                $this->guestMenuItems
         );
     }
 

@@ -8,7 +8,7 @@ use Illuminate\Support\ServiceProvider;
 
 class SettingServiceProvider extends ServiceProvider
 {
-    public function booted(Closure $callback)
+    public function register()
     {
         $this->app->singleton('setting',SettingService::class);
     }

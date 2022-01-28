@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SettingsRequest;
+use App\Http\Requests\Admin\SettingsRequest;
 use App\Models\Setting;
-use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {

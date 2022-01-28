@@ -6,6 +6,10 @@ use Illuminate\View\Component;
 
 class AdminMenu extends Component
 {
+    public array $adminMenuItems = [
+        'dashboard',
+        'settings'
+    ];
     /**
      * Create a new component instance.
      *

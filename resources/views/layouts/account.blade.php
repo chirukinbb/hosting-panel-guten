@@ -11,10 +11,11 @@
     <title> @yield('title') </title>
 </head>
 <body>
-<div class="container-fluid">
+<x-header/>
+<div class="container">
     <div class="row">
         <div class="col-2">
-            <x-admin-menu/>
+            <x-account-menu/>
         </div>
         <div class="col-10">
             <x-alert/>
@@ -22,6 +23,7 @@
         </div>
     </div>
 </div>
+<x-footer/>
 <!-- Дополнительный JavaScript; выберите один из двух! -->
 
 <!-- Вариант 1: Bootstrap в связке с Popper -->
