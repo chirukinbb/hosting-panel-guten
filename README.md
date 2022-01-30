@@ -18,6 +18,12 @@ and
 artisan migrate
 `
 
+after
+
+`
+artisan db:seed
+`
+
 ## License
 
 Hosting Panel  'Guten' is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
