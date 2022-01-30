@@ -10,6 +10,26 @@
  */
 
 
+namespace App\Models\Account{
+/**
+ * App\Models\Account\Setting
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $avatar_url
+ * @property string $biography
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting whereAvatarUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting whereBiography($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting whereUserId($value)
+ */
+	class Setting extends \Eloquent {}
+}
+
 namespace App\Models{
 /**
  * App\Models\Setting
@@ -45,6 +65,7 @@ namespace App\Models{
  * @property-read int|null $permissions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Role[] $roles
  * @property-read int|null $roles_count
+ * @property-read \App\Models\Account\Setting|null $settings
  * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Sanctum\PersonalAccessToken[] $tokens
  * @property-read int|null $tokens_count
  * @method static \Database\Factories\UserFactory factory(...$parameters)

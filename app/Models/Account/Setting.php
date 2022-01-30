@@ -10,6 +10,10 @@ class Setting extends Model
 {
     use HasFactory;
 
+    protected $table = 'user_settings';
+
+    public $timestamps = false;
+
     protected $fillable = [
         'user_id',
         'avatar_url',

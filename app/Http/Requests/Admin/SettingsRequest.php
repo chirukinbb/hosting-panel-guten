@@ -11,8 +11,13 @@ class SettingsRequest extends FormRequest
         return true;
     }
 
-    public function convertUploadedFile(string $name): array
+    public function rules()
     {
+        return [];
+    }
+
+    public function convertUploadedFile(string $name): array
+    {$this->dd($this->file($name));
         $path = $this->file($name)->storePublicly('settings');
 
         return [

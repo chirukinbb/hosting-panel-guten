@@ -12,12 +12,12 @@
 </head>
 <body>
 <x-header/>
-<div class="container">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-2">
+        <div class="col-2" style="padding: 0">
             <x-account-menu/>
         </div>
-        <div class="col-10">
+        <div class="col-10 p-2">
             <x-alert/>
             @yield('content')
         </div>

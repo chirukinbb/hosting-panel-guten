@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SettingsRequest;
 use App\Models\Setting;
+use Illuminate\Http\UploadedFile;
 
 class SettingsController extends Controller
 {
@@ -15,15 +16,19 @@ class SettingsController extends Controller
 
     public function save(SettingsRequest $request)
     {
-        foreach ($request->input('setting')  as $name=>$value){
-            $setting = $request->file($name) ?
-                $request->convertUploadedFile($name) :
-                [
-                    'value'=>$value,
-                    'name'=>$name
-                ];
+        foreach ($request->toArray()['setting']  as $name=>$value){
+            if ($value && is_a($value, UploadedFile::class))
+                /**
+                 * @var UploadedFile $value
+                 */
+                $value = $value->storePublicly('avatars');
 
-            Setting::updateOrCreate($setting);
+            Setting::updateOrCreate(
+                ['name'=>$name],
+                ['value'=>$value]
+            );
         }
+
+        return redirect()->back()->with(['success'=>__('messages.saved')]);
     }
 }
