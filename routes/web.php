@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [\App\Http\Controllers\HomeController::class,'index'])->name('home');
+Route::get('/article/{article}',[\App\Http\Controllers\ArticleController::class,'index'])->name('article');
 
 Route::middleware('auth')->group(function () {
     Route::get('/account',[\App\Http\Controllers\AccountController::class,'dashboard'])->name('account');
@@ -26,6 +27,10 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('role:Admin')->group(function (){
     Route::get('/admin',[\App\Http\Controllers\Admin\DashboardController::class,'index'])->name('admin');
+
+    Route::resource('/admin/article',\App\Http\Controllers\Admin\ArticleController::class)->names('admin.article');
+    Route::get('/admin/article/{article}/hide',[\App\Http\Controllers\Admin\ArticleController::class,'hide'])->name('admin.article.hide');
+    Route::get('/admin/article/{article}/restore',[\App\Http\Controllers\Admin\ArticleController::class,'restore'])->name('admin.article.restore');
 
     Route::get('/admin/settings',[\App\Http\Controllers\Admin\SettingsController::class,'index'])->name('admin.settings');
     Route::post('/admin/settings',[\App\Http\Controllers\Admin\SettingsController::class,'save'])->name('admin.settings.save');

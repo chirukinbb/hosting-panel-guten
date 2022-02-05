@@ -2,5 +2,6 @@
 
 return [
     'dashboard'=>'Dashboard',
-    'settings'=>'Settings'
+    'settings'=>'Settings',
+    'article'=>['index'=>'Articles']
 ];

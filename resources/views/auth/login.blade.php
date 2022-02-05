@@ -16,7 +16,7 @@
             <input type="password" class="form-control" id="password" name="password">
         </div>
         <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="remember">
+            <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1">
             <label class="form-check-label" for="remember">{{ __('guest.remember') }}</label>
             <a href="{{ route('password.request') }}">{{ __('guest.forgot') }}</a>
         </div>

@@ -23,6 +23,11 @@
             <label for="password_confirmation" class="form-label">{{ __('guest.confirm') }}</label>
             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
         </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="agree" name="agree" value="1">
+            <label class="form-check-label" for="agree">{{ __('guest.agree') }}</label>
+            <a href="{{ route('article',['article'=>'privacy-policy']) }}">{{ __('guest.policy') }}</a>
+        </div>
         <button type="submit" class="btn btn-primary">{{ __('header.register') }}</button>
     </form>
 @endsection
