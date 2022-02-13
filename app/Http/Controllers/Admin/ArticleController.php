@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
@@ -35,9 +36,16 @@ class ArticleController extends Controller
 
     public function edit($id)
     {
+        $token = Auth::user()->tokens_count ?: Auth::user()->createToken(
+            'api_token',
+            [Auth::user()->getRoleNames()[0]]
+        );
         $article = Article::find($id);
 
-        return view('admin.article.edit', compact('article'));
+        return view('admin.article.edit', compact(
+            'article',
+            'token'
+        ));
     }
 
     public function update(Request $request, $id)

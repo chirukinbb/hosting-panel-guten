@@ -26,3 +26,23 @@
         </div>
     </form>
 @endsection
+
+@section('js')
+    <script src="https://cdn.ckeditor.com/ckeditor5/32.0.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor.create( document.querySelector( '#content' ), {
+            simpleUpload: {
+                // The URL that the images are uploaded to.
+                uploadUrl: '{{ route('admin.upload.image') }}',
+
+                // Headers sent along with the XMLHttpRequest to the upload server.
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    Authorization: 'Bearer {{ $token->plainTextToken }}'
+                }
+            }
+        }).catch( error => {
+            console.error( error );
+        } );
+    </script>
+@endsection
