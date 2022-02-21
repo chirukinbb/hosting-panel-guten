@@ -1,6 +1,7 @@
 {
     "name": "chirukinbb/hosting-panel-guten",
     "type": "project",
+    "version": "1.0",
     "description": "The hosting panel 'Guten'. Starter kit for developing",
     "keywords": ["framework", "laravel", "starter kit"],
     "license": "MIT",
