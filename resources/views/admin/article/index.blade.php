@@ -1,6 +1,6 @@
 <?php
     /**
-     * @var Illuminate\Database\Eloquent\Collection $articles
+     * @var \Illuminate\Pagination\LengthAwarePaginator $articles
      * @var \App\Models\Article $article
      */
 ?>
@@ -22,8 +22,8 @@
         </tr>
         </thead>
         <tbody>
-            @if($articles->count())
-                @foreach($articles as $article)
+            @if($articles->isNotEmpty())
+                @foreach($articles->items() as $article)
                     <tr>
                         <th scope="row">{{ $article->id }}</th>
                         <td>{{ $article->title }}</td>
@@ -51,4 +51,5 @@
             @endif
         </tbody>
     </table>
+    {{ $articles->links() }}
 @endsection

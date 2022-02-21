@@ -3,7 +3,7 @@
 // @formatter:off
 /**
  * A helper file for your Eloquent Models
- * Copy the phpDocs from this file to the correct Model,
+ * Copy the phpDocs from this file to the correct AbstractModel,
  * And remove them from this file, to prevent double declarations.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>

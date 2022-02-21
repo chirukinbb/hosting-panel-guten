@@ -5,8 +5,8 @@ namespace App\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static get(string $name)
- * @method static url(string $name)
+ * @method static string get(string $name)
+ * @method static string url(string $name)
  */
 class Setting extends Facade
 {

@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Services\SettingService;
-use Closure;
 use Illuminate\Support\ServiceProvider;
 
 class SettingServiceProvider extends ServiceProvider

@@ -3,32 +3,37 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Article;
+use App\Repositories\Admin\ArticleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
+    public function __construct(protected ArticleRepository $repository)
+    {}
+
     public function index()
     {
-        $articles = Article::withTrashed()->get();
+        $articles = $this->repository->getList();
 
         return view('admin.article.index',compact('articles'));
     }
 
     public function create()
     {
-        return view('admin.article.create');
+        $token = $this->apiToken();
+
+        return view('admin.article.create',compact('token'));
     }
 
     public function store(Request $request)
     {
-        $article = Article::create($request->all());
-        $message = __('admin/article.submit.publish');
-
-        if ($request->input('save_to') === 0) {
+        if ($request->input('save_to') === '0') {
             $message = __('admin/article.submit.trashed');
-            $article->delete();
+            $this->repository->trashed($request->all());
+        } else {
+            $this->repository->published($request->all());
+            $message = __('admin/article.submit.publish');
         }
 
         return redirect()->route('admin.article.index')->with(['success'=>$message]);
@@ -36,11 +41,8 @@ class ArticleController extends Controller
 
     public function edit($id)
     {
-        $token = Auth::user()->tokens_count ?: Auth::user()->createToken(
-            'api_token',
-            [Auth::user()->getRoleNames()[0]]
-        );
-        $article = Article::find($id);
+        $token = $this->apiToken();
+        $article = $this->repository->show($id);
 
         return view('admin.article.edit', compact(
             'article',
@@ -50,31 +52,40 @@ class ArticleController extends Controller
 
     public function update(Request $request, $id)
     {
-        Article::find($id)->update(
-            $request->all()
-        );
+        $this->repository->update(array_merge(['id'=>$id],$request->all()));
+
+        if ($request->input('save_to') === '0') {
+            $this->repository->hide($id);
+        } else {
+            $this->repository->restore($id);
+        }
 
         return redirect()->route('admin.article.index')->with(['success'=>'Successfully updated']);
     }
 
     public function destroy($id)
     {
-        Article::find($id)->forceDelete();
+        $this->repository->destroy($id);
 
         return redirect()->back()->with(['success'=>'Permanently deleted']);
     }
 
     public function hide($id)
     {
-        Article::find($id)->delete();
+        $this->repository->hide($id);
 
         return redirect()->back()->with(['success'=>__('admin/article.submit.trash')]);
     }
 
     public function restore($id)
     {
-        Article::whereId($id)->restore();
+        $this->repository->restore($id);
 
         return redirect()->back()->with(['success'=>'Resurrected from Trash']);
+    }
+
+    protected function apiToken()
+    {
+        return Auth::user()->createApiToken();
     }
 }
