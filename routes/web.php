@@ -32,6 +32,10 @@ Route::middleware('role:Admin')->group(function (){
     Route::get('/admin/article/{article}/hide',[\App\Http\Controllers\Admin\ArticleController::class,'hide'])->name('admin.article.hide');
     Route::get('/admin/article/{article}/restore',[\App\Http\Controllers\Admin\ArticleController::class,'restore'])->name('admin.article.restore');
 
+    Route::resource('/admin/user',\App\Http\Controllers\Admin\UserController::class)->names('admin.user');
+    Route::get('/admin/user/{user}/hide',[\App\Http\Controllers\Admin\ArticleController::class,'hide'])->name('admin.user.hide');
+    Route::get('/admin/user/{user}/restore',[\App\Http\Controllers\Admin\ArticleController::class,'restore'])->name('admin.user.restore');
+
     Route::get('/admin/settings',[\App\Http\Controllers\Admin\SettingsController::class,'index'])->name('admin.settings');
     Route::post('/admin/settings',[\App\Http\Controllers\Admin\SettingsController::class,'save'])->name('admin.settings.save');
 });

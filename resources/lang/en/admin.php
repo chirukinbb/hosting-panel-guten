@@ -3,5 +3,6 @@
 return [
     'dashboard'=>'Dashboard',
     'settings'=>'Settings',
-    'article'=>['index'=>'Articles']
+    'article'=>['index'=>'Articles'],
+    'user'=>['index'=>'Users']
 ];

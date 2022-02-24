@@ -8,8 +8,9 @@ class AdminMenu extends Component
 {
     public array $adminMenuItems = [
         'dashboard',
-        'settings',
-        'article.index'
+        'article.index',
+        'user.index',
+        'settings'
     ];
     /**
      * Create a new component instance.
