@@ -62,4 +62,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(\App\Models\Account\Setting::class);
     }
+
+    public function data()
+    {
+        return $this->hasOne(\App\Models\UserData::class);
+    }
 }

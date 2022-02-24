@@ -26,4 +26,9 @@ class Setting extends Model
 
         return $settings;
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

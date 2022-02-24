@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Admin\UserRepository;
+use App\Repositories\Admin\UserDataRepository;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function __construct(protected UserRepository $repository)
+    public function __construct(protected UserDataRepository $repository)
     {
     }
 
@@ -21,18 +22,14 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('admin.user.create');
+        $roles =  Role::all();
+
+        return view('admin.user.create',compact('roles'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**
@@ -43,6 +40,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        $roles =  Role::all();
         //
     }
 

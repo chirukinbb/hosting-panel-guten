@@ -1,48 +1,32 @@
 @extends('layouts.admin')
 
-@section('title') {{ __('admin/article.title') }} - {{ config('app.name') }} @endsection
+@section('title') {{ __('admin/user.title') }} - {{ config('app.name') }} @endsection
 
 @section('content')
-    <form action="{{ route('admin.article.store') }}" method="post"  enctype="multipart/form-data">
+    <form action="{{ route('admin.user.store') }}" method="post"  enctype="multipart/form-data">
         <div class="row">
             <div class="col-8">
                 @csrf
                 <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="title" name="title">
+                    <label for="avatar" class="form-label">Avatar</label>
+                    <input type="file" class="form-control" id="avatar" name="avatar">
                 </div>
                 <div class="mb-3">
-                    <label for="slug" class="form-label">Slug</label>
-                    <input type="text" class="form-control" id="slug" name="slug">
+                    <label for="title" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" name="name">
                 </div>
                 <div class="mb-3">
-                    <label for="content" class="form-label">Content</label>
-                    <textarea name="content" id="content" rows="10" class="form-control"></textarea>
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email">
+                </div>
+                <div class="mb-3">
+                    <label for="biography" class="form-label">Biography</label>
+                    <textarea name="biography" id="biography" rows="10" class="form-control"></textarea>
                 </div>
             </div>
             <div class="col-4 widgets-area">
-                @include('admin.article.widgets.submit',['article'=>[]])
+                @include('admin.user.widgets.submit',compact('roles'))
             </div>
         </div>
     </form>
-@endsection
-
-@section('js')
-    <script src="{{ asset('js/ckeditor.js') }}"></script>
-    <script>
-        ClassicEditor.create( document.querySelector( '#content' ), {
-            simpleUpload: {
-                // The URL that the images are uploaded to.
-                uploadUrl: '{{ route('admin.upload.image') }}',
-
-                // Headers sent along with the XMLHttpRequest to the upload server.
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    Authorization: 'Bearer {{ $token->plainTextToken }}'
-                }
-            }
-        }).catch( error => {
-            console.error( error );
-        } );
-    </script>
 @endsection

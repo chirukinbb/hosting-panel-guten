@@ -1,16 +1,21 @@
 <?php
 /**
- * @var \App\Models\Article $article
+ * @var \Spatie\Permission\Models\Role $role
  */
 ?>
 <div class="card p-3">
     <div class="mb-3">
-        <label for="save_to" class="form-label">{{ __('admin/article.to') }}</label>
-        <select class="form-control" id="save_to" name="save_to">
-            @foreach(\App\Models\Article::getStatuses() as $key => $status)
-                <option value="{{ $key }}" {{ (is_a($article,\App\Models\Article::class) && __($status) === $article->getStatus()) ? 'selected' : '' }}>{{ __($status) }}</option>
-            @endforeach
-        </select>
+        <label class="form-label">Roles:</label>
+        @foreach($roles as $role)
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="{{ $role->getQueueableId() }}" name="roles[]" id="role_{{ $role->getQueueableId() }}">
+                <label class="form-check-label" for="role_{{ $role->getQueueableId() }}">{{ $role->name }}</label>
+            </div>
+        @endforeach
+    </div>
+    <div class="mb-3">
+        <input class="form-check-input" type="checkbox" value="1" id="approved" name="approved">
+        <label class="form-check-label" for="approved">Approved</label>
     </div>
     <button type="submit" class="btn btn-primary">{{ __('admin/article.submit.button') }}</button>
 </div>

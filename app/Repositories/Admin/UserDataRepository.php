@@ -3,13 +3,13 @@
 namespace App\Repositories\Admin;
 
 use App\Abstracts\AbstractRepository;
-use App\Models\User;
+use App\Models\UserData;
 
-class UserRepository extends AbstractRepository
+class UserDataRepository extends AbstractRepository
 {
 
     public function setQueryBuilder()
     {
-        $this->builder = User::withTrashed();
+        $this->builder = UserData::withTrashed();
     }
 }
