@@ -25,7 +25,10 @@ class ArticleRepository extends AbstractRepository
 
     public function trashed(array $attributes)
     {
-        $articleId = $this->create($attributes);
-        $this->hide($articleId);
+        /**
+         * @var Article $article
+         */
+        $article = $this->create($attributes);
+        $this->hide($article->id);
     }
 }

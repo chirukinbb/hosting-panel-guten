@@ -3,6 +3,7 @@
 namespace App\Repositories\Admin;
 
 use App\Abstracts\AbstractRepository;
+use App\Jobs\SendRegistrationMail;
 use App\Models\User;
 use \Illuminate\Database\Eloquent\Builder;
 
@@ -16,6 +17,18 @@ class UserRepository extends AbstractRepository
     public function setQueryBuilder()
     {
         $this->builder = User::withTrashed();
+    }
+
+    public function create(array $attributes)
+    {
+        /**
+         * @var User $user
+         */
+        $user = parent::create($attributes);
+        $user->assignRole('User');
+        $user->delete();
+
+        \Queue::push(new SendRegistrationMail($user, $attributes['password']));
     }
 
     public function show(int $id)

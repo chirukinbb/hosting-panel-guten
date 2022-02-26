@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SettingsRequest;
-use App\Models\UserSetting;
+use App\Models\Setting;
 use Illuminate\Http\UploadedFile;
 
 class SettingsController extends Controller
@@ -23,7 +23,7 @@ class SettingsController extends Controller
                  */
                 $value = $value->storePublicly('avatars');
 
-            UserSetting::updateOrCreate(
+            Setting::updateOrCreate(
                 ['name'=>$name],
                 ['value'=>$value]
             );

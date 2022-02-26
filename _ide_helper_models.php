@@ -12,7 +12,7 @@
 
 namespace App\Models\Account{
 /**
- * App\Models\Account\UserSetting
+ * App\Models\Account\Setting
  *
  * @property int $id
  * @property int $user_id
@@ -60,18 +60,18 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\UserSetting
+ * App\Models\Setting
  *
  * @property int $id
  * @property string $name
  * @property string $value
  * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|UserSetting newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserSetting newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UserSetting query()
- * @method static \Illuminate\Database\Eloquent\Builder|UserSetting whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserSetting whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserSetting whereValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Setting whereValue($value)
  */
 	class Setting extends \Eloquent {}
 }

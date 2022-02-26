@@ -17,7 +17,7 @@
             <div class="col-8">
                 <div class="mb-3">
                     <label for="avatar" class="form-label">Avatar</label>
-                    @if($user->data->avatar_path)
+                    @if($user->data?->avatar_path)
                         <div class="mb-2 text-center">
                             <img src="{{ asset($user->data->avatar_path) }}" class="img-fluid" alt="">
                         </div>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\RegistrationRequest;
+use App\Http\Requests\UserDataRequest;
 use App\Repositories\Admin\UserDataRepository;
 use App\Repositories\Admin\UserRepository;
 use Illuminate\Http\Request;
@@ -28,7 +30,7 @@ class UserDataController extends Controller
         return view('admin.user.create');
     }
 
-    public function store(Request $request)
+    public function store(RegistrationRequest $request)
     {
         $this->userRepository->create($request->all());
 
@@ -60,7 +62,7 @@ class UserDataController extends Controller
         ));
     }
 
-    public function update(Request $request, $id)
+    public function update(UserDataRequest $request, $id)
     {
         if ($request->input('approved')) {
             $this->approved($id);

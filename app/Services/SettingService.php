@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\UserSetting;
+use App\Models\Setting;
 
 class SettingService
 {
@@ -10,7 +10,7 @@ class SettingService
 
     public function __construct()
     {
-        $this->settings = UserSetting::all();
+        $this->settings = Setting::all();
     }
 
     public function get(string $name): string

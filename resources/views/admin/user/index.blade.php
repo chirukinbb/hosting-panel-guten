@@ -24,25 +24,27 @@
         <tbody>
             @if($users->isNotEmpty())
                 @foreach($users->items() as $user)
-                    <tr>
-                        <th scope="row">{{ $user->id }}</th>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->created_at }}</td>
-                        <td>{{ implode(',',$user->getRoleNames()->toArray()) }}</td>
-                        <td>
-                            <a href="{{ route('admin.user.edit',['user'=>$user->id]) }}" class="btn btn-primary">{{ __('admin/user.edit') }}</a>
-                            @if($user->deleted_at)
-                                <a href="{{ route('admin.user.approved',['user'=>$user->id]) }}" class="btn btn-primary">{{ __('admin/user.approved') }}</a>
-                            @else
-                                <a href="{{ route('admin.user.banned',['user'=>$user->id]) }}" class="btn btn-danger">{{ __('admin/user.banned') }}</a>
-                            @endif
-                            <form action="{{ route('admin.user.destroy',['user'=>$user->id]) }}"  class="d-inline-block" method="post">
-                                @csrf
-                                @method('delete')
-                                <button type="submit" class="btn btn-danger">{{ __('admin/user.destroy') }}</button>
-                            </form>
-                        </td>
-                    </tr>
+                    @if($user->id !== Auth::id())
+                        <tr>
+                            <th scope="row">{{ $user->id }}</th>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->created_at }}</td>
+                            <td>{{ implode(',',$user->getRoleNames()->toArray()) }}</td>
+                            <td>
+                                <a href="{{ route('admin.user.edit',['user'=>$user->id]) }}" class="btn btn-primary">{{ __('admin/user.edit') }}</a>
+                                @if($user->deleted_at)
+                                    <a href="{{ route('admin.user.approved',['user'=>$user->id]) }}" class="btn btn-primary">{{ __('admin/user.approved') }}</a>
+                                @else
+                                    <a href="{{ route('admin.user.banned',['user'=>$user->id]) }}" class="btn btn-danger">{{ __('admin/user.banned') }}</a>
+                                @endif
+                                <form action="{{ route('admin.user.destroy',['user'=>$user->id]) }}"  class="d-inline-block" method="post">
+                                    @csrf
+                                    @method('delete')
+                                    <button type="submit" class="btn btn-danger">{{ __('admin/user.destroy') }}</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endif
                 @endforeach
             @else
                 <tr>

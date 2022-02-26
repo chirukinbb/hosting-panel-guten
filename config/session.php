@@ -175,7 +175,7 @@ return [
     | HTTP Access Only
     |--------------------------------------------------------------------------
     |
-    | UserSetting this value to true will prevent JavaScript from accessing the
+    | Setting this value to true will prevent JavaScript from accessing the
     | value of the cookie and the cookie will only be accessible through
     | the HTTP protocol. You are free to modify this option if needed.
     |

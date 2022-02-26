@@ -17,9 +17,7 @@ abstract class AbstractRepository
 
     public function create(array $attributes)
     {
-        $result = $this->builder->create($attributes);
-
-        return $result->id;
+        return $this->builder->create($attributes);
     }
 
     public function update(array $attributes)
