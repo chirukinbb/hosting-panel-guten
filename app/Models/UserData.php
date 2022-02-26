@@ -11,6 +11,7 @@ class UserData extends AbstractModel
     public $timestamps = false;
 
     protected $fillable = [
+        'user_id',
         'avatar_path',
         'biography',
         'public_name'

@@ -19,6 +19,7 @@ class RegisteredUserController extends Controller
     {
         $user = User::create($request->all());
         $user->assignRole('User');
+        $user->delete();
 
         \Queue::push(new SendRegistrationMail($user, $request->input('password')));
 

@@ -3,7 +3,7 @@
 // @formatter:off
 /**
  * A helper file for your Eloquent Models
- * Copy the phpDocs from this file to the correct AbstractModel,
+ * Copy the phpDocs from this file to the correct Model,
  * And remove them from this file, to prevent double declarations.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
@@ -12,7 +12,7 @@
 
 namespace App\Models\Account{
 /**
- * App\Models\Account\Setting
+ * App\Models\Account\UserSetting
  *
  * @property int $id
  * @property int $user_id
@@ -60,17 +60,18 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\Setting
+ * App\Models\UserSetting
  *
  * @property int $id
  * @property string $name
  * @property string $value
- * @method static \Illuminate\Database\Eloquent\Builder|Setting newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Setting newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Setting query()
- * @method static \Illuminate\Database\Eloquent\Builder|Setting whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Setting whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Setting whereValue($value)
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|UserSetting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserSetting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserSetting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserSetting whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserSetting whereValue($value)
  */
 	class Setting extends \Eloquent {}
 }
@@ -87,6 +88,8 @@ namespace App\Models{
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\UserData|null $data
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
@@ -99,10 +102,12 @@ namespace App\Models{
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
+ * @method static \Illuminate\Database\Query\Builder|User onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|User permission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
  * @method static \Illuminate\Database\Eloquent\Builder|User role($roles, $guard = null)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
@@ -110,7 +115,36 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|User withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|User withoutTrashed()
  */
 	class User extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\UserData
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $avatar_path
+ * @property string $public_name
+ * @property string $biography
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData newQuery()
+ * @method static \Illuminate\Database\Query\Builder|UserData onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereAvatarPath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereBiography($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData wherePublicName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|UserData withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|UserData withoutTrashed()
+ */
+	class UserData extends \Eloquent {}
 }
 
