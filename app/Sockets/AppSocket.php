@@ -2,24 +2,25 @@
 
 namespace App\Sockets;
 
+use App\Repositories\Admin\UserRepository;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 
 class AppSocket  implements MessageComponentInterface
 {
-    public function __construct(\SplObjectStorage $storage = null)
-    {
-    }
+    public function __construct(
+        protected UserRepository    $userRepository,
+        protected \SplObjectStorage $storage
+    ) {}
 
     function onOpen(ConnectionInterface $conn)
     {
-        $conn->send('hello');
-        // TODO: Implement onOpen() method.
+        $this->storage->attach($conn);
     }
 
     function onClose(ConnectionInterface $conn)
     {
-        // TODO: Implement onClose() method.
+        $this->storage->detach($conn);
     }
 
     function onError(ConnectionInterface $conn, \Exception $e)
@@ -29,6 +30,30 @@ class AppSocket  implements MessageComponentInterface
 
     function onMessage(ConnectionInterface $from, $msg)
     {
-        // TODO: Implement onMessage() method.
+        $msg = json_decode($msg);
+
+        if (method_exists($this, $msg->method)) {
+            $response = call_user_func([$this, $msg->method], $msg->data);
+            $from->send(json_encode($response));
+        }
+    }
+
+    protected function signin($data)
+    {
+        if ($this->userRepository->exists($data->email))
+            return ['attention'=>'Account with this email exists!'];
+        
+        $this->userRepository->create((array)$data);
+
+        return ['success'=>'New Account created! Check email!'];
+    }
+
+    protected function login($data)
+    {
+        $token = $this->userRepository->authToken((array)$data);
+
+        return $token ?
+            ['success'=>['token'=>$token]] :
+            ['error'=>'Oops! What`s happened. Try latter or another credentials'];
     }
 }

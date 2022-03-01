@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Repositories\Admin\UserRepository;
 use App\Sockets\AppSocket;
 use Illuminate\Console\Command;
 use Ratchet\Http\HttpServer;
@@ -41,9 +42,17 @@ class AppSocketCommand extends Command
      */
     public function handle()
     {
-        $ws = new WsServer(new AppSocket());
+        $ws = new WsServer(
+            new AppSocket(
+                new UserRepository(),
+                new \SplObjectStorage()
+            )
+        );
 
-        $server = IoServer::factory(new HttpServer($ws),8080);
+        $server = IoServer::factory(
+            new HttpServer($ws),
+            8080
+        );
         $server->run();
     }
 }

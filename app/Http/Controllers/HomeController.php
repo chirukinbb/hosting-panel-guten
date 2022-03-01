@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\Admin\UserRepository;
+
 class HomeController extends Controller
 {
     /**
