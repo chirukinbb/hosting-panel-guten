@@ -42,7 +42,7 @@ class AppSocket  implements MessageComponentInterface
     {
         if ($this->userRepository->exists($data->email))
             return ['attention'=>'Account with this email exists!'];
-        
+
         $this->userRepository->create((array)$data);
 
         return ['success'=>'New Account created! Check email!'];
@@ -56,4 +56,10 @@ class AppSocket  implements MessageComponentInterface
             ['success'=>['token'=>$token]] :
             ['error'=>'Oops! What`s happened. Try latter or another credentials'];
     }
+
+    protected function find()
+    {}
+
+    protected function history()
+    {}
 }

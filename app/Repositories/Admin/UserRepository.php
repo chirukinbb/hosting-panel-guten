@@ -8,6 +8,7 @@ use App\Models\User;
 use \Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 use function PHPUnit\Framework\isNull;
 
 class UserRepository extends AbstractRepository
@@ -61,7 +62,6 @@ class UserRepository extends AbstractRepository
             ->first();
 
         if (Hash::check($attributes['password'], $user->password)) {
-
             return $user->createApiToken();
         }
 
@@ -72,5 +72,12 @@ class UserRepository extends AbstractRepository
     {
         return $this->builder->where('email', $email)
             ->exists();
+    }
+
+    public function whereApiToken(string $token)
+    {
+        $tokenData = PersonalAccessToken::findToken($token)->toArray();
+
+        return $this->builder->find($tokenData['tokenable_id']);
     }
 }
