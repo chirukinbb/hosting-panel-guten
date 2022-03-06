@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Abstracts;
+
+class AbstractGameCollection
+{
+    protected array $collection;
+
+    public function push(object $obj): void
+    {
+        $this->collection[] = $obj;
+    }
+
+    public function remove(int $index): void
+    {
+        unset($this->collection[$index]);
+    }
+
+    public function get(int $index): object
+    {
+        return $this->collection[$index];
+    }
+
+    public function count(): int
+    {
+        return count($this->collection);
+    }
+
+    public function each(callable $func): void
+    {
+        foreach ($this->collection as $item){
+            call_user_func($func,$item);
+        }
+    }
+
+    public function keys(): array
+    {
+        return array_keys($this->collection);
+    }
+
+    public function getCollection(): array
+    {
+        return $this->collection;
+    }
+}

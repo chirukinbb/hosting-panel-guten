@@ -3,51 +3,42 @@
 namespace App\Abstracts;
 
 use App\Game\Card;
+use App\Game\Collections\CardsCollection;
+use App\Game\Collections\PlayersCollection;
 use App\Game\Player;
 use App\Game\Round;
+use App\Game\Traits\CardTrait;
+use App\Game\Traits\PlayerTrait;
+use App\Game\Traits\RoundTrait;
 use Illuminate\Support\Arr;
 
 abstract class AbstractPokerDeck
 {
+    use RoundTrait,CardTrait,PlayerTrait;
+
     protected int $id;
+    protected int $blind;
     protected int $playersCount;
     protected int $minNominal;
     protected int $cardsInHand;
-    /**
-     * @param Player[]
-     */
-    protected array $players;
-    /**
-     * @param Card[]
-     */
-    protected array $cardDeck;
-    protected Round $round;
-
-    /**
-     * @param int[]
-     */
     protected array $places;
+    protected PlayersCollection $players;
+    protected CardsCollection $cardDeck;
 
     public function __construct(protected array $userIds)
     {
         $this->minNominal = $this->getMinNominal();
         $this->playersCount = $this->getPlayersCount();
         $this->cardsInHand = $this->getCardsInHand();
+        $this->blind = $this->getBlind();
         $this->places = $this->getPlaces();
         $this->players = $this->getPlayers();
         $this->cardDeck = $this->getCardDeck();
-        $this->round  = new Round($this->cardDeck);
     }
 
     public function setId(int $id): void
     {
         $this->id = $id;
-    }
-
-    public function startRound(int $number)
-    {
-        $this->round->setNumber($number);
-        $this->round->preFlop($this->players,$this->cardsInHand);
     }
 
     abstract protected function getMinNominal();
@@ -56,35 +47,40 @@ abstract class AbstractPokerDeck
 
     abstract protected function getPlayersCount();
 
+    abstract protected function getBlind();
+
     protected function getCardDeck()
     {
-        $cardsPool = [];
+        $cards  = new CardsCollection();
         $deckNamesPool = config('poker.card.names');
         $deckSuitsPool = config('poker.card.suits');
+        $id = 0;
 
-        foreach ($deckNamesPool as $index => $name) {
-            foreach ($deckSuitsPool as $key => $suit) {
-                $cardsPool[] = new Card($name.' '.$suit,$index.$key);
+        foreach ($deckNamesPool as $nominalIndex => $nominal) {
+            foreach ($deckSuitsPool as $suitIndex => $suit) {
+                $cards->push(new Card($nominalIndex,$suitIndex,$id,$nominal,$suit));
+                $id++;
             }
         }
 
-        return array_slice($cardsPool,$this->minNominal * count($deckSuitsPool));
+        return $cards->removeFirsts($this->minNominal*count($deckSuitsPool));
     }
 
     protected function getPlayers()
     {
-        $players = [];
+        $players = new PlayersCollection();
 
         for ($i = 0; $i < $this->playersCount; $i ++){
             $place = $this->getLandingPlace();
             $player = new Player($this->userIds[$i]);
-            $player->setDealerStatus($i === 0);
-            $players[$place] = $player;
+            $player->setPlaceOnDesc($place);
+            $player->setDealerStatus($place === 0);
+            $player->setLBStatus($place === 1);
+            $player->setBBStatus($place === 3);
+            $players->push($player);
         }
 
-        ksort($players);
-
-        return $players;
+        return $players->sortByPlaces();
     }
 
     protected function getPlaces()
@@ -98,5 +94,13 @@ abstract class AbstractPokerDeck
         unset($this->places[$place]);
 
         return $place;
+    }
+
+    /**
+     * @return Round
+     */
+    public function getRound(): Round
+    {
+        return $this->round;
     }
 }

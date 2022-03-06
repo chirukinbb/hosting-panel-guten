@@ -18,4 +18,9 @@ class HoldemNinePokerDeck extends \App\Abstracts\AbstractPokerDeck
     {
         return 9;
     }
+
+    protected function getBlind()
+    {
+        return 10;
+    }
 }

@@ -13,10 +13,10 @@ return [
             '8',
             '9',
             '10',
-            'jack',
-            'queen',
-            'king',
-            'ace'
+            'j',
+            'q',
+            'k',
+            'a'
         ],
         'suits'=>[
             's',

@@ -2,84 +2,34 @@
 
 namespace App\Game;
 
+use App\Game\Collections\CardsCollection;
+
 class Round
 {
-    protected int $number;
-    protected array $values;
-    /**
-     * @param Card[]
-     */
-    protected array $tableCards;
+    protected CardsCollection $tableCards;
     protected array $combos;
 
-    public function __construct(protected array $cardsPool)
+    public function __construct(protected int $number, protected CardsCollection $cardsPool)
     {
         $this->combos = config('poker.combos');
+        $this->tableCards = new CardsCollection();
     }
 
-    /**
-     * @param int $number
-     */
-    public function setNumber(int $number): void
+    public function preFlop(Player $player, int $cardsInHand)
     {
-        $this->number = $number;
-    }
-
-    public function changeDealer(array $players)
-    {
-        $index = array_search((object)['isDealer'=>true], $players);
-        $players[$index]->setDealerStatus(false);
-        $players[($index === (count($players) - 1)) ? ($index + 1) : 0]->setDealerStatus(true);
-    }
-
-    public function preFlop(array $players, int $cardsInHand)
-    {
-        /**
-         * @var Player $player
-         */
-        foreach ($players as $player){
-            for ($i = 0; $i < $cardsInHand; $i ++){
-                $cardIndex = \Arr::random(array_keys($this->cardsPool));
-                $player->giveCard($cardIndex, $this->cardsPool[$cardIndex]);
-                unset($this->cardsPool[$cardIndex]);
-            }
+        for ($i = 0; $i < $cardsInHand; $i ++){
+            $cardIndex = \Arr::random($this->cardsPool->keys());
+            $player->giveCard($this->cardsPool->get($cardIndex));
+            $this->cardsPool->remove($cardIndex);
         }
     }
 
-    public function flop()
-    {
-        $this->showTableCarts(3);
-    }
-
-    public function turn()
-    {
-        $this->showTableCarts(1);
-    }
-
-    public function river()
-    {
-        $this->showTableCarts(1);
-    }
-
-    public function handsValue(array $players)
-    {
-        /**
-         * @var Player $player
-         */
-        foreach ($players as $player){
-            $cards = array_merge(
-                array_values($this->tableCards),
-                $player->getCards()
-            );
-        }
-    }
-
-    protected function showTableCarts(int $count)
+    public function putCardsOnTable(int $count)
     {
         for ($i = 0; $i < $count; $i ++){
-            $cardIndex = \Arr::random(array_keys($this->cardsPool));
-            $this->tableCards[] = $this->cardsPool[$cardIndex];
-            unset($this->cardsPool[$cardIndex]);
+            $cardIndex = \Arr::random($this->cardsPool->keys());
+            $this->tableCards->push($this->cardsPool->get($cardIndex));
+            $this->cardsPool->remove($cardIndex);
         }
     }
 }
