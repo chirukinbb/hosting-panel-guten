@@ -2,108 +2,106 @@
 
 namespace App\Game;
 
+use App\Game\Collections\CardsCollection;
+use App\Game\Collections\NominalCombinedCardsCollection;
+use App\Game\Collections\RepeatCardsByNominalCollection;
+use App\Game\Collections\RepeatCardsBySuitCollection;
+use App\Game\Collections\SuitCombinedCardsCollection;
 use App\Game\Traits\CombinedCarsTrait;
 use App\Game\Traits\RepeatCardsTrait;
-use JetBrains\PhpStorm\Pure;
 
 class CombosChecker
 {
     use CombinedCarsTrait,RepeatCardsTrait;
 
-    /**
-     * @param Card[] $userCardsPool
-     * @param RepeatCardsByNominal[]
-     */
-    protected array $cardsByNominal;
-    /**
-     * @param RepeatCardsBySuits[]
-     */
-    protected array $cardsBySuits;
+    protected SuitCombinedCardsCollection $suitCombinedCardsCollection;
+    protected NominalCombinedCardsCollection $nominalCombinedCardsCollection;
+    protected RepeatCardsByNominalCollection $repeatedCardsByNominal;
+    protected RepeatCardsBySuitCollection $repeatedCardsBySuits;
 
-    public function __construct(protected array $userCardsPool)
+    public function __construct(protected CardsCollection $userCardsPool)
     {
-        $this->cardsBySuits = $this->combinedBySuits();
-        $this->cardsByNominal = $this->getCardsByNominal();
+        $this->suitCombinedCardsCollection = $this->getSuitCombinedCardsCollection();
+        $this->nominalCombinedCardsCollection = $this->getNominalCombinedCardsCollection();
+        $this->repeatedCardsBySuits = $this->getCardsBySuits();
+        $this->repeatedCardsByNominal = $this->getCardsByNominal();
     }
 
     /**
-     * @return array
+     * @return NominalCombinedCardsCollection
      */
-    public function getCardsByNominal(): array
+    public function getNominalCombinedCardsCollection(): NominalCombinedCardsCollection
     {
-        return $this->getRepeatByNominals(
-            $this->combinedByNominal()
-        );
+        return $this->combinedByNominal();
     }
 
     /**
-     * @return array
+     * @return SuitCombinedCardsCollection
      */
-    public function getCardsBySuits(): array
+    public function getSuitCombinedCardsCollection(): SuitCombinedCardsCollection
     {
-        return $this->getRepeatBySuits(
-            $this->combinedBySuits()
-        );
+        return $this->combinedBySuits();
+    }
+
+    /**
+     * @return RepeatCardsByNominalCollection
+     */
+    public function getCardsByNominal(): RepeatCardsByNominalCollection
+    {
+        return $this->getRepeatByNominal();
+    }
+
+    /**
+     * @return RepeatCardsBySuitCollection
+     */
+    public function getCardsBySuits(): RepeatCardsBySuitCollection
+    {
+        return $this->getRepeatBySuits();
     }
 
     public function check()
     {}
 
-    protected function highCard(array $excluded = []): string
+    protected function highCard(array $excludedNominalIds = [],$isExcluded = true): string
     {
-        $highCardNominalId = -1;
-        $highCardName = null;
+        $highCard  =  $this->userCardsPool->getHighCard($excludedNominalIds,$isExcluded);
 
-        /**
-         * @var Card $card
-         */
-        foreach ($this->userCardsPool as $card){
-            $cardNominalId = $card->getNominalIndex();
-
-            if ($cardNominalId > $highCardNominalId && !in_array($cardNominalId,$excluded)){
-                $highCardName = $card->getName();
-                $highCardNominalId = $cardNominalId;
-            }
-        }
-
-        return sprintf('High Cart %s',$highCardName);
+        return sprintf('High Cart %s',$highCard->getNominalName());
     }
 
     protected function onePair(): bool|string
     {
-        if (count($this->cardsByNominal) === 1) {
-            /**
-             * @var RepeatCardsByNominal $cards
-             */
-            $cards = $this->cardsByNominal[0];
+        if ($this->repeatedCardsByNominal->count() === 1) {
+            $key =  $this->repeatedCardsByNominal->keys()[0];
+            $repeatedCards = $this->repeatedCardsByNominal->get($key);
+            $card = $repeatedCards->get(0);
 
-            return $cards->repeatedCardCount() ===  2 ?
+            return $repeatedCards->count() ===  2 ?
                 sprintf(
                     'One Pair of %sth, %s',
-                    $cards->getCard(1)->getNominalName(),
-                    $this->highCard([$cards->getNominalIndex()])
+                    $card->getNominalName(),
+                    $this->highCard([$card->getNominalIndex()])
                 )  : false;
-            }
+        }
 
         return false;
     }
 
     protected function twoPairs(): bool|string
     {
-        if (count($this->cardsByNominal) === 2) {
-            /**
-             * @var RepeatCardsByNominal $firstCards
-             * @var RepeatCardsByNominal $secondCards
-             */
-            $firstCards = $this->cardsByNominal[0];
-            $secondCards = $this->cardsByNominal[2];
+        if ($this->repeatedCardsByNominal->count() > 1) {
+            $keys = $this->repeatedCardsByNominal->keys();
+            $firstCards = $this->repeatedCardsByNominal->get($keys[0]);
+            $secondCards = $this->repeatedCardsByNominal->get($keys[1]);
+            $firstCard = $firstCards->get(0);
+            $secondCard =  $secondCards->get(0);
 
-            return ($firstCards->repeatedCardCount() === 2 && $secondCards->repeatedCardCount() === 2) ?
+            return ($firstCards->count() === 2 && $secondCards->count() === 2) ?
                 sprintf(
                     'Two Pairs of %sth & %sth, %s',
-                    $firstCards->getCard(1)->getNominalName(),
-                    $secondCards->getCard(1)->getNominalName(),
-                    $this->highCard([$firstCards->getNominalIndex(),$secondCards->getNominalIndex()])
+                    $firstCard->getNominalName(),
+                    $secondCard->getNominalName(),
+                    $this->highCard([$firstCard->getNominalIndex(),$secondCard->getNominalIndex()])
                 )  : false;
         }
 
@@ -112,17 +110,16 @@ class CombosChecker
 
     protected function threeOfKind(): bool|string
     {
-        if (count($this->cardsByNominal) === 1) {
-            /**
-             * @var RepeatCardsByNominal $cards
-             */
-            $cards = $this->cardsByNominal[0];
+        if ($this->repeatedCardsByNominal->count() > 0) {
+            $keys = $this->repeatedCardsByNominal->keys();
+            $firstCards = $this->repeatedCardsByNominal->get($keys[0]);
+            $firstCard = $firstCards->get(0);
 
-            return $cards->repeatedCardCount() ===  3 ?
+            return ($firstCards->count() === 3) ?
                 sprintf(
-                    'Three of a kind of %s, %s',
-                    $cards->getCard(1)->getNominalName(),
-                    $this->highCard([$cards->getNominalIndex()])
+                    'Three of %sth, %s',
+                    $firstCard->getNominalName(),
+                    $this->highCard([$firstCard->getNominalIndex()])
                 )  : false;
         }
 
@@ -131,23 +128,163 @@ class CombosChecker
 
     protected function fourOfKind(): bool|string
     {
-        if (count($this->cardsByNominal) === 1) {
-            /**
-             * @var RepeatCardsByNominal $cards
-             */
-            $cards = $this->cardsByNominal[0];
+        if ($this->repeatedCardsByNominal->count() > 0) {
+            $keyOfFour = null;
 
-            return $cards->repeatedCardCount() ===  4 ?
+            foreach ($this->repeatedCardsByNominal->keys() as $key) {
+                if ($this->repeatedCardsByNominal->get($key)->count() === 4)
+                    $keyOfFour = $key;
+            }
+
+            if (is_null($keyOfFour))
+                return false;
+
+            $firstCards = $this->repeatedCardsByNominal->get($keyOfFour);
+            $firstCard = $firstCards->get(0);
+
+            return ($firstCards->count() === 4) ?
                 sprintf(
-                    'Three of a kind of %s, %s',
-                    $cards->getCard(1)->getNominalName(),
-                    $this->highCard([$cards->getNominalIndex()])
+                    'Four of %sth, %s',
+                    $firstCard->getNominalName(),
+                    $this->highCard([$firstCard->getNominalIndex()])
                 )  : false;
         }
 
         return false;
     }
 
+    protected function straight()
+    {
+        if ($this->nominalCombinedCardsCollection->count() > 5){
+            $nominalPool = $this->nominalCombinedCardsCollection->keys();
+            $includedNominalIds = [];
+            $i = 1;
+            $prevNominalIndex = -5;
 
+            foreach ($nominalPool as $nominal) {
+                if ($nominal - $prevNominalIndex === 1){
+                    $includedNominalIds[] = $nominal;
+                    $i ++;
+                    if ($i === 5){
+                        return sprintf('Straight with %s',$this->highCard($includedNominalIds,false));
+                    }
+                }else{
+                    $prevNominalIndex =  $nominal;
+                    $includedNominalIds = [$nominal];
+                    $i  = 1;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    protected function flush()
+    {
+        foreach ($this->repeatedCardsBySuits->keys() as $key) {
+            $cards  = $this->repeatedCardsBySuits->get($key);
+
+            if ($cards->count() > 4) {
+                $includeNominalIndexes = [];
+
+                foreach ($cards->keys() as $cardIndex) {
+                    $card = $cards->get($cardIndex);
+                    $includeNominalIndexes[] = $card->getNominalIndex();
+                }
+
+                return sprintf('Flush with %s',$this->highCard($includeNominalIndexes,false));
+            }
+        }
+
+        return false;
+    }
+
+    protected function fullHouse()
+    {
+        if ($this->repeatedCardsByNominal->count() > 1) {
+            $keys = $this->repeatedCardsByNominal->keys();
+            $keyOfPair = $keyOfThree = null;
+
+            foreach ($keys as $key) {
+                $keyOfPair = $this->repeatedCardsByNominal->get($key)->count() === 2 ? $key : $keyOfPair;
+                $keyOfThree = $this->repeatedCardsByNominal->get($key)->count() === 3 ? $key : $keyOfThree;
+
+                if (!is_null($keyOfPair) && !is_null($keyOfThree)) {
+
+                    return sprintf(
+                        'Full House of 3 %s & 2%s',
+                        $this->repeatedCardsByNominal->get($keyOfThree)->get(0)->getNominalName(),
+                        $this->repeatedCardsByNominal->get($keyOfPair)->get(0)->getNominalName()
+                    );
+                }
+            }
+        }
+
+        return  false;
+    }
+
+    protected function straightFlush()
+    {
+//        if ($this->nominalCombinedCardsCollection->count() > 5){
+//            $nominalPool = $this->nominalCombinedCardsCollection->keys();
+//            $includedNominalIds = [];
+//            $i = 1;
+//            $prevNominalIndex = -5;
+//            $suitId = null;
+//
+//            foreach ($nominalPool as $nominal) {
+//                if ($nominal - $prevNominalIndex = 1 && $this->nominalCombinedCardsCollection->get($nominal) === $suitId){
+//                    $includedNominalIds[] = $nominal;
+//                    $i ++;
+//                    if ($i === 5){
+//                        return sprintf('Straight with %s',$this->highCard($includedNominalIds,false));
+//                    }
+//                }else{
+//                    $prevNominalIndex =  $nominal;
+//                    $includedNominalIds = [$nominal];
+//                    $i  = 1;
+//                    $suitId = $this->suitCombinedCardsCollection->get($nominal);
+//                }
+//            }
+//        }
+//
+//        return false;
+        foreach ($this->repeatedCardsBySuits->keys() as $key) {
+            $cards  = $this->repeatedCardsBySuits->get($key);
+
+            if ($cards->count() > 4) {
+                $includeNominalIndexes = [];
+                $cards->sortByNominal();
+                $prevIndex = -5;
+                $i = 1;
+
+                foreach ($cards->keys() as $cardIndex) {
+                    $card = $cards->get($cardIndex);
+
+                    if ($cardIndex - $prevIndex === 1) {
+                        $nominalId = $card->getNominalIndex();
+                        $includeNominalIndexes[] = $card->getNominalIndex();
+                        $i++;
+
+                        if ($i === 5) {
+                            return sprintf('Straight Flush with %s',$this->highCard($includeNominalIndexes,false));
+                        }
+                    } else {
+                        $prevIndex = $cardIndex;
+                        $includeNominalIndexes = [$card->getNominalIndex()];
+                        $i = 1;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    protected function royalFlush()
+    {}
+
+    protected function fff()
+    {}
 }
 
