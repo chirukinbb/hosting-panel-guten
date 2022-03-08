@@ -93,6 +93,18 @@ class CombosChecker
     {
         if ($this->repeatedCardsByNominal->count() > 1) {
             $keys = $this->repeatedCardsByNominal->keys();
+
+            foreach ($keys as $i => $key) {
+                if ($this->repeatedCardsByNominal->get($key)->count() !== 2)
+                    unset($keys[$i]);
+            }
+
+            if (count($keys) < 2)
+                return false;
+
+            if (count($keys) === 3)
+                $keys = array_slice($keys,-2,2);
+
             $firstCards = $this->repeatedCardsByNominal->get($keys[0]);
             $secondCards = $this->repeatedCardsByNominal->get($keys[1]);
             $firstCard = $firstCards->get(0);
@@ -100,7 +112,7 @@ class CombosChecker
 
             return ($firstCards->count() === 2 && $secondCards->count() === 2) ?
                 sprintf(
-                    'Two Pairs of %sth & %sth, %s',
+                    'Two Pairs of %s`th & %s`th, %s',
                     $firstCard->getNominalName(),
                     $secondCard->getNominalName(),
                     $this->highCard([$firstCard->getNominalIndex(),$secondCard->getNominalIndex()])
@@ -114,12 +126,19 @@ class CombosChecker
     {
         if ($this->repeatedCardsByNominal->count() > 0) {
             $keys = $this->repeatedCardsByNominal->keys();
-            $firstCards = $this->repeatedCardsByNominal->get($keys[0]);
+            $threeKey = null;
+
+            foreach ($keys as $key){
+                if ($this->repeatedCardsByNominal->get($key)->count() === 3 && $key > $threeKey)
+                    $threeKey = $key;
+            }
+
+            $firstCards = $this->repeatedCardsByNominal->get($threeKey);
             $firstCard = $firstCards->get(0);
 
             return ($firstCards->count() === 3) ?
                 sprintf(
-                    'Three of %sth, %s',
+                    'Three of %s`th, %s',
                     $firstCard->getNominalName(),
                     $this->highCard([$firstCard->getNominalIndex()])
                 )  : false;
@@ -146,7 +165,7 @@ class CombosChecker
 
             return ($firstCards->count() === 4) ?
                 sprintf(
-                    'Four of %sth, %s',
+                    'Four of %s`th, %s',
                     $firstCard->getNominalName(),
                     $this->highCard([$firstCard->getNominalIndex()])
                 )  : false;

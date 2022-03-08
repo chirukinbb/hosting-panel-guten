@@ -34,7 +34,7 @@ class NominalCombinedCardsCollection extends CardsCollection
         return parent::get($index)->get(0);
     }
 
-    public function sortByNominalId()
+    public function sortByNominalId(): static
     {
         /**
          * @var CardsCollection $cards
