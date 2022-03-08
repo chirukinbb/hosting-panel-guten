@@ -6,6 +6,7 @@ use App\Game\Card;
 use App\Game\Collections\CardsCollection;
 use App\Game\Collections\SuitCombinedCardsCollection;
 use App\Game\CombosChecker;
+use App\Game\Tests\Rules\FullHouseTest;
 use App\Game\Tests\Rules\StraightFlushTest;
 use App\Repositories\Admin\UserRepository;
 use Ratchet\Session\Storage\VirtualSessionStoragePDOTest;
@@ -26,6 +27,7 @@ class HomeController extends Controller
 //        dd($pocker);
 
         new StraightFlushTest();echo '<br>';
+        new  FullHouseTest();echo '<br>';
 
 
         //return view('home');

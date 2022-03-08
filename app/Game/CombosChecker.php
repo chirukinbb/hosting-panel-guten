@@ -201,9 +201,9 @@ class CombosChecker
         return false;
     }
 
-    protected function fullHouse()
+    protected function fullHouse(): bool|string
     {
-        if ($this->repeatedCardsByNominal->count() > 1) {
+        if ($this->repeatedCardsByNominal->count() > 1) {//dd($this->repeatedCardsByNominal);
             $keys = $this->repeatedCardsByNominal->keys();
             $keyOfPair = $keyOfThree = null;
 
@@ -214,7 +214,7 @@ class CombosChecker
                 if (!is_null($keyOfPair) && !is_null($keyOfThree)) {
 
                     return sprintf(
-                        'Full House of 3 %s & 2%s',
+                        'Full House of 3 %s`th & 2 %s`th',
                         $this->repeatedCardsByNominal->get($keyOfThree)->get(0)->getNominalName(),
                         $this->repeatedCardsByNominal->get($keyOfPair)->get(0)->getNominalName()
                     );

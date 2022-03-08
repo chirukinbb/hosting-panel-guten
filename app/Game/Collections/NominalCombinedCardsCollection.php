@@ -31,7 +31,7 @@ class NominalCombinedCardsCollection extends CardsCollection
      */
     public function get(int $index): object
     {
-        return parent::get($index);
+        return parent::get($index)->get(0);
     }
 
     public function sortByNominalId()
@@ -43,7 +43,7 @@ class NominalCombinedCardsCollection extends CardsCollection
             $this->collection[$cards->get(0)->getNominalIndex()] = $cards;
         }
 
-        ksort($this->collection);
+        ksort($this->collection,2);
 
         return $this;
     }

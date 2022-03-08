@@ -8,13 +8,15 @@ use App\Game\CombosChecker;
 
 class StraightFlushTest
 {
+    protected string $comboName = 'стрит-флэш';
+
     public function __construct()
     {
-        $this->StraightFlushExist();
-        $this->StraightFlushNotExist();
+        $this->comboExist();
+        $this->comboNotExist();
     }
 
-    public function StraightFlushExist()
+    public function comboExist()
     {
         $cardsPool = new CardsCollection();
 
@@ -28,10 +30,10 @@ class StraightFlushTest
 
         $checker = new CombosChecker($cardsPool);
 
-        echo 'Есть стрит-флэш: '.(int)!!$checker->check('straightFlush').PHP_EOL;
+        echo 'Есть '.$this->comboName.': '.(int)!!$checker->check('straightFlush').PHP_EOL;
     }
 
-    public function StraightFlushNotExist()
+    public function comboNotExist()
     {
         $cardsPool = new CardsCollection();
 
@@ -45,6 +47,6 @@ class StraightFlushTest
 
         $checker = new CombosChecker($cardsPool);
 
-        echo 'Нет стрит-флэш: '.(int)$checker->check('straightFlush');
+        echo 'Нет '.$this->comboName.': '.(int)$checker->check('straightFlush');
     }
 }
