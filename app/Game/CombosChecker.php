@@ -155,9 +155,9 @@ class CombosChecker
         return false;
     }
 
-    protected function straight()
+    protected function straight(): bool|string
     {
-        if ($this->nominalCombinedCardsCollection->count() > 5){
+        if ($this->nominalCombinedCardsCollection->count() > 4){//dd($this->nominalCombinedCardsCollection);
             $nominalPool = $this->nominalCombinedCardsCollection->keys();
             $includedNominalIds = [];
             $i = 1;
@@ -166,6 +166,7 @@ class CombosChecker
             foreach ($nominalPool as $nominal) {
                 if ($nominal - $prevNominalIndex === 1){
                     $includedNominalIds[] = $nominal;
+                    $prevNominalIndex = $nominal;
                     $i ++;
                     if ($i === 5){
                         return sprintf('Straight with %s',$this->highCard($includedNominalIds,false));
