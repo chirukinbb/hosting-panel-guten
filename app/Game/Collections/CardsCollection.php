@@ -45,17 +45,20 @@ class CardsCollection extends AbstractGameCollection
         return $highCard;
     }
 
-    public function sortByNominal()
+    public function sortByNominal(): static
     {
+        $collection = [];
+
         /**
          * @var Card $card
          */
-        foreach ($this->collection as $card) {
-            $this->collection[$card->getNominalIndex()] = $card;
+        foreach ($this->collection as $index => $card) {
+            $collection[$card->getNominalIndex()] = $card;
         }
 
-        ksort($this->collection);
+        ksort($collection);
+        $this->collection = $collection;
 
-        return $this->collection;
+        return $this;
     }
 }

@@ -26,7 +26,7 @@ trait CombinedCarsTrait
         $cards = new SuitCombinedCardsCollection();
 
         $this->userCardsPool->each(function (Card $card) use ($cards){
-            $cards->setSuitId($card->getNominalIndex());
+            $cards->setSuitId($card->getSuitIndex());
             $cards->push($card);
         });
 

@@ -59,8 +59,10 @@ class CombosChecker
         return $this->getRepeatBySuits();
     }
 
-    public function check()
-    {}
+    public function check(string $combo)
+    {
+        return method_exists($this,$combo) ? call_user_func([$this,$combo]) : false;
+    }
 
     protected function highCard(array $excludedNominalIds = [],$isExcluded = true): string
     {
@@ -223,47 +225,24 @@ class CombosChecker
         return  false;
     }
 
-    protected function straightFlush()
+    protected function straightFlush(): bool|string
     {
-//        if ($this->nominalCombinedCardsCollection->count() > 5){
-//            $nominalPool = $this->nominalCombinedCardsCollection->keys();
-//            $includedNominalIds = [];
-//            $i = 1;
-//            $prevNominalIndex = -5;
-//            $suitId = null;
-//
-//            foreach ($nominalPool as $nominal) {
-//                if ($nominal - $prevNominalIndex = 1 && $this->nominalCombinedCardsCollection->get($nominal) === $suitId){
-//                    $includedNominalIds[] = $nominal;
-//                    $i ++;
-//                    if ($i === 5){
-//                        return sprintf('Straight with %s',$this->highCard($includedNominalIds,false));
-//                    }
-//                }else{
-//                    $prevNominalIndex =  $nominal;
-//                    $includedNominalIds = [$nominal];
-//                    $i  = 1;
-//                    $suitId = $this->suitCombinedCardsCollection->get($nominal);
-//                }
-//            }
-//        }
-//
-//        return false;
         foreach ($this->repeatedCardsBySuits->keys() as $key) {
             $cards  = $this->repeatedCardsBySuits->get($key);
 
             if ($cards->count() > 4) {
+                $cards  = $cards->sortByNominal();
                 $includeNominalIndexes = [];
-                $cards->sortByNominal();
                 $prevIndex = -5;
                 $i = 1;
 
                 foreach ($cards->keys() as $cardIndex) {
                     $card = $cards->get($cardIndex);
+                    $cardIndex  = $card->getNominalIndex();
 
                     if ($cardIndex - $prevIndex === 1) {
-                        $nominalId = $card->getNominalIndex();
-                        $includeNominalIndexes[] = $card->getNominalIndex();
+                        $includeNominalIndexes[] = $cardIndex;
+                        $prevIndex = $cardIndex;
                         $i++;
 
                         if ($i === 5) {

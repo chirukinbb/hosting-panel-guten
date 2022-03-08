@@ -27,13 +27,15 @@ abstract class AbstractPokerDeck
 
     public function __construct(protected array $userIds)
     {
-        $this->minNominal = $this->getMinNominal();
-        $this->playersCount = $this->getPlayersCount();
-        $this->cardsInHand = $this->getCardsInHand();
-        $this->blind = $this->getBlind();
-        $this->places = $this->getPlaces();
-        $this->players = $this->getPlayers();
-        $this->cardDeck = $this->getCardDeck();
+        if (! empty($$this->userIds)) {
+            $this->minNominal = $this->getMinNominal();
+            $this->playersCount = $this->getPlayersCount();
+            $this->cardsInHand = $this->getCardsInHand();
+            $this->blind = $this->getBlind();
+            $this->places = $this->getPlaces();
+            $this->players = $this->getPlayers();
+            $this->cardDeck = $this->getCardDeck();
+        }
     }
 
     public function setId(int $id): void
