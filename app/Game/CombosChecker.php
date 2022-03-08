@@ -181,7 +181,7 @@ class CombosChecker
         return false;
     }
 
-    protected function flush()
+    protected function flush(): bool|string
     {
         foreach ($this->repeatedCardsBySuits->keys() as $key) {
             $cards  = $this->repeatedCardsBySuits->get($key);
@@ -194,7 +194,11 @@ class CombosChecker
                     $includeNominalIndexes[] = $card->getNominalIndex();
                 }
 
-                return sprintf('Flush with %s',$this->highCard($includeNominalIndexes,false));
+                return sprintf(
+                    'Flush with %s, %s',
+                    $card->getSuitName(),
+                    $this->highCard($includeNominalIndexes,false)
+                );
             }
         }
 
@@ -203,7 +207,7 @@ class CombosChecker
 
     protected function fullHouse(): bool|string
     {
-        if ($this->repeatedCardsByNominal->count() > 1) {//dd($this->repeatedCardsByNominal);
+        if ($this->repeatedCardsByNominal->count() > 1) {
             $keys = $this->repeatedCardsByNominal->keys();
             $keyOfPair = $keyOfThree = null;
 

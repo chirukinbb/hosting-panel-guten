@@ -6,6 +6,7 @@ use App\Game\Card;
 use App\Game\Collections\CardsCollection;
 use App\Game\Collections\SuitCombinedCardsCollection;
 use App\Game\CombosChecker;
+use App\Game\Tests\Rules\FlushTest;
 use App\Game\Tests\Rules\FullHouseTest;
 use App\Game\Tests\Rules\StraightFlushTest;
 use App\Repositories\Admin\UserRepository;
@@ -28,6 +29,7 @@ class HomeController extends Controller
 
         new StraightFlushTest();echo '<br>';
         new  FullHouseTest();echo '<br>';
+        new FlushTest();echo '<br>';
 
 
         //return view('home');
