@@ -26,16 +26,15 @@ return [
         ]
     ],
     'combos'=>[
-        'high card',
-        'one pair',
-        'two pair',
-        'three of a king',
-        'straight',
+        'straightFlush',
+        'fourOfKind',
+        'fullHouse',
         'flush',
-        'full house',
-        'four of a kind',
-        'straight flush',
-        'royal flush'
+        'straight',
+        'threeOfKind',
+        'twoPairs',
+        'onePair',
+        'highCard'
     ]
 
 ];

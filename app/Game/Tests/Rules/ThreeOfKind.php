@@ -41,7 +41,7 @@ class ThreeOfKind
         $cardsPool->push(new Card(5, 2, 2, '5', 's'));
         $cardsPool->push(new Card(2, 0, 3, 'n', 's'));
         $cardsPool->push(new Card(9, 0, 4, '9', 's'));
-        $cardsPool->push(new Card(2, 2, 5, 'n', 's'));
+        $cardsPool->push(new Card(8, 2, 5, 'n', 's'));
         $cardsPool->push(new Card(10, 3, 6, 't', 's'));
         $cardsPool->push(new Card(4, 2, 7, 'n', 's'));
 

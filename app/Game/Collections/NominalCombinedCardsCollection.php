@@ -16,13 +16,15 @@ class NominalCombinedCardsCollection extends CardsCollection
         $this->nominalId = $nominalId;
     }
 
-    public function push(object $obj): void
+    public function push(object $obj): NominalCombinedCardsCollection
     {
         if (! isset($this->collection[$this->nominalId])) {
             $this->collection[$this->nominalId] = new CardsCollection();
         }
 
         $this->collection[$this->nominalId]->push($obj);
+
+        return $this;
     }
 
     /**

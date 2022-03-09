@@ -2,6 +2,7 @@
 
 namespace App\Game\Traits;
 
+use App\Game\Player;
 use App\Game\Round;
 
 trait RoundTrait
@@ -15,9 +16,16 @@ trait RoundTrait
 
     public function preFlop()
     {
-        $this->players->each(function ($player) {
+        $this->players->each(function (Player $player) {
             $this->round->preFlop($player,$this->cardsInHand);
         });
+    }
+
+    public function calculateHandValues()
+    {
+         $this->players->each(function (Player $player) {
+             $this->round->checkHandValue($player, $this->cardsInHand);
+         });
     }
 
     public function flop()
@@ -33,10 +41,6 @@ trait RoundTrait
     public function river()
     {
         $this->putCardsOnTable(1);
-    }
-
-    public function handsValue(array $players)
-    {
     }
 
     protected function putCardsOnTable(int $count)

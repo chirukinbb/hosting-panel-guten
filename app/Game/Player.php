@@ -2,9 +2,7 @@
 
 namespace App\Game;
 
-use App\Abstracts\AbstractCombo;
 use App\Game\Collections\CardsCollection;
-use App\Repositories\Admin\UserDataRepository;
 
 class Player
 {
@@ -16,12 +14,11 @@ class Player
     protected bool $isDealer = false;
     protected bool $isBB = false;
     protected bool $isLB = false;
-    //protected UserDataRepository $repository;
+    protected int $amount;
 
     public function __construct(protected int $playerId)
     {
         $this->cards = new CardsCollection();
-        //$this->repository = new UserDataRepository();
     }
 
     public function setPlaceOnDesc(int $place)
@@ -49,13 +46,47 @@ class Player
         $this->isLB =  $isLB;
     }
 
-    public function getCards()
+    public function getCards(): CardsCollection
     {
-        return $this->cards->getCollection();
+        return $this->cards;
     }
 
     public function getPlace(): int
     {
         return $this->place;
+    }
+
+    /**
+     * @param UserCombo $combo
+     */
+    public function setCombo(UserCombo $combo): UserCombo
+    {
+        $this->combo = $combo;
+
+        return $this->combo;
+    }
+
+    /**
+     * @return UserCombo
+     */
+    public function getCombo(): UserCombo
+    {
+        return $this->combo;
+    }
+
+    /**
+     * @param int $amount
+     */
+    public function setAmount(int $amount): void
+    {
+        $this->amount = $amount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmount(): int
+    {
+        return $this->amount;
     }
 }

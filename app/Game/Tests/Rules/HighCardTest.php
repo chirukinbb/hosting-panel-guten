@@ -30,7 +30,7 @@ class HighCardTest
 
         $checker = new CombosChecker($cardsPool);
 
-        echo $checker->check('highCard').PHP_EOL;
+        echo $checker->check('highCard')->getName().PHP_EOL;
     }
 
     public function comboNotExist()

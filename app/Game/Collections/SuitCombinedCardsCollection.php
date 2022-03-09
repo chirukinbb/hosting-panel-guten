@@ -14,13 +14,15 @@ class SuitCombinedCardsCollection extends CardsCollection
         $this->suitId = $suitId;
     }
 
-    public function push(object $obj): void
+    public function push(object $obj): SuitCombinedCardsCollection
     {
         if (! isset($this->collection[$this->suitId])) {
             $this->collection[$this->suitId] = new CardsCollection();
         }
 
         $this->collection[$this->suitId]->push($obj);
+
+        return $this;
     }
 
     /**

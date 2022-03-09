@@ -4,11 +4,13 @@ namespace App\Abstracts;
 
 class AbstractGameCollection
 {
-    protected array $collection;
+    protected array $collection = [];
 
-    public function push(object $obj): void
+    public function push(object $obj): AbstractGameCollection
     {
         $this->collection[] = $obj;
+
+        return $this;
     }
 
     public function remove(int $index): void

@@ -27,7 +27,7 @@ abstract class AbstractPokerDeck
 
     public function __construct(protected array $userIds)
     {
-        if (! empty($$this->userIds)) {
+        if (! empty($this->userIds)) {
             $this->minNominal = $this->getMinNominal();
             $this->playersCount = $this->getPlayersCount();
             $this->cardsInHand = $this->getCardsInHand();
@@ -68,7 +68,7 @@ abstract class AbstractPokerDeck
         return $cards->removeFirsts($this->minNominal*count($deckSuitsPool));
     }
 
-    protected function getPlayers()
+    protected function getPlayers(): PlayersCollection
     {
         $players = new PlayersCollection();
 
@@ -85,7 +85,7 @@ abstract class AbstractPokerDeck
         return $players->sortByPlaces();
     }
 
-    protected function getPlaces()
+    protected function getPlaces(): array
     {
         return range(0, $this->playersCount - 1);
     }
@@ -98,11 +98,8 @@ abstract class AbstractPokerDeck
         return $place;
     }
 
-    /**
-     * @return Round
-     */
-    public function getRound(): Round
+    public function getPlayerWithStrongestHand(): Player
     {
-        return $this->round;
+        return $this->round->getPlayerWithStrongestHand($this->players);
     }
 }

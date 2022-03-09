@@ -2,10 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Game\Card;
-use App\Game\Collections\CardsCollection;
-use App\Game\Collections\SuitCombinedCardsCollection;
-use App\Game\CombosChecker;
 use App\Game\Tests\Rules\FlushTest;
 use App\Game\Tests\Rules\FourOfKindTest;
 use App\Game\Tests\Rules\FullHouseTest;
@@ -15,8 +11,6 @@ use App\Game\Tests\Rules\StraightFlushTest;
 use App\Game\Tests\Rules\StraigthTest;
 use App\Game\Tests\Rules\ThreeOfKind;
 use App\Game\Tests\Rules\TwoPairsTest;
-use App\Repositories\Admin\UserRepository;
-use Ratchet\Session\Storage\VirtualSessionStoragePDOTest;
 
 class HomeController extends Controller
 {
@@ -31,17 +25,19 @@ class HomeController extends Controller
 //        $pocker->flop();
 //        $pocker->turn();
 //        $pocker->river();
-//        dd($pocker);
-
-        new StraightFlushTest();echo '<br>';
-        new  FullHouseTest();echo '<br>';
-        new FlushTest();echo '<br>';
-        new StraigthTest();echo '<br>';
-        new FourOfKindTest();echo '<br>';
-        new ThreeOfKind();echo '<br>';
+//        $pocker->calculateHandValues();
+//        $pocker->getPlayerWithStrongestHand();
+//        dump($pocker);
+//
+//        new StraightFlushTest();echo '<br>';
+//        new  FullHouseTest();echo '<br>';
+//        new FlushTest();echo '<br>';
+//        new StraigthTest();echo '<br>';
+//        new FourOfKindTest();echo '<br>';
+//        new ThreeOfKind();echo '<br>';
         new TwoPairsTest();echo '<br>';
-        new OnePairTest();echo '<br>';
-        new HighCardTest();echo '<br>';
+//        new OnePairTest();echo '<br>';
+//        new HighCardTest();echo '<br>';
 
 
         //return view('home');

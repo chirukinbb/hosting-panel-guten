@@ -45,6 +45,27 @@ class CardsCollection extends AbstractGameCollection
         return $highCard;
     }
 
+    public function getLowCard(array $excludedNominalIds,$isExcluded): Card
+    {
+        $lowCardNominalIndex = 15;
+        $lowCard  = null;
+        /**
+         * @var Card $card
+         */
+        foreach ($this->collection as $card){
+            $exclude =  $isExcluded ?
+                !in_array($card->getNominalIndex(),$excludedNominalIds) :
+                in_array($card->getNominalIndex(),$excludedNominalIds);
+
+            if ($card->getNominalIndex() < $lowCardNominalIndex && $exclude) {
+                $lowCardNominalIndex = $card->getNominalIndex();
+                $lowCard = $card;
+            }
+        }
+
+        return $lowCard;
+    }
+
     public function sortByNominal(): static
     {
         $collection = [];
