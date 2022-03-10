@@ -13,6 +13,7 @@
 <body>
 <div class="container-fluid">
     <div class="row">
+        <x-admin-bar/>
         <div class="col-2">
             <x-admin-menu/>
         </div>

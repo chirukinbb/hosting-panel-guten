@@ -11,6 +11,9 @@
     <title> @yield('title') </title>
 </head>
 <body>
+@role('Admin')
+<x-admin-bar/>
+@endrole
 <x-header/>
 <div class="container">
     <x-alert/>
