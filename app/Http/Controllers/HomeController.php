@@ -11,6 +11,7 @@ use App\Game\Tests\Rules\StraightFlushTest;
 use App\Game\Tests\Rules\StraigthTest;
 use App\Game\Tests\Rules\ThreeOfKind;
 use App\Game\Tests\Rules\TwoPairsTest;
+use App\Game\Tests\Winner\HighCard;
 
 class HomeController extends Controller
 {
@@ -35,10 +36,10 @@ class HomeController extends Controller
 //        new StraigthTest();echo '<br>';
 //        new FourOfKindTest();echo '<br>';
 //        new ThreeOfKind();echo '<br>';
-        new TwoPairsTest();echo '<br>';
+//        new TwoPairsTest();echo '<br>';
 //        new OnePairTest();echo '<br>';
 //        new HighCardTest();echo '<br>';
-
+new HighCard();
 
         //return view('home');
     }

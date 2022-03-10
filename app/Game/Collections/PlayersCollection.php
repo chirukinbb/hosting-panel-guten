@@ -33,7 +33,7 @@ class PlayersCollection extends AbstractGameCollection
         return $this;
     }
 
-    public function getWithStrongestHand(): Player
+    public function getWithStrongestHand(): array
     {
         $collection  = [];
 
@@ -42,15 +42,13 @@ class PlayersCollection extends AbstractGameCollection
              * @var Player $player
              */
             $combo =  $player->getCombo();
-            $collection[$combo->getComboIndex()][$combo->getHighCardIndex()][$combo->getComboMeterCardIndex()][] = $player;
+            $collection[$combo->getComboIndex()][$combo->getHighCardIndex()][$combo->getComboMeterCardIndex()][] = $player->getPlace();
         }
 
-        ksort($collection,2);dump($collection);
-        $strong = array_slice($collection,0,1);dump($strong);
-        ksort($strong);
-        $strongest = array_slice($strong,0,1);dump($strongest);
-        ksort($strong);
-        dd(array_slice($strongest,0,1));
-        return $player;
+        $strong = $collection[max(array_keys($collection))];
+        $strongest = $strong[max(array_keys($strong))];
+        $players = $strongest[max(array_keys($strongest))];
+
+        return $players;
     }
 }

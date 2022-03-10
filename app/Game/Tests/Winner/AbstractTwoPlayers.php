@@ -17,10 +17,11 @@ abstract class AbstractTwoPlayers
         $players->push($this->secondPlayer());
 
         $round = new  Round(1,$this->cardsOnTable());
-        $round->checkHandValue($this->firstPlayer(),2);
-        $round->checkHandValue($this->secondPlayer(),2);
+        $round->setTableCards($this->cardsOnTable());
+        $round->checkHandValue($players->get(1),2);
+        $round->checkHandValue($players->get(0),2);
 
-        $players->getWithStrongestHand();
+        echo 'Игрок 1 победил: '.(int)($players->getWithStrongestHand() === [0]);
     }
 
     protected function firstPlayer()
@@ -28,6 +29,7 @@ abstract class AbstractTwoPlayers
         $player = new Player(5);
         $player->giveCard($this->firstCard());
         $player->giveCard($this->secondCard());
+        $player->setPlaceOnDesc(0);
 
         return $player;
     }
@@ -37,6 +39,7 @@ abstract class AbstractTwoPlayers
         $player = new Player(25);
         $player->giveCard($this->thirdCard());
         $player->giveCard($this->fourCard());
+        $player->setPlaceOnDesc(1);
 
         return $player;
     }

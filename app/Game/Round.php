@@ -51,8 +51,6 @@ class Round
                         return true;
                     }
                 }
-
-                unset($checker);
             }
         }
 
@@ -62,5 +60,13 @@ class Round
     public function getPlayerWithStrongestHand(PlayersCollection $players): Player
     {
         return $players->getWithStrongestHand();
+    }
+
+    /**
+     * @param CardsCollection $tableCards
+     */
+    public function setTableCards(CardsCollection $tableCards): void
+    {
+        $this->tableCards = $tableCards;
     }
 }
