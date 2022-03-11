@@ -45,7 +45,7 @@ class NominalCombinedCardsCollection extends CardsCollection
             $this->collection[$cards->get(0)->getNominalIndex()] = $cards;
         }
 
-        ksort($this->collection,2);
+        ksort($this->collection);
 
         return $this;
     }

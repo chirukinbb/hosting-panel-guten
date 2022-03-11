@@ -88,10 +88,10 @@ class CombosChecker
             return $repeatedCards->count() ===  2 ?
                 new UserCombo(
                     sprintf(
-                        'One Pair of %sth, high card %s',
+                        'One Pair of %sth, kicker %s',
                         $card->getNominalName(),
                         ($highCard  = $this->highCard([$card->getNominalIndex()]))->getNominalName()
-                    ),$highCard->getNominalIndex()
+                    ),$card->getNominalIndex(),$highCard->getNominalIndex()
                 )  : false;
         }
 
@@ -123,11 +123,11 @@ class CombosChecker
             return ($firstCards->count() === 2 && $secondCards->count() === 2) ?
                 new UserCombo(
                     sprintf(
-                        'Two Pairs of %s`th & %s`th, high card %s',
-                        $secondCard->getNominalName(),
+                        'Two Pairs of %s`th & %s`th, kicker %s',
                         $firstCard->getNominalName(),
+                        $secondCard->getNominalName(),
                         ($highCard  = $this->highCard([$firstCard->getNominalIndex(),$secondCard->getNominalIndex()]))->getNominalName()
-                    ),$highCard->getNominalIndex(),$secondCard->getNominalIndex(),$firstCard->getNominalIndex()
+                    ),$secondCard->getNominalIndex(),$firstCard->getNominalIndex(),$highCard->getNominalIndex()
                 )  : false;
         }
 
@@ -154,10 +154,10 @@ class CombosChecker
             return ($firstCards->count() === 3) ?
                 new UserCombo(
                     sprintf(
-                        'Three of %s`th, high card %s',
+                        'Three of %s`th, kicker %s',
                         $firstCard->getNominalName(),
                         ($highCard  = $this->highCard([$firstCard->getNominalIndex()]))->getNominalName()
-                    ),$highCard->getNominalIndex()
+                    ),$firstCard->getNominalIndex(),$highCard->getNominalIndex()
                 )  : false;
         }
 
@@ -183,10 +183,10 @@ class CombosChecker
             return ($firstCards->count() === 4) ?
                 new UserCombo(
                     sprintf(
-                        'Four of %s`th, high card %s',
+                        'Four of %s`th, kicker %s',
                         $firstCard->getNominalName(),
                         ($highCard  = $this->highCard([$firstCard->getNominalIndex()]))->getNominalName()
-                    ),$highCard->getNominalIndex()
+                    ),$firstCard->getNominalIndex(),$highCard->getNominalIndex()
                 )  : false;
         }
 
@@ -200,6 +200,9 @@ class CombosChecker
             $includedNominalIds = [];
             $i = 1;
             $prevNominalIndex = -5;
+
+            if (in_array(13,$nominalPool))
+                array_unshift($nominalPool,1);
 
             foreach ($nominalPool as $nominal) {
                 if ($nominal - $prevNominalIndex === 1){
@@ -272,10 +275,10 @@ class CombosChecker
                         new UserCombo(
                             sprintf(
                                 'Full House of 3 %s`th & 2 %s`th',
-                                ($highCard = $this->repeatedCardsByNominal->get($keyOfThree)->get(0))->getNominalName(),
+                                ($threeCard = $this->repeatedCardsByNominal->get($keyOfThree)->get(0))->getNominalName(),
                                 ($pair = $this->repeatedCardsByNominal->get($keyOfPair)->get(0))->getNominalName()
                             ),
-                            $highCard->getNominalIndex(),
+                            $threeCard->getNominalIndex(),
                             $pair->getNominalIndex()
                         );
                 }
@@ -295,8 +298,12 @@ class CombosChecker
                 $includeNominalIndexes = [];
                 $prevIndex = -5;
                 $i = 1;
+                $nominalPool = $cards->keys();
 
-                foreach ($cards->keys() as $cardIndex) {
+                if (in_array(13,$nominalPool))
+                    array_unshift($nominalPool,1);
+
+                foreach ($nominalPool as $cardIndex) {
                     $card = $cards->get($cardIndex);
                     $cardIndex  = $card->getNominalIndex();
 
@@ -306,13 +313,17 @@ class CombosChecker
                         $i++;
 
                         if ($i === 5) {
+                            $format = (($highCard = $this->highCard($includeNominalIndexes,false))->getNominalIndex() === 13) ?
+                                            'Royal Flush from %s to  %s' :
+                                            'Straight Flush from %s to  %s';
                             return
                                 new UserCombo(
                                     sprintf(
-                                        'Straight Flush from %s to  %s',
+                                        $format,
                                         $this->lowCard($includeNominalIndexes,false)->getNominalName(),
-                                        ($highCard = $this->highCard($includeNominalIndexes,false))->getNominalName()
+                                        $highCard->getNominalName()
                                     ),
+                                    $highCard->getNominalIndex()  === 13 ? 1 : 0,
                                     $highCard->getNominalIndex()
                                 );
                         }
@@ -327,11 +338,5 @@ class CombosChecker
 
         return false;
     }
-
-    protected function royalFlush()
-    {}
-
-    protected function fff()
-    {}
 }
 

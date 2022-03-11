@@ -57,7 +57,11 @@ class CardsCollection extends AbstractGameCollection
                 !in_array($card->getNominalIndex(),$excludedNominalIds) :
                 in_array($card->getNominalIndex(),$excludedNominalIds);
 
-            if ($card->getNominalIndex() < $lowCardNominalIndex && $exclude) {
+            if(($cardIndex = $card->getNominalIndex()) === 13 && in_array(1,$excludedNominalIds)){
+                return $card;
+            }
+
+            if ($cardIndex < $lowCardNominalIndex && $exclude) {
                 $lowCardNominalIndex = $card->getNominalIndex();
                 $lowCard = $card;
             }

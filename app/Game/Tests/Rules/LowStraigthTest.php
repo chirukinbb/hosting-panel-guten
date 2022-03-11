@@ -6,7 +6,7 @@ use App\Game\Card;
 use App\Game\Collections\CardsCollection;
 use App\Game\CombosChecker;
 
-class StraigthTest
+class LowStraigthTest
 {
     protected string $comboName = 'стрит';
 
@@ -25,7 +25,7 @@ class StraigthTest
         $cardsPool->push(new Card(3,0,3,'n','s'));
         $cardsPool->push(new Card(9,2,4,'9','s'));
         $cardsPool->push(new Card(2,2,5,'n','s'));
-        $cardsPool->push(new Card(6,3,6,'t','s'));
+        $cardsPool->push(new Card(13,3,6,'A','s'));
         $cardsPool->push(new Card(4,2,7,'n','s'));
 
         $checker = new CombosChecker($cardsPool);

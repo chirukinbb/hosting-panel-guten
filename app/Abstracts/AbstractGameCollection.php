@@ -20,6 +20,8 @@ class AbstractGameCollection
 
     public function get(int $index): object
     {
+        $index = ($index === 1 && !isset($this->collection[1])) ? 13 : $index;
+
         return $this->collection[$index];
     }
 

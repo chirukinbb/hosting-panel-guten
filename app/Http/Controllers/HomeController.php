@@ -7,8 +7,9 @@ use App\Game\Tests\Rules\FourOfKindTest;
 use App\Game\Tests\Rules\FullHouseTest;
 use App\Game\Tests\Rules\HighCardTest;
 use App\Game\Tests\Rules\OnePairTest;
+use App\Game\Tests\Rules\RoyalStraightTest;
 use App\Game\Tests\Rules\StraightFlushTest;
-use App\Game\Tests\Rules\StraigthTest;
+use App\Game\Tests\Rules\LowStraigthTest;
 use App\Game\Tests\Rules\ThreeOfKind;
 use App\Game\Tests\Rules\TwoPairsTest;
 use App\Game\Tests\Winner\HighCard;
@@ -30,15 +31,16 @@ class HomeController extends Controller
 //        $pocker->getPlayerWithStrongestHand();
 //        dump($pocker);
 //
-//        new StraightFlushTest();echo '<br>';
-//        new  FullHouseTest();echo '<br>';
-//        new FlushTest();echo '<br>';
-//        new StraigthTest();echo '<br>';
-//        new FourOfKindTest();echo '<br>';
-//        new ThreeOfKind();echo '<br>';
-//        new TwoPairsTest();echo '<br>';
-//        new OnePairTest();echo '<br>';
-//        new HighCardTest();echo '<br>';
+        new RoyalStraightTest();echo '<br>';
+        new StraightFlushTest();echo '<br>';
+        new  FullHouseTest();echo '<br>';
+        new FlushTest();echo '<br>';
+        new LowStraigthTest();echo '<br>';
+        new FourOfKindTest();echo '<br>';
+        new ThreeOfKind();echo '<br>';
+        new TwoPairsTest();echo '<br>';
+        new OnePairTest();echo '<br>';
+        new HighCardTest();echo '<br>';
 new HighCard();
 
         //return view('home');
