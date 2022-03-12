@@ -4,6 +4,7 @@ namespace App\Game\Collections;
 
 use \App\Abstracts\AbstractGameCollection;
 use App\Game\Player;
+use Ratchet\ConnectionInterface;
 
 class PlayersCollection extends AbstractGameCollection
 {
@@ -47,8 +48,12 @@ class PlayersCollection extends AbstractGameCollection
 
         $strong = $collection[max(array_keys($collection))];
         $strongest = $strong[max(array_keys($strong))];
-        $players = $strongest[max(array_keys($strongest))];
 
-        return $players;
+        return $strongest[max(array_keys($strongest))];
+    }
+
+    public function removeWhereObj(ConnectionInterface $player): void
+    {
+        unset($player);
     }
 }

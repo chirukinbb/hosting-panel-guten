@@ -70,4 +70,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(\App\Models\UserData::class);
     }
+
+    public function player()
+    {
+        return $this->hasOne(\App\Models\Game\Player::class);
+    }
 }

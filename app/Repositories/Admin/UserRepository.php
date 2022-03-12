@@ -74,10 +74,12 @@ class UserRepository extends AbstractRepository
             ->exists();
     }
 
-    public function whereApiToken(string $token)
+    public function whereApiToken(string $token, bool $returnedUserObj  = true)
     {
         $tokenData = PersonalAccessToken::findToken($token)->toArray();
 
-        return $this->builder->find($tokenData['tokenable_id']);
+        return $returnedUserObj ?
+            $this->builder->find($tokenData['tokenable_id']) :
+            $tokenData['tokenable_id'];
     }
 }
