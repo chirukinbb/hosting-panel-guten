@@ -43,6 +43,10 @@ trait RoundTrait
         $this->putCardsOnTable(1);
     }
 
+    public function auction()
+    {
+    }
+
     protected function putCardsOnTable(int $count)
     {
         $this->round->putCardsOnTable($count);

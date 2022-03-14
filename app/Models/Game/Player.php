@@ -9,7 +9,8 @@ class Player extends AbstractModel
 {
     protected $fillable  = [
         'user_id',
-        'table_class'
+        'table_id',
+        'score'
     ];
 
     public function user()
@@ -17,8 +18,8 @@ class Player extends AbstractModel
         return $this->belongsTo(User::class);
     }
 
-    public function ratings()
+    public function tables()
     {
-        return $this->hasMany(Rating::class);
+        return $this->belongsToMany(Table::class);
     }
 }

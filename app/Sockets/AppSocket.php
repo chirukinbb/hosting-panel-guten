@@ -83,7 +83,10 @@ class AppSocket  implements MessageComponentInterface
         if ($this->turn->get($data->tableType)->count() < $this->tables[$data->tableType]::$count)
             return ['attention'=>'Please wait, searching opponents...'];
 
-        \Artisan::call($this->tables[$data->tableType].':start',['--port'=>$port = $this->getFreePort()]);
+        \Artisan::call('PokerDeck:start',[
+            '--port'=>$port = $this->getFreePort(),
+            '--table'=>$this->tables[$data->tableType]
+        ]);
 
         $this->turn->get($data->tableType)->each(function (ConnectionInterface $connection) use ($port){
             $connection->send(json_encode([

@@ -22,5 +22,7 @@ trait PlayerTrait
         $nextIndex2 = (($currentDealerIndex + 2) > $this->players->count()) ? ($currentDealerIndex - $this->players->count() + 2) : $currentDealerIndex + 2;
         $nextPlayer2 =  $this->players->get($nextIndex2);
         $nextPlayer2->setBBStatus(true);
+
+        $this->players->sortFromDealer();
     }
 }

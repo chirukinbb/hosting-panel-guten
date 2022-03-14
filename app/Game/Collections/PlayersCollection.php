@@ -4,6 +4,7 @@ namespace App\Game\Collections;
 
 use \App\Abstracts\AbstractGameCollection;
 use App\Game\Player;
+use Illuminate\Support\Arr;
 use Ratchet\ConnectionInterface;
 
 class PlayersCollection extends AbstractGameCollection
@@ -28,6 +29,28 @@ class PlayersCollection extends AbstractGameCollection
         }
 
         ksort($collection);
+
+        $this->collection = $collection;
+
+        return $this;
+    }
+
+    public function sortFromDealer(): PlayersCollection
+    {
+        $collection = [];
+
+        /**
+         * @var Player $player
+         */
+        foreach ($this->collection as $index => $player) {
+            if ($player->isDealer())
+                $dealerIndex  = $index;
+        }
+
+        $collection = array_merge(
+            array_slice($this->collection, $dealerIndex),
+            array_slice($this->collection, 0, $dealerIndex)
+        );
 
         $this->collection = $collection;
 

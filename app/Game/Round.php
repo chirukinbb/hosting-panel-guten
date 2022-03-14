@@ -2,6 +2,7 @@
 
 namespace App\Game;
 
+use App\Game\Collections\BankCollection;
 use App\Game\Collections\CardsCollection;
 use App\Game\Collections\PlayersCollection;
 
@@ -9,11 +10,13 @@ class Round
 {
     protected CardsCollection $tableCards;
     protected array $combos;
+    protected BankCollection $bankCollection;
 
     public function __construct(protected int $number, protected CardsCollection $cardsPool)
     {
         $this->combos = config('poker.combos');
         $this->tableCards = new CardsCollection();
+        $this->bankCollection = new BankCollection();
     }
 
     public function preFlop(Player $player, int $cardsInHand)
@@ -57,7 +60,7 @@ class Round
         return false;
     }
 
-    public function getPlayerWithStrongestHand(PlayersCollection $players): Player
+    public function getPlayerWithStrongestHand(PlayersCollection $players): array
     {
         return $players->getWithStrongestHand();
     }
@@ -68,5 +71,15 @@ class Round
     public function setTableCards(CardsCollection $tableCards): void
     {
         $this->tableCards = $tableCards;
+    }
+
+    public function auctionForPlayer(int $index)
+    {}
+
+    public function payBlind(Player $player, int $amount)
+    {
+        $this->bankCollection->setStep(0);
+        $this->bankCollection->add($amount);
+        $player->addToBank(0, $amount);
     }
 }

@@ -6,7 +6,6 @@ use App\Game\Card;
 use App\Game\Collections\CardsCollection;
 use App\Game\Collections\PlayersCollection;
 use App\Game\Player;
-use App\Game\Round;
 use App\Game\Traits\CardTrait;
 use App\Game\Traits\PlayerTrait;
 use App\Game\Traits\RoundTrait;
@@ -43,11 +42,16 @@ abstract class AbstractPokerDeck
         $this->id = $id;
     }
 
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
     abstract protected function getMinNominal();
 
     abstract protected function getCardsInHand();
 
-    abstract protected function getPlayersCount();
+    abstract public function getPlayersCount();
 
     abstract protected function getBlind();
 
@@ -98,8 +102,19 @@ abstract class AbstractPokerDeck
         return $place;
     }
 
-    public function getPlayerWithStrongestHand(): Player
+    public function getPlayerWithStrongestHand(): array
     {
         return $this->round->getPlayerWithStrongestHand($this->players);
+    }
+
+    public function payBlinds()
+    {
+        $this->players->each(function (Player $player) {
+            if ($player->isBB())
+                $this->round->payBlind($player, $this->blind);
+
+            if ($player->isLB())
+                $this->round->payBlind($player, $this->blind / 2);
+        });
     }
 }

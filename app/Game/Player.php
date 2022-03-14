@@ -2,6 +2,8 @@
 
 namespace App\Game;
 
+use App\Game\Collections\ActionCollection;
+use App\Game\Collections\BankCollection;
 use App\Game\Collections\CardsCollection;
 
 class Player
@@ -14,11 +16,14 @@ class Player
     protected bool $isDealer = false;
     protected bool $isBB = false;
     protected bool $isLB = false;
-    protected int $amount;
+    protected ActionCollection $actions;
+    protected BankCollection $bank;
 
     public function __construct(protected int $playerId)
     {
         $this->cards = new CardsCollection();
+        $this->bank = new BankCollection();
+        $this->bank->setAmount(1000);
     }
 
     public function setPlaceOnDesc(int $place)
@@ -39,6 +44,22 @@ class Player
     public function setBBStatus(bool $isBB)
     {
         $this->isBB =  $isBB;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBB(): bool
+    {
+        return $this->isBB;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLB(): bool
+    {
+        return $this->isLB;
     }
 
     public function setLBStatus(bool $isLB)
@@ -88,5 +109,19 @@ class Player
     public function getAmount(): int
     {
         return $this->amount;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDealer(): bool
+    {
+        return $this->isDealer;
+    }
+
+    public function addToBank(int $step, int $amount)
+    {
+        $this->bank->setStep($step);
+        $this->bank->add($amount);
     }
 }

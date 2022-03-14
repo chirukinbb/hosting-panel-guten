@@ -14,7 +14,7 @@ class HoldemNinePokerDeck extends \App\Abstracts\AbstractPokerDeck
         return 2;
     }
 
-    protected function getPlayersCount()
+    public function getPlayersCount()
     {
         return 9;
     }

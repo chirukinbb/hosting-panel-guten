@@ -18,7 +18,7 @@ class HoldemTwoPokerDeck extends AbstractPokerDeck
         return 2;
     }
 
-    protected function getPlayersCount()
+    public function getPlayersCount()
     {
         return self::$count;
     }

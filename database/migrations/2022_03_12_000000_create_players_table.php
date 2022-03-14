@@ -17,10 +17,14 @@ class CreatePlayersTable extends Migration
         Schema::create('players', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('table_class')->nullable();
+            $table->unsignedBigInteger('table_id');
+            $table->integer('score')->default(0);
             $table->softDeletes();
 
             $table->foreign('user_id')->on('users')
+                ->references('id')
+                ->onDelete('cascade');
+            $table->foreign('table_id')->on('tables')
                 ->references('id')
                 ->onDelete('cascade');
         });

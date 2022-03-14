@@ -18,19 +18,21 @@ class HomeController extends Controller
 {
     public function index()
     {
-//        $pocker = new HoldemNinePokerDeck(range(5,14));
-//        $pocker->setId(1);
-//        $pocker->startRound(1);
-//        $pocker->changeStatuses(8);
-//        $pocker->changeStatuses(0);
-//        $pocker->preFlop();
-//        $pocker->flop();
-//        $pocker->turn();
-//        $pocker->river();
-//        $pocker->calculateHandValues();
-//        $pocker->getPlayerWithStrongestHand();
-//        dump($pocker);
-//
+        $pocker = new HoldemNinePokerDeck(range(5,14));
+        $pocker->setId(1);
+        $pocker->startRound(1);
+        //$pocker->changeStatuses(4);
+        $pocker->payBlinds();
+        $pocker->auction();
+        //$pocker->changeStatuses(0);
+        $pocker->preFlop();
+        $pocker->flop();
+        $pocker->turn();
+        $pocker->river();
+        $pocker->calculateHandValues();
+        $pocker->getPlayerWithStrongestHand();
+        dump($pocker);
+
         new RoyalStraightTest();echo '<br>';
         new StraightFlushTest();echo '<br>';
         new  FullHouseTest();echo '<br>';
