@@ -9,7 +9,11 @@ class Table extends AbstractModel
     protected $fillable = [
         'table_class',
         'round_no',
-        'port'
+        'object'
+    ];
+
+    protected $casts = [
+        'object'=>'object'
     ];
 
     public function players()

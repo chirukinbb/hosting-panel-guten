@@ -9,8 +9,10 @@ class Player extends AbstractModel
 {
     protected $fillable  = [
         'user_id',
-        'table_id',
-        'score'
+        'table_class',
+        'count_tables',
+        'rating',
+        'searched'
     ];
 
     public function user()

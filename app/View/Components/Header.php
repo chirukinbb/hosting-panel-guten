@@ -12,7 +12,9 @@ class Header extends Component
     ];
 
     private array $clientMenuItems = [
+        'blog',
         'account',
+        'game',
         'logout'
     ];
 

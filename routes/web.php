@@ -17,6 +17,12 @@ Route::get('/', [\App\Http\Controllers\HomeController::class,'index'])->name('ho
 Route::get('/article/{article}',[\App\Http\Controllers\ArticleController::class,'index'])->name('article');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/blog',[\App\Http\Controllers\BlogController::class,'index'])->name('blog');
+    Route::get('/post/{slug}',[\App\Http\Controllers\BlogController::class,'show'])->name('post');
+
+    Route::get('/game',[\App\Http\Controllers\GameController::class,'index'])->name('game');
+    Route::get('/table',[\App\Http\Controllers\GameController::class,'table'])->name('table');
+
     Route::get('/account',[\App\Http\Controllers\AccountController::class,'dashboard'])->name('account');
 
     Route::get('/account/{page}',[\App\Http\Controllers\AccountController::class,'page'])->name('account.page');

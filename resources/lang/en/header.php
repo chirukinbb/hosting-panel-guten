@@ -6,5 +6,7 @@ return [
     'login'=>'Log In',
     'register'=>'Sign In',
     'account'=>'Account',
-    'admin'=>'Admin-panel'
+    'admin'=>'Admin-panel',
+    'blog'=>'Blog',
+    'game'=>'Game'
 ];

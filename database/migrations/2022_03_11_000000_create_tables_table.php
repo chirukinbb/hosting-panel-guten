@@ -17,9 +17,9 @@ class CreateTablesTable extends Migration
         Schema::create('tables', function (Blueprint $table) {
             $table->id();
             $table->string('table_class');
-            $table->string('port');
-            $table->string('round_no')->nullable();
+            $table->text('object');
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
