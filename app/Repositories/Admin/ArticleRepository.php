@@ -20,7 +20,7 @@ class ArticleRepository extends AbstractRepository
 
     public function published(array $attributes)
     {
-        $this->create($attributes);
+        return $this->create($attributes);
     }
 
     public function trashed(array $attributes)

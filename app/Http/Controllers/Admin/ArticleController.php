@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ArticlePublishEvent;
 use App\Http\Controllers\Controller;
 use App\Repositories\Admin\ArticleRepository;
 use Illuminate\Http\Request;
@@ -32,8 +33,9 @@ class ArticleController extends Controller
             $message = __('admin/article.submit.trashed');
             $this->repository->trashed($request->all());
         } else {
-            $this->repository->published($request->all());
-            $message = __('admin/article.submit.publish');
+            $article = $this->repository->published($request->all());
+            $message = __('admin/article.submit.publish');//dd($article);
+            event(new ArticlePublishEvent($article));
         }
 
         return redirect()->route('admin.article.index')->with(['success'=>$message]);
