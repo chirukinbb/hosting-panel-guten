@@ -13,7 +13,6 @@
     ],
     "require": {
         "php": "^8.0",
-        "cboden/ratchet": "^0.4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.4",
         "laravel/framework": "^8.75",
