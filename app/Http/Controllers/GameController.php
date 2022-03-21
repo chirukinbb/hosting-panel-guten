@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Game\Tables\HoldemTwoPokerDeck;
+use App\Game\Tables\HoldemTwoPokerTable;
 
 class GameController extends Controller
 {
     protected array $pokerTables = [
-        'holdem_2'=>HoldemTwoPokerDeck::class,
+        'holdem_2'=>HoldemTwoPokerTable::class,
         'omaha'=>''
     ];
 
     public function index()
     {
-        return view('game', ['tables'=>$this->pokerTables]);
+        $token = \Auth::user()->createApiToken();
+
+        return view('game', compact('token'));
     }
 }

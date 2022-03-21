@@ -12,7 +12,8 @@ class Player extends AbstractModel
         'table_class',
         'count_tables',
         'rating',
-        'searched'
+        'searched',
+        'gamed'
     ];
 
     public function user()

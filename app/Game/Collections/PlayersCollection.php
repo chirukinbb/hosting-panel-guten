@@ -75,7 +75,7 @@ class PlayersCollection extends AbstractGameCollection
         return $strongest[max(array_keys($strongest))];
     }
 
-    public function removeWhereObj(ConnectionInterface $player): void
+    public function removeWhereObj($player): void
     {
         unset($player);
     }

@@ -14,9 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/admin/upload/image',[\App\Http\Controllers\Api\UploadController::class,'image'])
+    ->middleware('auth:sanctum','ability:Admin')->name('admin.upload.image');
 
-Route::post('/admin/upload/image',[\App\Http\Controllers\Api\UploadController::class,'image'])->name('admin.upload.image')
-    ->middleware('auth:sanctum','ability:Admin');
+Route::get('/turn/state',[\App\Http\Controllers\Game\Api\TurnController::class,'state']);
+Route::post('/turn/stand',[\App\Http\Controllers\Game\Api\TurnController::class,'stand'])
+    ->middleware('auth:sanctum','ability:User')->name('stand');
+Route::get('/turn/leave',[\App\Http\Controllers\Game\Api\TurnController::class,'leave'])
+    ->middleware('auth:sanctum','ability:User')->name('leave');

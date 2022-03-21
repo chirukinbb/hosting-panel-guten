@@ -46,7 +46,7 @@
                     // Headers sent along with the XMLHttpRequest to the upload server.
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        Authorization: 'Bearer {{ $token->plainTextToken }}'
+                        Authorization: 'Bearer {{ $token }}'
                     }
                 }
             }).catch( error => {

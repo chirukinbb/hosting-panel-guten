@@ -1,13 +1,9 @@
 <?php
 
-namespace App\Game\Tables;
+namespace App\Http\Controllers;
 
-use App\Abstracts\AbstractPokerDeck;
-
-class HoldemTwoPokerDeck extends AbstractPokerDeck
+class HoldemNinePokerTable extends \App\Abstracts\AbstractPokerTable
 {
-    public static int $count;
-
     protected function getMinNominal()
     {
         return 1;
@@ -20,7 +16,7 @@ class HoldemTwoPokerDeck extends AbstractPokerDeck
 
     public function getPlayersCount()
     {
-        return self::$count;
+        return 9;
     }
 
     protected function getBlind()

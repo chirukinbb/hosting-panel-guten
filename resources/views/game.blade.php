@@ -4,10 +4,13 @@
     {{ __('header.game') }} - {{ config('app.name') }}
 @endsection
 
+@section('meta')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="api-token" content="{{ $token }}">
+@endsection
+
 @section('content')
-    <div id="app">
-        <example-component></example-component>
-    </div>
+    <div id="game"></div>
 @endsection
 
 @section('js')

@@ -18,6 +18,7 @@ class CreateTablesTable extends Migration
             $table->id();
             $table->string('table_class');
             $table->text('object');
+            $table->integer('status')->default(\App\Models\Game\Table::SEARCHED);
             $table->softDeletes();
             $table->timestamps();
         });

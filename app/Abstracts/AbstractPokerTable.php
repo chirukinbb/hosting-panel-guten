@@ -11,7 +11,7 @@ use App\Game\Traits\PlayerTrait;
 use App\Game\Traits\RoundTrait;
 use Illuminate\Support\Arr;
 
-abstract class AbstractPokerDeck
+abstract class AbstractPokerTable
 {
     use RoundTrait,CardTrait,PlayerTrait;
 
@@ -24,7 +24,7 @@ abstract class AbstractPokerDeck
     protected PlayersCollection $players;
     protected CardsCollection $cardDeck;
 
-    public function __construct(protected array $userIds)
+    public function __construct()
     {
         if (! empty($this->userIds)) {
             $this->minNominal = $this->getMinNominal();
@@ -32,8 +32,8 @@ abstract class AbstractPokerDeck
             $this->cardsInHand = $this->getCardsInHand();
             $this->blind = $this->getBlind();
             $this->places = $this->getPlaces();
-            $this->players = $this->getPlayers();
             $this->cardDeck = $this->getCardDeck();
+            $this->players = new PlayersCollection();
         }
     }
 
@@ -72,21 +72,17 @@ abstract class AbstractPokerDeck
         return $cards->removeFirsts($this->minNominal*count($deckSuitsPool));
     }
 
-    protected function getPlayers(): PlayersCollection
+    public function setPlayer(int $userId): void
     {
-        $players = new PlayersCollection();
-
-        for ($i = 0; $i < $this->playersCount; $i ++){
+        if ($this->players->count() <= $this->playersCount){
             $place = $this->getLandingPlace();
-            $player = new Player($this->userIds[$i]);
+            $player = new Player($userId);
             $player->setPlaceOnDesc($place);
             $player->setDealerStatus($place === 0);
             $player->setLBStatus($place === 1);
             $player->setBBStatus($place === 3);
-            $players->push($player);
+            $this->players->push($player);
         }
-
-        return $players->sortByPlaces();
     }
 
     protected function getPlaces(): array
@@ -116,5 +112,28 @@ abstract class AbstractPokerDeck
             if ($player->isLB())
                 $this->round->payBlind($player, $this->blind / 2);
         });
+    }
+
+    public function getCurrentPlayersCount(): int
+    {
+        return $this->players->count();
+    }
+
+    public function eachPlayer(callable $func)
+    {
+        $this->players->each($func);
+    }
+
+    public function removePlayer(int $playerId)
+    {
+        $this->eachPlayer(function (Player $player) use ($playerId) {
+            if ($player->getPlayerId() === $playerId)
+                $this->players->removeWhereObj($player);
+        });
+    }
+
+    public function getChannelName(): string
+    {
+        return $this::class.'-'.$this->id;
     }
 }

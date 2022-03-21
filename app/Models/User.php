@@ -55,7 +55,7 @@ class User extends Authenticatable
 
     public function createApiToken()
     {
-        return $this->tokens->count() ?: $this->createToken(
+        return $this->createToken(
             'api_token',
             [$this->getRoleNames()[0]]
         )->plainTextToken;

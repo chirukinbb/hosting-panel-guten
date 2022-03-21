@@ -21,6 +21,7 @@ class CreatePlayersTable extends Migration
             $table->integer('count_tables');
             $table->integer('rating');
             $table->integer('searched')->nullable();
+            $table->integer('gamed')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

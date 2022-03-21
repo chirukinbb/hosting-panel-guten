@@ -124,4 +124,12 @@ class Player
         $this->bank->setStep($step);
         $this->bank->add($amount);
     }
+
+    /**
+     * @return int
+     */
+    public function getPlayerId(): int
+    {
+        return $this->playerId;
+    }
 }
