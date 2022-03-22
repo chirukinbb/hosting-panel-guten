@@ -44,28 +44,35 @@ class TurnController extends Controller
         return json_encode(['screen'=>'list']);
     }
 
-    public function stand(Request  $request)
+    public function stand(Request $request)
     {
-        $className = $request->input('table_class');
+        $className = 'App\Game\Tables\\'.$request->input('tableClass');
+
+        if (!class_exists($className))
+            return $className;
+
         $table = Table::whereTableClass($className)->where('status',Table::SEARCHED)
             ->first();
 
-        if (is_null($table) && class_exists($className)) {
+        if (is_null($table)) {
             /**
              * @var AbstractPokerTable $tableObj
              */
             $tableObj = new $className();
+            $tableObj->setId(now()->timestamp);
             $tableObj->setPlayer(\Auth::id());
 
             $table = Table::getModel();
             $table->table_class = $className;
             $table->object = $tableObj;
         } else {
-            $table->object->setPlayer(\Auth::id());
+            $tableObj  = $table->object;
+            $tableObj->setPlayer(\Auth::id());
 
             broadcast(new NewUserAfterTableEvent($table->object->getCurrentPlayersCount(),$table->object->getChannelName()));
         }
 
+        $table->object = $tableObj;
         $table->save();
 
         $player = Player::whereTableClass($className)->where('user_id',\Auth::id())
@@ -109,8 +116,10 @@ class TurnController extends Controller
             ->first();
 
         if (!is_null($player)) {
-            $table = Table::find($player->searched);;
-            $table->object->removePlayer(\Auth::id());
+            $table = Table::find($player->searched);
+            $tableObj = $table->object;
+            $tableObj->removePlayer(\Auth::id());
+            $table->object = $tableObj;
             $table->save();
 
             $player->searched = null;

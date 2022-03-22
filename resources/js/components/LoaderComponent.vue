@@ -10,9 +10,7 @@
 <script>
 export default {
     name: "LoaderComponent",
-    data:function () {
-        return {count:0}
-    }
+  props:{ count:Number }
 }
 </script>
 

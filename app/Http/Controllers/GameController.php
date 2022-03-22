@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Game\Tables\HoldemTwoPokerTable;
+use App\Models\Game\Table;
 
 class GameController extends Controller
 {
@@ -12,7 +13,7 @@ class GameController extends Controller
     ];
 
     public function index()
-    {
+    {//dd(Table::find(17)->object);
         $token = \Auth::user()->createApiToken();
 
         return view('game', compact('token'));

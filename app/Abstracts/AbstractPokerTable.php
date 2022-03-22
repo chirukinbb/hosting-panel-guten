@@ -26,15 +26,13 @@ abstract class AbstractPokerTable
 
     public function __construct()
     {
-        if (! empty($this->userIds)) {
-            $this->minNominal = $this->getMinNominal();
-            $this->playersCount = $this->getPlayersCount();
-            $this->cardsInHand = $this->getCardsInHand();
-            $this->blind = $this->getBlind();
-            $this->places = $this->getPlaces();
-            $this->cardDeck = $this->getCardDeck();
-            $this->players = new PlayersCollection();
-        }
+        $this->minNominal = $this->getMinNominal();
+        $this->playersCount = $this->getPlayersCount();
+        $this->cardsInHand = $this->getCardsInHand();
+        $this->blind = $this->getBlind();
+        $this->places = $this->getPlaces();
+        $this->cardDeck = $this->getCardDeck();
+        $this->players = new PlayersCollection();
     }
 
     public function setId(int $id): void
@@ -127,13 +125,17 @@ abstract class AbstractPokerTable
     public function removePlayer(int $playerId)
     {
         $this->eachPlayer(function (Player $player) use ($playerId) {
-            if ($player->getPlayerId() === $playerId)
+            if ($player->getPlayerId() === $playerId) {
                 $this->players->removeWhereObj($player);
+                $this->places[$player->getPlace()] = $player->getPlace();
+            }
         });
     }
 
     public function getChannelName(): string
     {
-        return $this::class.'-'.$this->id;
+        $slug = explode('/',$this::class);
+
+        return end($slug).'-'.$this->id;
     }
 }

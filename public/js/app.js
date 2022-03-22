@@ -19401,37 +19401,83 @@ __webpack_require__.r(__webpack_exports__);
     return {
       isList: false,
       isLoad: false,
-      isTable: false
+      isTable: false,
+      channel: null,
+      count: 0
     };
   },
-  created: function created() {
-    var _this = this;
+  methods: {
+    loadScreen: function loadScreen(className) {
+      var _this = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_3___default().get('/api/turn/state').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_3___default().post('/api/turn/stand', {
+        tableClass: className
+      }, {
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+          Authorization: 'Bearer ' + document.querySelector('meta[name="api-token"]').getAttribute('content')
+        }
+      }).then(function (response) {
+        if (response.data.screen === 'loader') {
+          _this.isList = false;
+          _this.isLoad = true;
+          _this.count = response.data.count;
+        }
+      });
+    },
+    leaveTurn: function leaveTurn() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_3___default().post('/api/turn/leave', {}, {
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+          Authorization: 'Bearer ' + document.querySelector('meta[name="api-token"]').getAttribute('content')
+        }
+      }).then(function (response) {
+        if (response.data.screen === 'list') {
+          Echo.disconnect();
+          _this2.isList = true;
+          _this2.isLoad = false;
+        }
+      });
+    },
+    reconnect: function reconnect(channel, listen) {
+      Echo.disconnect();
+      Echo.channel(channel).listen(listen, function (data) {
+        console.log(data);
+      });
+    }
+  },
+  created: function created() {
+    var _this3 = this;
+
+    axios__WEBPACK_IMPORTED_MODULE_3___default().post('/api/turn/state', {}, {
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        Authorization: 'Bearer ' + document.querySelector('meta[name="api-token"]').getAttribute('content')
+      }
+    }).then(function (response) {
       switch (response.data.screen) {
         case 'list':
-          _this.isList = true;
+          _this3.isList = true;
           break;
 
         case 'loader':
-          _this.isLoad = true;
+          _this3.isLoad = true;
+          _this3.count = response.data.count;
+
+          _this3.reconnect(response.data.channel, response.data.listen);
+
           break;
 
         case 'table':
-          _this.isTable = true;
+          _this3.isTable = true;
+
+          _this3.reconnect(response.data.channel, response.data.listen);
+
           break;
       }
     });
-  },
-  methods: {
-    loadScreen: function loadScreen() {
-      this.isList = false;
-      this.isLoad = true;
-    },
-    leaveTurn: function leaveTurn() {
-      this.isList = true;
-      this.isLoad = false;
-    }
   }
 });
 
@@ -19460,11 +19506,6 @@ __webpack_require__.r(__webpack_exports__);
         className: 'OmahaTwoPokerTable'
       }]
     };
-  },
-  methods: {
-    toTurn: function toTurn() {
-      this.$emit('load-screen');
-    }
   }
 });
 
@@ -19483,10 +19524,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "LoaderComponent",
-  data: function data() {
-    return {
-      count: 0
-    };
+  props: {
+    count: Number
   }
 });
 
@@ -19543,10 +19582,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* PROPS */
   , ["onLoadScreen"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.isLoad ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_loader_component, {
     key: 1,
-    onLeaveTurn: $options.leaveTurn
+    onLeaveTurn: $options.leaveTurn,
+    count: _ctx.count
   }, null, 8
   /* PROPS */
-  , ["onLeaveTurn"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.isTable ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_table_component, {
+  , ["onLeaveTurn", "count"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.isTable ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_table_component, {
     key: 2
   })) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 64
   /* STABLE_FRAGMENT */
@@ -19575,7 +19615,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       key: i
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
       onClick: function onClick($event) {
-        return $options.toTurn(table.className);
+        return _ctx.$emit('load-screen', table.className);
       }
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(table.title), 9
     /* TEXT, PROPS */
@@ -19604,7 +19644,7 @@ var _hoisted_1 = {
   "class": "load"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Waiting opponents(" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.count) + ")... ", 1
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Waiting opponents(" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.count) + ")... ", 1
   /* TEXT */
   ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     onClick: _cache[0] || (_cache[0] = function ($event) {
@@ -19659,15 +19699,22 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-/* harmony import */ var _components_GameComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/GameComponent */ "./resources/js/components/GameComponent.vue");
-/* harmony import */ var laravel_echo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! laravel-echo */ "./node_modules/laravel-echo/dist/echo.js");
+/* harmony import */ var laravel_echo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! laravel-echo */ "./node_modules/laravel-echo/dist/echo.js");
+/* harmony import */ var _components_GameComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/GameComponent */ "./resources/js/components/GameComponent.vue");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
-var app = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_components_GameComponent__WEBPACK_IMPORTED_MODULE_1__["default"]).mount('#game');
+window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 
-window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js"); // window.Echo = new Echo({
+var app = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_components_GameComponent__WEBPACK_IMPORTED_MODULE_2__["default"]).use(window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
+  broadcaster: 'pusher',
+  key: '4326370c5eb04b2329d3',
+  wsHost: window.location.hostname,
+  wsPort: 6001,
+  forceTLS: false,
+  disableStats: false
+})).mount('#game'); // window.Echo = new Echo({
 //     broadcaster: 'pusher',
 //     key: '4326370c5eb04b2329d3',
 //     wsHost: window.location.hostname,

@@ -1,7 +1,7 @@
 <template>
     <ul>
         <li v-for="(table,i) in tables" :key="i">
-            <button v-on:click="toTurn(table.className)">
+            <button v-on:click="$emit('load-screen',table.className)">
                 {{table.title}}
             </button>
         </li>
@@ -17,11 +17,6 @@ export default {
                 {title: 'Holdem, 2 players', className: 'HoldemTwoPokerTable'},
                 {title: 'Omaha, 2 players', className: 'OmahaTwoPokerTable'},
             ]
-        }
-    },
-    methods:{
-        toTurn:function () {
-            this.$emit('load-screen')
         }
     }
 }

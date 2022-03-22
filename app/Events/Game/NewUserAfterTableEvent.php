@@ -30,6 +30,6 @@ class NewUserAfterTableEvent
      */
     public function broadcastOn()
     {
-        return new PrivateChannel($this->channel.'-turn');
+        return new PrivateChannel($this->channel);
     }
 }

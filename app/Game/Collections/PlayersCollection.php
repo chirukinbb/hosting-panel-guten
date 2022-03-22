@@ -77,6 +77,6 @@ class PlayersCollection extends AbstractGameCollection
 
     public function removeWhereObj($player): void
     {
-        unset($player);
+        unset($this->collection[array_search($player, $this->collection)]);
     }
 }

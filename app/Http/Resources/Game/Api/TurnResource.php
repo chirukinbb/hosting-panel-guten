@@ -17,7 +17,10 @@ class TurnResource extends JsonResource
         return [
             'count'=>$this->count,
             'channel'=>$this->channel,
-            'screen'=>'loader'
+            'screen'=>'loader',
+            'listen'=>'NewUserAfterTableEvent'
         ];
     }
 }
+// php artisan websockets:serve
+// php artisan queue:work
