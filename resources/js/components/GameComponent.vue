@@ -41,6 +41,8 @@ export default {
                     this.isList = false
                     this.isLoad = true
                     this.count = response.data.count
+                    this.channel = response.data.channel
+                    this.reconnect(response.data.listen)
                 }
             })
         },
@@ -52,20 +54,31 @@ export default {
                 }
             }).then(response => {
                 if (response.data.screen === 'list') {
-                    Echo.disconnect()
+                   // Echo.leaveChannel(this.channel)
                     this.isList = true
                     this.isLoad = false
                 }
             })
         },
-        reconnect:function (channel,listen) {
-            Echo.disconnect()
-
-            Echo
-                .channel(channel)
-                .listen(listen,function (data) {
-                    console.log(data)
-                })
+        reconnect:function (listen) {
+            // Echo.leaveChannel(this.channel)
+            // // Echo.authorize((socketId,callback) => {
+            // //     axios.post('/api/broadcasting/auth', {
+            // //         socket_id: socketId,
+            // //         channel_name: this.channel
+            // //     })
+            // //         .then(response => {
+            // //             callback(false, response.data)
+            // //         })
+            // //         .catch(error => {
+            // //             callback(true, error)
+            // //         })
+            // // })
+            //
+            // Echo.channel(this.channel)
+            //     .listen(listen,function (data) {
+            //         console.log(data)
+            //     })
         }
     },
     created:function () {
@@ -82,11 +95,13 @@ export default {
                     case 'loader':
                         this.isLoad = true
                         this.count = response.data.count
-                        this.reconnect(response.data.channel,response.data.listen)
+                        this.channel = response.data.channel
+                        this.reconnect(response.data.listen)
                         break
                     case 'table':
                         this.isTable = true
-                        this.reconnect(response.data.channel,response.data.listen)
+                        this.channel = response.data.channel
+                        this.reconnect(response.data.listen)
                         break
                 }
             })

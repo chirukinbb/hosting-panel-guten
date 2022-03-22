@@ -19422,6 +19422,9 @@ __webpack_require__.r(__webpack_exports__);
           _this.isList = false;
           _this.isLoad = true;
           _this.count = response.data.count;
+          _this.channel = response.data.channel;
+
+          _this.reconnect(response.data.listen);
         }
       });
     },
@@ -19435,17 +19438,30 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         if (response.data.screen === 'list') {
-          Echo.disconnect();
+          // Echo.leaveChannel(this.channel)
           _this2.isList = true;
           _this2.isLoad = false;
         }
       });
     },
-    reconnect: function reconnect(channel, listen) {
-      Echo.disconnect();
-      Echo.channel(channel).listen(listen, function (data) {
-        console.log(data);
-      });
+    reconnect: function reconnect(listen) {// Echo.leaveChannel(this.channel)
+      // // Echo.authorize((socketId,callback) => {
+      // //     axios.post('/api/broadcasting/auth', {
+      // //         socket_id: socketId,
+      // //         channel_name: this.channel
+      // //     })
+      // //         .then(response => {
+      // //             callback(false, response.data)
+      // //         })
+      // //         .catch(error => {
+      // //             callback(true, error)
+      // //         })
+      // // })
+      //
+      // Echo.channel(this.channel)
+      //     .listen(listen,function (data) {
+      //         console.log(data)
+      //     })
     }
   },
   created: function created() {
@@ -19465,15 +19481,17 @@ __webpack_require__.r(__webpack_exports__);
         case 'loader':
           _this3.isLoad = true;
           _this3.count = response.data.count;
+          _this3.channel = response.data.channel;
 
-          _this3.reconnect(response.data.channel, response.data.listen);
+          _this3.reconnect(response.data.listen);
 
           break;
 
         case 'table':
           _this3.isTable = true;
+          _this3.channel = response.data.channel;
 
-          _this3.reconnect(response.data.channel, response.data.listen);
+          _this3.reconnect(response.data.listen);
 
           break;
       }
@@ -19707,25 +19725,27 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 
-var app = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_components_GameComponent__WEBPACK_IMPORTED_MODULE_2__["default"]).use(window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
-  broadcaster: 'pusher',
-  key: '4326370c5eb04b2329d3',
-  wsHost: window.location.hostname,
-  wsPort: 6001,
-  forceTLS: false,
-  disableStats: false
-})).mount('#game'); // window.Echo = new Echo({
+var app = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_components_GameComponent__WEBPACK_IMPORTED_MODULE_2__["default"]) //    .use(
+// window.Echo = new Echo({
 //     broadcaster: 'pusher',
 //     key: '4326370c5eb04b2329d3',
 //     wsHost: window.location.hostname,
 //     wsPort: 6001,
 //     forceTLS: false,
-//     disableStats: false,
+//     disableStats: false
 // })
-//     .channel('article-publish-channel')
-//     .listen('ArticlePublishEvent',function (e) {
-//         console.log(e)
-//     })
+//  )
+.mount('#game');
+window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
+  broadcaster: 'pusher',
+  key: '1',
+  wsHost: window.location.hostname,
+  wsPort: 6001,
+  forceTLS: false,
+  disableStats: false
+}).channel('turn-1647934735').listen('turns', function (e) {
+  console.log(e);
+});
 
 /***/ }),
 

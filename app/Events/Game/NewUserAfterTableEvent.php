@@ -2,16 +2,14 @@
 
 namespace App\Events\Game;
 
-use App\Abstracts\AbstractPokerTable;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewUserAfterTableEvent
+class NewUserAfterTableEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -26,10 +24,15 @@ class NewUserAfterTableEvent
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return Channel
      */
     public function broadcastOn()
     {
-        return new PrivateChannel($this->channel);
+        return new Channel($this->channel);
+    }
+
+    public function broadcastAs()
+    {
+        return 'turns';
     }
 }

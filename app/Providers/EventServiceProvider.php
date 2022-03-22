@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\ArticlePublishEvent;
+use App\Events\Game\NewUserAfterTableEvent;
 use App\Listeners\ArticlePublishPusher;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -21,7 +22,8 @@ class EventServiceProvider extends ServiceProvider
         ],
         ArticlePublishEvent::class => [
             ArticlePublishPusher::class
-        ]
+        ],
+        NewUserAfterTableEvent::class=>[]
     ];
 
     /**

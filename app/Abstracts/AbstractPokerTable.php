@@ -132,10 +132,8 @@ abstract class AbstractPokerTable
         });
     }
 
-    public function getChannelName(): string
+    public function getChannelName(string $type): string
     {
-        $slug = explode('/',$this::class);
-
-        return end($slug).'-'.$this->id;
+        return $type.'-'.$this->id;
     }
 }
