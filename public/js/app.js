@@ -19438,34 +19438,32 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         if (response.data.screen === 'list') {
-          // Echo.leaveChannel(this.channel)
+          Echo.leaveChannel(_this2.channel);
           _this2.isList = true;
           _this2.isLoad = false;
         }
       });
     },
-    reconnect: function reconnect(listen) {// Echo.leaveChannel(this.channel)
-      // // Echo.authorize((socketId,callback) => {
-      // //     axios.post('/api/broadcasting/auth', {
-      // //         socket_id: socketId,
-      // //         channel_name: this.channel
-      // //     })
-      // //         .then(response => {
-      // //             callback(false, response.data)
-      // //         })
-      // //         .catch(error => {
-      // //             callback(true, error)
-      // //         })
-      // // })
-      //
-      // Echo.channel(this.channel)
-      //     .listen(listen,function (data) {
-      //         console.log(data)
-      //     })
+    reconnect: function reconnect(listen) {
+      var _this3 = this;
+
+      Echo.leaveChannel(this.channel);
+      Echo.channel(this.channel).listen('.' + listen, function (data) {
+        switch (data.screen) {
+          case 'loader':
+            console.log(data);
+            _this3.count = data.count;
+            break;
+
+          case 'table':
+            _this3.count = data.count;
+            break;
+        }
+      });
     }
   },
   created: function created() {
-    var _this3 = this;
+    var _this4 = this;
 
     axios__WEBPACK_IMPORTED_MODULE_3___default().post('/api/turn/state', {}, {
       headers: {
@@ -19475,23 +19473,23 @@ __webpack_require__.r(__webpack_exports__);
     }).then(function (response) {
       switch (response.data.screen) {
         case 'list':
-          _this3.isList = true;
+          _this4.isList = true;
           break;
 
         case 'loader':
-          _this3.isLoad = true;
-          _this3.count = response.data.count;
-          _this3.channel = response.data.channel;
+          _this4.isLoad = true;
+          _this4.count = response.data.count;
+          _this4.channel = response.data.channel;
 
-          _this3.reconnect(response.data.listen);
+          _this4.reconnect(response.data.listen);
 
           break;
 
         case 'table':
-          _this3.isTable = true;
-          _this3.channel = response.data.channel;
+          _this4.isTable = true;
+          _this4.channel = response.data.channel;
 
-          _this3.reconnect(response.data.listen);
+          _this4.reconnect(response.data.listen);
 
           break;
       }
@@ -19725,27 +19723,26 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 
-var app = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_components_GameComponent__WEBPACK_IMPORTED_MODULE_2__["default"]) //    .use(
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: '4326370c5eb04b2329d3',
-//     wsHost: window.location.hostname,
-//     wsPort: 6001,
-//     forceTLS: false,
-//     disableStats: false
-// })
-//  )
-.mount('#game');
-window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
+var app = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_components_GameComponent__WEBPACK_IMPORTED_MODULE_2__["default"]).use(window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_1__["default"]({
   broadcaster: 'pusher',
-  key: '1',
+  key: '4326370c5eb04b2329d3',
   wsHost: window.location.hostname,
   wsPort: 6001,
   forceTLS: false,
   disableStats: false
-}).channel('turn-1647934735').listen('turns', function (e) {
-  console.log(e);
-});
+})).mount('#game'); //
+// window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     key: '1',
+//     wsHost: window.location.hostname,
+//     wsPort: 6001,
+//     forceTLS: false,
+//     disableStats: false,
+// })
+//     .channel('turn-1647934735')
+//     .listen('.turns',function (e) {
+//         console.log(e)
+//     })
 
 /***/ }),
 

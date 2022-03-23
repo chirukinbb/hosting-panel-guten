@@ -54,31 +54,27 @@ export default {
                 }
             }).then(response => {
                 if (response.data.screen === 'list') {
-                   // Echo.leaveChannel(this.channel)
+                    Echo.leaveChannel(this.channel)
                     this.isList = true
                     this.isLoad = false
                 }
             })
         },
         reconnect:function (listen) {
-            // Echo.leaveChannel(this.channel)
-            // // Echo.authorize((socketId,callback) => {
-            // //     axios.post('/api/broadcasting/auth', {
-            // //         socket_id: socketId,
-            // //         channel_name: this.channel
-            // //     })
-            // //         .then(response => {
-            // //             callback(false, response.data)
-            // //         })
-            // //         .catch(error => {
-            // //             callback(true, error)
-            // //         })
-            // // })
-            //
-            // Echo.channel(this.channel)
-            //     .listen(listen,function (data) {
-            //         console.log(data)
-            //     })
+            Echo.leaveChannel(this.channel)
+
+            Echo.channel(this.channel)
+                .listen('.'+listen,data => {
+                    switch (data.screen) {
+                        case 'loader':
+                            console.log(data)
+                            this.count = data.count
+                            break
+                        case 'table':
+                            this.count = data.count
+                            break
+                    }
+                })
         }
     },
     created:function () {

@@ -4,7 +4,6 @@ namespace App\Events\Game;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -18,8 +17,11 @@ class NewUserAfterTableEvent implements ShouldBroadcastNow
      *
      * @return void
      */
-    public function __construct(public int $count,protected string $channel)
-    {}
+    public function __construct(
+        public int $count,
+        public string $screen,
+        protected string $channel
+    ) {}
 
     /**
      * Get the channels the event should broadcast on.

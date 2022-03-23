@@ -13,16 +13,5 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('turn-{table_id}', function (\App\Models\User $user, $tableId) {
-    $table = \App\Models\Game\Player::whereUserId($user->id)->where('searched', $tableId)
-        ->first();
-
-    return !is_null($table);
-});
-
-Broadcast::channel('table-{table_id}', function (\App\Models\User $user, $tableId) {
-    $table = \App\Models\Game\Player::whereUserId($user->id)->where('gamed', $tableId)
-        ->first();
-
-    return !is_null($table);
-});
+Broadcast::channel('turn-{table_id}', \App\Broadcasting\TurnChannel::class);
+Broadcast::channel('turn-{table_id}', \App\Broadcasting\TableChannel::class);
