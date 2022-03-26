@@ -2,35 +2,49 @@
 
 namespace App\Events\Game;
 
+use App\Abstracts\AbstractPokerTable;
+use App\Game\Player;
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class FindTableEvent
+class FindTableEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
+    public $users = [];
+
+    public function __construct(
+        AbstractPokerTable $table,
+        public string $screen,
+        protected string $channel
+    ) {
+        $this->setPlayers($table);
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
     public function broadcastOn()
     {
-        return new PrivateChannel('find-table');
+        return new Channel($this->channel);
+    }
+
+    public function broadcastAs()
+    {
+        return 'table';
+    }
+
+    protected function setPlayers(AbstractPokerTable $table)
+    {
+        $table->eachPlayer(function (Player $player) {
+            $user = User::find($player);
+
+            $this->users[] = (object) [
+                'place'=>$player->getPlace(),
+                'avatar'=>$user->data->avatar_path,
+                'name'=>$user->data->public_name
+            ];
+        });
     }
 }

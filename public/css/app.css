@@ -1,2 +1,16 @@
 @import url(https://fonts.googleapis.com/css?family=Nunito);
-
+.crd {
+  transform: scale(0.8);
+  background: url(/images/card-deck.svg?6deda51cfd7db22ed7d64c630e972382);
+  height: 215.64px;
+  width: 152.06px;
+  display: block;
+  margin: 5px;
+  border-radius: 7px;
+}
+.crd .suit-0 {
+  background-position-y: 58.239px;
+}
+.crd .nominal-0 {
+  background-position-x: 98.148px;
+}

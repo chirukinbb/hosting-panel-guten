@@ -22,7 +22,7 @@ export default {
         return {
             isList:false,
             isLoad:false,
-            isTable:false,
+            isTable:true,
             channel:null,
             count:0
         }
@@ -77,31 +77,31 @@ export default {
                 })
         }
     },
-    created:function () {
-        axios.post('/api/turn/state',{}, {
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    Authorization: 'Bearer ' + document.querySelector('meta[name="api-token"]').getAttribute('content')
-                }
-            }).then(response => {
-                switch (response.data.screen) {
-                    case 'list':
-                        this.isList = true
-                        break
-                    case 'loader':
-                        this.isLoad = true
-                        this.count = response.data.count
-                        this.channel = response.data.channel
-                        this.reconnect(response.data.listen)
-                        break
-                    case 'table':
-                        this.isTable = true
-                        this.channel = response.data.channel
-                        this.reconnect(response.data.listen)
-                        break
-                }
-            })
-    }
+    // created:function () {
+    //     axios.post('/api/turn/state',{}, {
+    //             headers: {
+    //                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+    //                 Authorization: 'Bearer ' + document.querySelector('meta[name="api-token"]').getAttribute('content')
+    //             }
+    //         }).then(response => {
+    //             switch (response.data.screen) {
+    //                 case 'list':
+    //                     this.isList = true
+    //                     break
+    //                 case 'loader':
+    //                     this.isLoad = true
+    //                     this.count = response.data.count
+    //                     this.channel = response.data.channel
+    //                     this.reconnect(response.data.listen)
+    //                     break
+    //                 case 'table':
+    //                     this.isTable = true
+    //                     this.channel = response.data.channel
+    //                     this.reconnect(response.data.listen)
+    //                     break
+    //             }
+    //         })
+    // }
 }
 </script>
 

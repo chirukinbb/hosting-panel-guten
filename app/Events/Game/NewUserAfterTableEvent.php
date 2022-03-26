@@ -12,22 +12,12 @@ class NewUserAfterTableEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
     public function __construct(
         public int $count,
         public string $screen,
         protected string $channel
     ) {}
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return Channel
-     */
     public function broadcastOn()
     {
         return new Channel($this->channel);
@@ -35,6 +25,6 @@ class NewUserAfterTableEvent implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'turns';
+        return 'turn';
     }
 }

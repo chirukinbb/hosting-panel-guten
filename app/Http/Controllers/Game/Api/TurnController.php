@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Game\Api;
 
 use App\Abstracts\AbstractPokerTable;
+use App\Events\Game\FindTableEvent;
 use App\Events\Game\NewUserAfterTableEvent;
 use App\Game\Turn;
 use App\Http\Controllers\Controller;
@@ -93,17 +94,21 @@ class TurnController extends Controller
 
         $player->save();
 
-//        if ($table->object->getPlayersCount() === $table->object->getCurrentPlayersCount()) {
-//            $table->object->startRound(1);
-//
-//            $table->object->eachPlayer(function (\App\Game\Player $player) use ($table) {
-//                $pokerman   = Player::whereSearched($table->id)->where('user_id',$player->getPlayerId())
-//                    ->first();
-//                $pokerman->searched = null;
-//                $pokerman->gamed = $table->id;
-//                $pokerman->save();
-//            });
-//        }
+        if ($table->object->getPlayersCount() === $table->object->getCurrentPlayersCount()) {
+            $table->object->eachPlayer(function (\App\Game\Player $player) use ($table) {
+                $pokerman   = Player::whereSearched($table->id)->where('user_id',$player->getPlayerId())
+                    ->first();
+                $pokerman->searched = null;
+                $pokerman->gamed = $table->id;
+                $pokerman->save();
+
+                broadcast(new FindTableEvent(
+                    $table->object,
+                    'table',
+                    $table->object->getChannelName('table')
+                ));
+            });
+        }
 
         return TurnResource::make(
             new Turn(

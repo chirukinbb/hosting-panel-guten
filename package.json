@@ -30,6 +30,7 @@
         "pusher-js": "^7.0.6",
         "vue": "^3.0",
         "vue-cli-plugin-electron-builder": "~2.1.1",
+        "vue-i18n": "^8.27.0",
         "vue-template-compiler": "^2.6.11"
     }
 }

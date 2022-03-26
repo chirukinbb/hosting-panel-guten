@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap-grid.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
     <title> @yield('title') </title>
 </head>
 <body>
