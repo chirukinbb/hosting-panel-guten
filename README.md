@@ -1,4 +1,4 @@
-# Hosting Panel  'Guten'
+# Hosting Panel  'Guten' v1.1
 
 ## About Project
 
@@ -37,6 +37,18 @@ in the end of installing, create symbolic links
 
 `
 artisan storage:link
+`
+
+to run self pusher - running socket-server
+
+`
+php artisan websockets:serve
+`
+
+it use queue, because you must run
+
+`
+php artisan queue:work
 `
 
 project ready to be developed. Good luck!
