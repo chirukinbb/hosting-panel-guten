@@ -27,6 +27,14 @@
                     <label for="content" class="form-label">Content</label>
                     <textarea name="content" id="content" rows="10" class="form-control">{{ $article->content }}</textarea>
                 </div>
+                <div class="mb-3">
+                    <label for="meta-content" class="form-label">Meta-Content</label>
+                    <textarea name="meta_content" id="meta-content" rows="10" class="form-control">{{ $article->meta_content }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="keywords" class="form-label">Keywords</label>
+                    <input type="text" class="form-control" id="keywords" value="{{ $article->keywords }}" name="keywords" placeholder="Less then 10, Comma separated">
+                </div>
             </div>
             <div class="col-4 widgets-area">
                 @include('admin.article.widgets.submit',['article'=>$article])
