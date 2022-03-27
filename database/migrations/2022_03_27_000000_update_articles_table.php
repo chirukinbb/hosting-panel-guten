@@ -28,7 +28,8 @@ class UpdateArticlesTable extends Migration
     public function down()
     {
         Schema::table('articles', function (Blueprint $table) {
-            $table->dropSoftDeletes();
+            $table->dropColumn('keywords');
+            $table->dropColumn('meta_content');
         });
     }
 }
