@@ -10,7 +10,9 @@ class Article extends AbstractModel
     protected $fillable = [
         'title',
         'slug',
-        'content'
+        'content',
+        'meta_content',
+        'keywords',
     ];
 
     private static array $statuses = [
@@ -21,6 +23,11 @@ class Article extends AbstractModel
     public function setSlugAttribute($value)
     {
         return $this->attributes['slug'] = $value ?? Str::slug($this->title);
+    }
+
+    public function setMetaContentAttribute($value)
+    {
+        return $this->attributes['meta_content'] = $value ?? strip_tags($this->content);
     }
 
     public function getStatus()
