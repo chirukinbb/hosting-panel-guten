@@ -26,7 +26,7 @@ class TableResource extends JsonResource
          */
         return [
             'screen'=>'table',
-            'channel'=>$this->getChannelName('table'),
+            'channel'=>$this->getChannelName('turn'),
             'users'=> $this->users
         ];
     }
@@ -34,7 +34,7 @@ class TableResource extends JsonResource
     protected function setPlayers(AbstractPokerTable $table)
     {
         $table->eachPlayer(function (Player $player) {
-            $user = User::find($player);
+            $user = User::find($player->getPlayerId());
 
             $this->users[] = (object) [
                 'place'=>$player->getPlace(),

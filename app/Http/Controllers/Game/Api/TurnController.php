@@ -7,6 +7,7 @@ use App\Events\Game\FindTableEvent;
 use App\Events\Game\NewUserAfterTableEvent;
 use App\Game\Turn;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Game\Api\ErrorResource;
 use App\Http\Resources\Game\Api\TableResource;
 use App\Http\Resources\Game\Api\TurnResource;
 use App\Models\Game\Player;
@@ -50,7 +51,14 @@ class TurnController extends Controller
         $className = 'App\Game\Tables\\'.$request->input('tableClass');
 
         if (!class_exists($className))
-            return $className;
+            return ErrorResource::make('unable to create table');
+
+        $player = Player::find(\Auth::id());
+
+        if (!is_null($player)) {
+            if (!is_null($player->gamed) || !is_null($player->searched))
+                return ErrorResource::make('you already in game');
+        }
 
         $table = Table::whereTableClass($className)->where('status',Table::SEARCHED)
             ->first();
@@ -105,7 +113,7 @@ class TurnController extends Controller
                 broadcast(new FindTableEvent(
                     $table->object,
                     'table',
-                    $table->object->getChannelName('table')
+                    $table->object->getChannelName('turn')
                 ));
             });
         }

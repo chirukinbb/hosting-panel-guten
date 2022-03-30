@@ -1,6 +1,5 @@
 <template>
-    <div class="col-12 table">
-        <h4>{{title}}</h4>
+    <div class="table d-flex flex-column justify-content-center">
         <div class="d-flex justify-content-center">
             <div class="card-slot" v-for="i in count" :key="i">
                 <span v-if="cards.length >= i" class="crd" :style="position(cards[i - 1].nominal,cards[i - 1].suit)"></span>
@@ -32,8 +31,5 @@ export default {
 </script>
 
 <style scoped>
-.card-slot{
-    height: 250px;
-    width: 150px;
-}
+
 </style>

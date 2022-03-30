@@ -1,7 +1,10 @@
 <template>
+    <div v-if="error" class="alert alert-danger" role="alert">
+        action not available: {{error}}
+    </div>
     <list-component v-if="isList" v-on:load-screen="loadScreen"></list-component>
     <loader-component v-if="isLoad" v-on:leave-turn="leaveTurn" :count="count"></loader-component>
-    <table-component v-if="isTable"></table-component>
+    <table-component v-if="isTable" :table="table"></table-component>
 </template>
 
 <script>
@@ -22,9 +25,11 @@ export default {
         return {
             isList:false,
             isLoad:false,
-            isTable:true,
+            isTable:false,
+            error:false,
             channel:null,
-            count:0
+            count:0,
+            table:{}
         }
     },
     methods: {
@@ -37,6 +42,11 @@ export default {
                     Authorization: 'Bearer '+document.querySelector('meta[name="api-token"]').getAttribute('content'),
                 }
             }).then(response => {
+                console.log(response.data)
+                if (response.data.screen === 'error') {
+                    this.error = response.data.message
+                }
+
                 if (response.data.screen === 'loader') {
                     this.isList = false
                     this.isLoad = true
@@ -55,9 +65,10 @@ export default {
             }).then(response => {
                 if (response.data.screen === 'list') {
                     Echo.leaveChannel(this.channel)
-                    this.isList = true
-                    this.isLoad = false
                 }
+
+                this.isList = true
+                this.isLoad = false
             })
         },
         reconnect:function (listen) {
@@ -65,43 +76,46 @@ export default {
 
             Echo.channel(this.channel)
                 .listen('.'+listen,data => {
+                    console.log(data)
                     switch (data.screen) {
                         case 'loader':
-                            console.log(data)
                             this.count = data.count
                             break
                         case 'table':
-                            this.count = data.count
+                            this.table = data.table
+                            this.isLoad = false
+                            this.isTable =  true
                             break
                     }
                 })
         }
     },
-    // created:function () {
-    //     axios.post('/api/turn/state',{}, {
-    //             headers: {
-    //                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-    //                 Authorization: 'Bearer ' + document.querySelector('meta[name="api-token"]').getAttribute('content')
-    //             }
-    //         }).then(response => {
-    //             switch (response.data.screen) {
-    //                 case 'list':
-    //                     this.isList = true
-    //                     break
-    //                 case 'loader':
-    //                     this.isLoad = true
-    //                     this.count = response.data.count
-    //                     this.channel = response.data.channel
-    //                     this.reconnect(response.data.listen)
-    //                     break
-    //                 case 'table':
-    //                     this.isTable = true
-    //                     this.channel = response.data.channel
-    //                     this.reconnect(response.data.listen)
-    //                     break
-    //             }
-    //         })
-    // }
+    created:function () {
+        axios.post('/api/turn/state',{}, {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    Authorization: 'Bearer ' + document.querySelector('meta[name="api-token"]').getAttribute('content')
+                }
+            }).then(response => {
+            console.log(response.data)
+                switch (response.data.screen) {
+                    case 'list':
+                        this.isList = true
+                        break
+                    case 'loader':
+                        this.isLoad = true
+                        this.count = response.data.count
+                        this.channel = response.data.channel
+                        this.reconnect(response.data.listen)
+                        break
+                    case 'table':
+                        this.isTable = true
+                        this.channel = response.data.channel
+                        this.reconnect(response.data.listen)
+                        break
+                }
+            })
+    }
 }
 </script>
 

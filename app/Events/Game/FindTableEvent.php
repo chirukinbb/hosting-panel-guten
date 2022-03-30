@@ -32,18 +32,18 @@ class FindTableEvent implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'table';
+        return 'turn';
     }
 
     protected function setPlayers(AbstractPokerTable $table)
     {
         $table->eachPlayer(function (Player $player) {
-            $user = User::find($player);
+            $user = User::find($player->getPlayerId());
 
             $this->users[] = (object) [
                 'place'=>$player->getPlace(),
-                'avatar'=>$user->data->avatar_path,
-                'name'=>$user->data->public_name
+                'avatar'=>$user->data?->avatar_path,
+                'name'=>$user->data?->public_name ?? $user->name
             ];
         });
     }

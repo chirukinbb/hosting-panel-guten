@@ -18,7 +18,7 @@ class TurnResource extends JsonResource
             'count'=>$this->count,
             'channel'=>$this->channel,
             'screen'=>'loader',
-            'listen'=>'turns'
+            'listen'=>'turn'
         ];
     }
 }

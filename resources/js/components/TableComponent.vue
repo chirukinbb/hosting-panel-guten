@@ -1,38 +1,30 @@
 <template>
-  <div class="table-screen position-absolute top-0 start-0 end-0 bg-white">
+  <div class="table-screen position-absolute top-0 start-0 end-0 bg-dark">
       <h3>{{computedTitle}}</h3>
-      <div class="d-flex justify-content-center">
+      <div class="d-flex justify-content-center mt-5">
           <div class="poker-table position-relative">
               <cards-component
                   :count="5"
                   :cards="table.round.cards"
-                  title="Cards on the Table"
+                  class="position-absolute top-0 start-0 end-0 bottom-0"
               ></cards-component>
+              <button-component
+                  class="position-absolute"
+                  style="top:-20px;left: 180px"
+              ></button-component>
               <player-component
                   v-for="(player,i) in table.players"
                   class="position-absolute"
+                  :player="player"
                   :style="playerPosition(i)"
               ></player-component>
           </div>
       </div>
-      <div class="row m-0">
-          <div class="col-6">
-              <cards-component
-                  :count="cardsCountInHand()"
-                  :cards="player.hand.cards"
-                  title="Cards in the Hand"
-              ></cards-component>
-          </div>
-          <div class="col-6">
-              <p class="combo">
-                  {{player.hand.combo}}
-              </p>
-              <buttons-component
-                  :actons="player.actions"
-                  :turn="currentTurn"
-              ></buttons-component>
-          </div>
-      </div>
+      <buttons-component
+          :actions="player.actions"
+          :turn="currentTurn"
+          class="position-absolute end-0 start-0 bottom-100"
+      ></buttons-component>
     </div>
 </template>
 
@@ -40,6 +32,7 @@
 import CardsComponent from "./Table/CardsComponent"
 import ButtonsComponent from "./Table/ButtonsComponent"
 import PlayerComponent from "./Table/PlayerComponent"
+import ButtonComponent from "./Table/ButtonComponent"
 
 export default {
     name: "TableComponent",
@@ -53,18 +46,22 @@ export default {
                     number: 0,
                     bank:[0],
                     ante:0,
-                    cards:[]
+                    cards:[
+                        { nominal:5,suit:1 },
+                        { nominal:0,suit:3 },
+                        { nominal:12,suit:0 }
+                    ]
                 },
                 players: [
                     {
-                        avatar: null,
-                        name: 'Louis',
+                        name: 'John Doe',
+                        avatar: '/img/JohnDoe.webp',
                         myTurn:true,
                         isDealer: true,
                         isBB: false,
                         isLB: false,
                         actions:{
-                            canCall:false,
+                            canCall:true,
                             canCheck:true,
                             canBet:true,
                             canRaise:true,
@@ -74,45 +71,44 @@ export default {
                             cards: [
                                 {nominal: 5, suit: 2},
                                 {nominal: 6, suit: 2},
-                            ],
-                            combo:'jjjjj',
-                            amount: 1000,
-                            inGame:true
-                        }
-                    },
-                    {
-                        avatar: null,
-                        name: 'Louis',
-                        myTurn:true,
-                        isDealer: true,
-                        isBB: false,
-                        isLB: false,
-                        actions:{
-                            canCall:false,
-                            canCheck:true,
-                            canBet:true,
-                            canRaise:true,
-                            canAllIn:true
-                        },
-                        hand: {
-                            cards: [
                                 {nominal: 5, suit: 2},
                                 {nominal: 6, suit: 2},
                             ],
                             combo:'jjjjj',
                             amount: 1000,
                             inGame:true
+                        },
+                        amount: {
+                            hand: 502,
+                            bank: 50
+                        },
+                        action: {
+                            message: 'Raise to 100',
+                            hand: 452,
+                            bank: 100
+                        },
+                        timer: {
+                            start: 0
                         }
                     },
                     {
-                        avatar: null,
-                        name: 'John',
+                        name: 'John Doe',
+                        avatar: '/img/JohnDoe.webp',
+                        myTurn:true,
                         isDealer: true,
                         isBB: false,
                         isLB: false,
-                        hand: {
-                            amount: 1000,
-                            inGame:true
+                        amount: {
+                            hand: 502,
+                            bank: 50
+                        },
+                        action: {
+                            message: 'Raise to 100',
+                            hand: 452,
+                            bank: 100
+                        },
+                        timer: {
+                            start: 20
                         }
                     },
                 ]
@@ -125,7 +121,7 @@ export default {
         document.querySelector('title').innerHTML = this.computedTitle
 
         this.table.players.forEach((player) => {
-            if (typeof player.hand.cards === 'object')
+            if (typeof player.hand === 'object')
                 this.player = player
         })
     },
@@ -159,18 +155,20 @@ export default {
                 b = 180 - (a * (index + 1)),
                 bRad = b * 3.14 / 180,
                 l = Math.sin(bRad) * 250,
-                h = (Math.cos(bRad) * 250) / 2
-            console.log(a,l,h,b,bRad)
+                h = (Math.cos(bRad) * 250) / 2,
+                delta = (54 * (Math.cos(bRad) - 1)) / 2
+
             return {
-                top: (h + 125) + 'px',
-                left: (l + 125) + 'px'
+                top: ((h + 125) + delta - 10) + 'px',
+                left: (l + 180) + 'px'
             }
         }
     },
     components:{
         CardsComponent,
         ButtonsComponent,
-        PlayerComponent
+        PlayerComponent,
+        ButtonComponent
     }
 }
 </script>
@@ -187,5 +185,6 @@ export default {
     border: 2px solid black;
     background-color: #0c4128;
     border-radius: 50%;
+    box-shadow: 0 15px 100px 10px rgba(255,255,255,.5);
 }
 </style>
