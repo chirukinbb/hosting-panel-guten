@@ -38,7 +38,7 @@ class TurnController extends Controller
             ->first();
 
         if (!is_null($player)) {
-            $table = Table::find($player->searched);
+            $table = Table::find($player->gamed);
 
             return TableResource::make($table->object);
         }
@@ -53,7 +53,7 @@ class TurnController extends Controller
         if (!class_exists($className))
             return ErrorResource::make('unable to create table');
 
-        $player = Player::find(\Auth::id());
+        $player = Player::whereUserId(\Auth::id())->first();
 
         if (!is_null($player)) {
             if (!is_null($player->gamed) || !is_null($player->searched))

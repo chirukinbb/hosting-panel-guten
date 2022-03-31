@@ -13,7 +13,7 @@ class HoldemTwoPokerTable extends AbstractPokerTable
         return 1;
     }
 
-    protected function getCardsInHand()
+    public function getCardsInHand()
     {
         return 2;
     }
@@ -23,8 +23,13 @@ class HoldemTwoPokerTable extends AbstractPokerTable
         return self::$count;
     }
 
-    protected function getBlind()
+    public function getBlind()
     {
         return 10;
+    }
+
+    public function getType()
+    {
+        return 'Holdem';
     }
 }

@@ -6,7 +6,7 @@
             </div>
             <div class="col">
                 <strong class="name border-bottom">{{player.name}}</strong>
-                <p v-if="player.timer.start" class="m-0 text-center">{{player.timer.start}}</p>
+                <p v-if="timer" class="m-0 text-center">{{player.timer.start}}</p>
                 <p v-else class="m-0 text-center">{{player.amount.bank}}/{{player.amount.hand}}</p>
             </div>
         </div>
@@ -22,6 +22,11 @@
 export default {
     name: "PlayerComponent",
     props:{ player:Object },
+    computed:{
+        timer:function () {
+            return !! this.player.timer
+        }
+    },
     methods:{
         position:function (i,x,y) {
             x = -1 * (x * 164.534 + 98.148)

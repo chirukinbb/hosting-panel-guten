@@ -10,12 +10,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class TableResource extends JsonResource
 {
     public static $wrap = false;
-    protected $users = [];
+    protected array $table = [];
 
     public function __construct($resource)
     {
         parent::__construct($resource);
-        // todo: wtf?
+        $this->setTable();
         $this->setPlayers();
     }
 
@@ -27,19 +27,38 @@ class TableResource extends JsonResource
         return [
             'screen'=>'table',
             'channel'=>$this->getChannelName('turn'),
-            'users'=> $this->users
+            'table'=> $this->table
         ];
     }
 
-    protected function setPlayers(AbstractPokerTable $table)
+    protected function setTable()
     {
-        $table->eachPlayer(function (Player $player) {
+        /**
+         * @var AbstractPokerTable $this
+         */
+        $this->table = [
+            'title' => $this->getTitle(),
+            'blind' => $this->getBlind(),
+            'cardsInHand' => $this->getCardsInHand(),
+            'players' => []
+        ];
+    }
+
+    protected function setPlayers()
+    {
+        /**
+         * @var AbstractPokerTable $this
+         */
+        $this->eachPlayer(function (Player $player) {
             $user = User::find($player->getPlayerId());
 
-            $this->users[] = (object) [
-                'place'=>$player->getPlace(),
-                'avatar'=>$user->data->avatar_path,
-                'name'=>$user->data->public_name
+            $this->table['players'][] = [
+                'name' => $user->data?->public_name ?? $user->name,
+                'avatar' => ($data = $user->data) ? asset($data->avatar_path) : null,
+                'amount' => [
+                    'hand' => 1000,
+                    'bank' => 0
+                ],
             ];
         });
     }

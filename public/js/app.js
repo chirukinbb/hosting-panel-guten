@@ -19469,6 +19469,9 @@ __webpack_require__.r(__webpack_exports__);
             _this3.table = data.table;
             _this3.isLoad = false;
             _this3.isTable = true;
+
+            _this3.reconnect(data.newEvent);
+
             break;
         }
       });
@@ -19483,7 +19486,7 @@ __webpack_require__.r(__webpack_exports__);
         Authorization: 'Bearer ' + document.querySelector('meta[name="api-token"]').getAttribute('content')
       }
     }).then(function (response) {
-      console.log(response.data);
+      console.log(response.data.table);
 
       switch (response.data.screen) {
         case 'list':
@@ -19502,8 +19505,9 @@ __webpack_require__.r(__webpack_exports__);
         case 'table':
           _this4.isTable = true;
           _this4.channel = response.data.channel;
+          _this4.table = response.data.table;
 
-          _this4.reconnect(response.data.listen);
+          _this4.reconnect('table');
 
           break;
       }
@@ -19617,92 +19621,11 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "TableComponent",
+  props: {
+    table: Object
+  },
   data: function data() {
     return {
-      table: {
-        title: 'Holdem, 2 Players, Blind {blind}, Ante {ante}',
-        blind: 10,
-        cardsInHand: 2,
-        round: {
-          number: 0,
-          bank: [0],
-          ante: 0,
-          cards: [{
-            nominal: 5,
-            suit: 1
-          }, {
-            nominal: 0,
-            suit: 3
-          }, {
-            nominal: 12,
-            suit: 0
-          }]
-        },
-        players: [{
-          name: 'John Doe',
-          avatar: '/img/JohnDoe.webp',
-          myTurn: true,
-          isDealer: true,
-          isBB: false,
-          isLB: false,
-          actions: {
-            canCall: true,
-            canCheck: true,
-            canBet: true,
-            canRaise: true,
-            canAllIn: true
-          },
-          hand: {
-            cards: [{
-              nominal: 5,
-              suit: 2
-            }, {
-              nominal: 6,
-              suit: 2
-            }, {
-              nominal: 5,
-              suit: 2
-            }, {
-              nominal: 6,
-              suit: 2
-            }],
-            combo: 'jjjjj',
-            amount: 1000,
-            inGame: true
-          },
-          amount: {
-            hand: 502,
-            bank: 50
-          },
-          action: {
-            message: 'Raise to 100',
-            hand: 452,
-            bank: 100
-          },
-          timer: {
-            start: 0
-          }
-        }, {
-          name: 'John Doe',
-          avatar: '/img/JohnDoe.webp',
-          myTurn: true,
-          isDealer: true,
-          isBB: false,
-          isLB: false,
-          amount: {
-            hand: 502,
-            bank: 50
-          },
-          action: {
-            message: 'Raise to 100',
-            hand: 452,
-            bank: 100
-          },
-          timer: {
-            start: 20
-          }
-        }]
-      },
       player: {},
       currentTurn: false
     };
@@ -19732,7 +19655,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       return !(this.player.actions.canAllIn && this.player.myTurn);
     },
     computedTitle: function computedTitle() {
-      return this.table.title.replace('{blind}', this.table.blind).replace('{ante}', this.table.round.ante);
+      return this.table.round ? this.table.title.replace('{blind}', this.table.blind).replace('{ante}', this.table.round.ante) : this.table.title.replace('{blind}', this.table.blind);
     }
   },
   methods: {
@@ -19865,6 +19788,11 @@ __webpack_require__.r(__webpack_exports__);
   name: "PlayerComponent",
   props: {
     player: Object
+  },
+  computed: {
+    timer: function timer() {
+      return !!this.player.timer;
+    }
   },
   methods: {
     position: function position(i, x, y) {
@@ -20096,19 +20024,20 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.computedTitle), 1
   /* TEXT */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_cards_component, {
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [$props.table.round ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_cards_component, {
+    key: 0,
     count: 5,
-    cards: _ctx.table.round.cards,
+    cards: $props.table.round.cards,
     "class": "position-absolute top-0 start-0 end-0 bottom-0"
   }, null, 8
   /* PROPS */
-  , ["cards"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_button_component, {
+  , ["cards"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_button_component, {
     "class": "position-absolute",
     style: {
       "top": "-20px",
       "left": "180px"
     }
-  }), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.table.players, function (player, i) {
+  }), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.table.players, function (player, i) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_player_component, {
       "class": "position-absolute",
       player: player,
@@ -20118,13 +20047,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     , ["player", "style"]);
   }), 256
   /* UNKEYED_FRAGMENT */
-  ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_buttons_component, {
+  ))])]), _ctx.player.actions ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_buttons_component, {
+    key: 0,
     actions: _ctx.player.actions,
     turn: _ctx.currentTurn,
     "class": "position-absolute end-0 start-0 bottom-100"
   }, null, 8
   /* PROPS */
-  , ["actions", "turn"])]);
+  , ["actions", "turn"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
 }
 
 /***/ }),
@@ -20301,7 +20231,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* PROPS */
   , _hoisted_4)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.name), 1
   /* TEXT */
-  ), $props.player.timer.start ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.timer.start), 1
+  ), $options.timer ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.timer.start), 1
   /* TEXT */
   )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.amount.bank) + "/" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.amount.hand), 1
   /* TEXT */

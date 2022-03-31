@@ -85,6 +85,7 @@ export default {
                             this.table = data.table
                             this.isLoad = false
                             this.isTable =  true
+                            this.reconnect(data.newEvent)
                             break
                     }
                 })
@@ -97,7 +98,7 @@ export default {
                     Authorization: 'Bearer ' + document.querySelector('meta[name="api-token"]').getAttribute('content')
                 }
             }).then(response => {
-            console.log(response.data)
+            console.log(response.data.table)
                 switch (response.data.screen) {
                     case 'list':
                         this.isList = true
@@ -111,7 +112,8 @@ export default {
                     case 'table':
                         this.isTable = true
                         this.channel = response.data.channel
-                        this.reconnect(response.data.listen)
+                        this.table = response.data.table
+                        this.reconnect('table')
                         break
                 }
             })

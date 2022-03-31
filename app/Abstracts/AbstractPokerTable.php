@@ -45,13 +45,15 @@ abstract class AbstractPokerTable
         return $this->id;
     }
 
+    abstract public function getType();
+
     abstract protected function getMinNominal();
 
-    abstract protected function getCardsInHand();
+    abstract public function getCardsInHand();
 
     abstract public function getPlayersCount();
 
-    abstract protected function getBlind();
+    abstract public function getBlind();
 
     protected function getCardDeck()
     {
@@ -135,5 +137,10 @@ abstract class AbstractPokerTable
     public function getChannelName(string $type): string
     {
         return $type.'-'.$this->id;
+    }
+
+    public function getTitle()
+    {
+        return $this->getType().', '.$this->playersCount.' Players, Blind '.$this->blind;
     }
 }

@@ -4,6 +4,7 @@
       <div class="d-flex justify-content-center mt-5">
           <div class="poker-table position-relative">
               <cards-component
+                  v-if="table.round"
                   :count="5"
                   :cards="table.round.cards"
                   class="position-absolute top-0 start-0 end-0 bottom-0"
@@ -21,6 +22,7 @@
           </div>
       </div>
       <buttons-component
+          v-if="player.actions"
           :actions="player.actions"
           :turn="currentTurn"
           class="position-absolute end-0 start-0 bottom-100"
@@ -36,83 +38,9 @@ import ButtonComponent from "./Table/ButtonComponent"
 
 export default {
     name: "TableComponent",
+    props:{ table:Object },
     data:function () {
         return {
-            table: {
-                title:'Holdem, 2 Players, Blind {blind}, Ante {ante}',
-                blind:10,
-                cardsInHand:2,
-                round:{
-                    number: 0,
-                    bank:[0],
-                    ante:0,
-                    cards:[
-                        { nominal:5,suit:1 },
-                        { nominal:0,suit:3 },
-                        { nominal:12,suit:0 }
-                    ]
-                },
-                players: [
-                    {
-                        name: 'John Doe',
-                        avatar: '/img/JohnDoe.webp',
-                        myTurn:true,
-                        isDealer: true,
-                        isBB: false,
-                        isLB: false,
-                        actions:{
-                            canCall:true,
-                            canCheck:true,
-                            canBet:true,
-                            canRaise:true,
-                            canAllIn:true
-                        },
-                        hand: {
-                            cards: [
-                                {nominal: 5, suit: 2},
-                                {nominal: 6, suit: 2},
-                                {nominal: 5, suit: 2},
-                                {nominal: 6, suit: 2},
-                            ],
-                            combo:'jjjjj',
-                            amount: 1000,
-                            inGame:true
-                        },
-                        amount: {
-                            hand: 502,
-                            bank: 50
-                        },
-                        action: {
-                            message: 'Raise to 100',
-                            hand: 452,
-                            bank: 100
-                        },
-                        timer: {
-                            start: 0
-                        }
-                    },
-                    {
-                        name: 'John Doe',
-                        avatar: '/img/JohnDoe.webp',
-                        myTurn:true,
-                        isDealer: true,
-                        isBB: false,
-                        isLB: false,
-                        amount: {
-                            hand: 502,
-                            bank: 50
-                        },
-                        action: {
-                            message: 'Raise to 100',
-                            hand: 452,
-                            bank: 100
-                        },
-                        timer: {
-                            start: 20
-                        }
-                    },
-                ]
-            },
             player:{},
             currentTurn: false
         }
@@ -142,8 +70,11 @@ export default {
             return !(this.player.actions.canAllIn && this.player.myTurn)
         },
         computedTitle:function () {
-            return this.table.title.replace('{blind}', this.table.blind)
-                .replace('{ante}', this.table.round.ante)
+            return this.table.round ?
+                this.table.title.replace('{blind}', this.table.blind)
+                    .replace('{ante}', this.table.round.ante)
+                :
+                this.table.title.replace('{blind}', this.table.blind)
         }
     },
     methods:{
