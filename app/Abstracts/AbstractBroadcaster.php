@@ -1,22 +1,28 @@
 <?php
 
-namespace App\Events\Game;
+namespace App\Abstracts;
 
+use App\Models\Game\Table;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewUserAfterTableEvent implements ShouldBroadcast
+abstract class AbstractBroadcaster implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    protected string $event = '';
+    protected AbstractPokerTable $tableObj;
+
     public function __construct(
-        public int $count,
-        public string $screen,
-        protected string $channel
-    ) {}
+        int $tableId,
+        public string      $screen,
+        protected string   $channel
+    ) {
+        $this->tableObj = Table::find($tableId)->object;
+    }
 
     public function broadcastOn()
     {
@@ -25,6 +31,6 @@ class NewUserAfterTableEvent implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'turn';
+        return $this->event;
     }
 }

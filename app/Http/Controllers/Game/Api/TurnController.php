@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Game\Api;
 
 use App\Abstracts\AbstractPokerTable;
-use App\Events\Game\FindTableEvent;
-use App\Events\Game\NewUserAfterTableEvent;
+use App\Events\Game\Broadcasters\CreatePokerTableEvent;
+use App\Events\Game\Broadcasters\PlayersUpdateInPokerTableEvent;
 use App\Game\Turn;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Game\Api\ErrorResource;
@@ -69,20 +69,28 @@ class TurnController extends Controller
              */
             $tableObj = new $className();
             $tableObj->setId(now()->timestamp);
-            $tableObj->setPlayer(\Auth::id());
+            $tableObj->setPlayer(
+                \Auth::id(),
+                \Auth::user()->data?->public_name ?? \Auth::user()->name,
+                \Auth::user()->data?->avatar_path
+            );
 
             $table = Table::getModel();
             $table->table_class = $className;
             $table->object = $tableObj;
         } else {
             $tableObj  = $table->object;
-            $tableObj->setPlayer(\Auth::id());
+            $tableObj->setPlayer(
+                \Auth::id(),
+                \Auth::user()->data?->public_name ?? \Auth::user()->name,
+                \Auth::user()->data?->avatar_path
+            );
         }
 
         $table->object = $tableObj;
         $table->save();
 
-        broadcast(new NewUserAfterTableEvent(
+        broadcast(new PlayersUpdateInPokerTableEvent(
             $table->object->getCurrentPlayersCount(),
             'loader',
             $table->object->getChannelName('turn')
@@ -103,6 +111,10 @@ class TurnController extends Controller
         $player->save();
 
         if ($table->object->getPlayersCount() === $table->object->getCurrentPlayersCount()) {
+            $table->object->startRound(1);
+            $table->object->changeStatuses(0);
+            $table->object->payBlinds();
+            $table->object->preFlop();
             $table->object->eachPlayer(function (\App\Game\Player $player) use ($table) {
                 $pokerman   = Player::whereSearched($table->id)->where('user_id',$player->getPlayerId())
                     ->first();
@@ -110,8 +122,8 @@ class TurnController extends Controller
                 $pokerman->gamed = $table->id;
                 $pokerman->save();
 
-                broadcast(new FindTableEvent(
-                    $table->object,
+                broadcast(new CreatePokerTableEvent(
+                    $table->id,
                     'table',
                     $table->object->getChannelName('turn')
                 ));
@@ -139,7 +151,7 @@ class TurnController extends Controller
             $table->object = $tableObj;
             $table->save();
 
-            broadcast(new NewUserAfterTableEvent(
+            broadcast(new PlayersUpdateInPokerTableEvent(
                 $table->object->getCurrentPlayersCount(),
                 'loader',
                 $table->object->getChannelName('turn')

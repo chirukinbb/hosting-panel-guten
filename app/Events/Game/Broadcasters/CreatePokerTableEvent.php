@@ -1,51 +1,34 @@
 <?php
 
-namespace App\Events\Game;
+namespace App\Events\Game\Broadcasters;
 
-use App\Abstracts\AbstractPokerTable;
+use App\Abstracts\AbstractBroadcaster;
 use App\Game\Player;
 use App\Models\User;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 
-class FindTableEvent implements ShouldBroadcast
+class CreatePokerTableEvent extends AbstractBroadcaster
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
-
     public array $table = [];
     public string $newEvent = 'table';
+    protected string $event = 'turn';
 
-    public function __construct(
-        AbstractPokerTable $table,
-        public string      $screen,
-        protected string   $channel
-    ) {
+    public function __construct(int $tableId, string $screen, string $channel)
+    {
+        parent::__construct($tableId, $screen, $channel);
+
         $this->table = [
-            'title' => $table->getTitle(),
-            'blind' => $table->getBlind(),
-            'cardsInHand' => $table->getCardsInHand(),
+            'title' => $this->tableObj->getTitle(),
+            'blind' => $this->tableObj->getBlind(),
+            'cardsInHand' => $this->tableObj->getCardsInHand(),
             'players' => []
         ];
 
-        $this->setPlayers($table);
+        $this->setPlayers();
     }
 
-    public function broadcastOn()
+    protected function setPlayers()
     {
-        return new Channel($this->channel);
-    }
-
-    public function broadcastAs()
-    {
-        return 'turn';
-    }
-
-    protected function setPlayers(AbstractPokerTable $table)
-    {
-        $table->eachPlayer(function (Player $player) {
+        $this->tableObj->eachPlayer(function (Player $player) {
             $user = User::find($player->getPlayerId());
 
             $this->table['players'][] = [

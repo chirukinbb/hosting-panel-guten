@@ -7,7 +7,7 @@ use App\Abstracts\AbstractGameCollection;
 class BankCollection extends AbstractGameCollection
 {
     protected int  $step;
-    protected int  $amount;
+    protected int  $amount = 0;
 
     /**
      * @param int $amount
@@ -37,5 +37,18 @@ class BankCollection extends AbstractGameCollection
     {
         $this->collection[$this->step] = isset($this->collection[$this->step]) ?
             $this->collection[$this->step] + $amount : $amount;
+    }
+
+    public function getAll()
+    {
+        return array_sum($this->collection);
+    }
+
+    public function changeAmount(int $delta, $direction = '+')
+    {
+        $this->amount = ($direction === '+') ?
+            $this->amount + $delta :
+            $this->amount - $delta;
+
     }
 }

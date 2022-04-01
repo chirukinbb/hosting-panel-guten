@@ -8,6 +8,9 @@ use App\Game\Collections\CardsCollection;
 
 class Player
 {
+    protected int $userId;
+    protected string $name;
+    protected string $avatar;
     protected CardsCollection $cards;
     protected int $place;
     protected UserCombo $combo;
@@ -64,6 +67,7 @@ class Player
 
     public function setLBStatus(bool $isLB)
     {
+        $this->addToBank(0);
         $this->isLB =  $isLB;
     }
 
@@ -96,22 +100,6 @@ class Player
     }
 
     /**
-     * @param int $amount
-     */
-    public function setAmount(int $amount): void
-    {
-        $this->amount = $amount;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAmount(): int
-    {
-        return $this->amount;
-    }
-
-    /**
      * @return bool
      */
     public function isDealer(): bool
@@ -123,6 +111,17 @@ class Player
     {
         $this->bank->setStep($step);
         $this->bank->add($amount);
+        $this->bank->changeAmount($amount, '-');
+    }
+
+    public function getBank(): int
+    {
+        return $this->bank->getAll();
+    }
+
+    public function getAmount():int
+    {
+        return $this->bank->getAmount();
     }
 
     /**
@@ -131,5 +130,85 @@ class Player
     public function getPlayerId(): int
     {
         return $this->playerId;
+    }
+
+    /**
+     * @param int $userId
+     */
+    public function setUserId(int $userId): void
+    {
+        $this->userId = $userId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserId(): int
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $avatar
+     */
+    public function setAvatar(string $avatar): void
+    {
+        $this->avatar = $avatar;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAvatar(): string
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @param bool $inGame
+     */
+    public function setInGame(bool $inGame): void
+    {
+        $this->inGame = $inGame;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInGame(): bool
+    {
+        return $this->inGame;
+    }
+
+    /**
+     * @param bool $inRound
+     */
+    public function setInRound(bool $inRound): void
+    {
+        $this->inRound = $inRound;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isInRound(): bool
+    {
+        return $this->inRound;
     }
 }

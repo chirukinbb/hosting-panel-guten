@@ -57,6 +57,28 @@ class PlayersCollection extends AbstractGameCollection
         return $this;
     }
 
+    public function sortFromLB(): PlayersCollection
+    {
+        $collection = [];
+
+        /**
+         * @var Player $player
+         */
+        foreach ($this->collection as $index => $player) {
+            if ($player->isLB())
+                $dealerIndex  = $index;
+        }
+
+        $collection = array_merge(
+            array_slice($this->collection, $dealerIndex),
+            array_slice($this->collection, 0, $dealerIndex)
+        );
+
+        $this->collection = $collection;
+
+        return $this;
+    }
+
     public function getWithStrongestHand(): array
     {
         $collection  = [];

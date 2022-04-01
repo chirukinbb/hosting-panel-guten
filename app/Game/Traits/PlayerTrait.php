@@ -2,27 +2,41 @@
 
 namespace App\Game\Traits;
 
+use App\Game\Player;
+
 trait PlayerTrait
 {
+    private int $currentDealerIndex;
+
     public function changeStatuses(int $currentDealerIndex)
     {
-        $prevIndex = ($currentDealerIndex < 1) ? $this->players->count() - 1 : $currentDealerIndex - 1;
-        $prevPlayer =  $this->players->get($prevIndex);
-        $prevPlayer->setDealerStatus(false);
+        $this->players->sortFromLB();
 
-        $player = $this->players->get($currentDealerIndex);
-        $player->setDealerStatus(true);
-        $player->setLBStatus(false);
+        $this->eachPlayer(function (Player $player) use ($currentDealerIndex) {
+            $player->setDealerStatus(false);
+            $player->setLBStatus(false);
+            $player->setBBStatus(false);
 
-        $nextIndex = ($currentDealerIndex === ($this->players->count() - 1)) ? 0 : $currentDealerIndex + 1;
-        $nextPlayer =  $this->players->get($nextIndex);
-        $nextPlayer->setLBStatus(true);
-        $nextPlayer->setBBStatus(false);
+            if ($player->getPlace() === $currentDealerIndex)
+                $player->setDealerStatus(true);
 
-        $nextIndex2 = (($currentDealerIndex + 2) > $this->players->count()) ? ($currentDealerIndex - $this->players->count() + 2) : $currentDealerIndex + 2;
-        $nextPlayer2 =  $this->players->get($nextIndex2);
-        $nextPlayer2->setBBStatus(true);
+            if (($player->getPlace() === $currentDealerIndex + 1) && $player->isInRound()) {
+                $player->setLBStatus(true);
+                $currentDealerIndex = ($currentDealerIndex + 1) % $this->playersCount;
+            }else{
+                $currentDealerIndex = ($currentDealerIndex + 1) % $this->playersCount;
+            }
 
-        $this->players->sortFromDealer();
+            if (($player->getPlace() === $currentDealerIndex + 1) && $player->isInRound()){
+                $player->setBBStatus(true);
+                $currentDealerIndex = ($currentDealerIndex + 1) % $this->playersCount;
+            }else{
+                $currentDealerIndex = ($currentDealerIndex + 1) % $this->playersCount;
+            }
+
+            $this->currentDealerIndex = $currentDealerIndex;
+        });
+
+        $this->players->sortByPlaces();
     }
 }

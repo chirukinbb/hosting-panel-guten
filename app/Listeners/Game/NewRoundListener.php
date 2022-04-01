@@ -2,7 +2,7 @@
 
 namespace App\Listeners\Game;
 
-use App\Events\Game\FindTableEvent;
+use App\Events\Game\CreatePokerTableEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -13,7 +13,7 @@ class NewRoundListener
      *
      * @return void
      */
-    public function __construct(FindTableEvent $event)
+    public function __construct(CreatePokerTableEvent $event)
     {
 
     }

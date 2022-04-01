@@ -68,20 +68,22 @@ abstract class AbstractPokerTable
                 $id++;
             }
         }
-
+$this->payBlinds();
         return $cards->removeFirsts($this->minNominal*count($deckSuitsPool));
     }
 
-    public function setPlayer(int $userId): void
+    public function setPlayer(int $userId, string $name, string $avatar): void
     {
         if ($this->players->count() <= $this->playersCount){
             $place = $this->getLandingPlace();
             $player = new Player($userId);
+            $player->setName($name);
+            $player->setAvatar($avatar);
             $player->setPlaceOnDesc($place);
-            $player->setDealerStatus($place === 0);
-            $player->setLBStatus($place === 1);
-            $player->setBBStatus($place === 3);
             $this->players->push($player);
+
+            if ($this->getCurrentPlayersCount() === $this->playersCount)
+                $this->players->sortByPlaces();
         }
     }
 
