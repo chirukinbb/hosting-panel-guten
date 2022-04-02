@@ -30,6 +30,7 @@
             </div>
             <div class="col-4 widgets-area">
                 @include('admin.article.widgets.submit',['article'=>[]])
+                @include('admin.article.widgets.thumbnail',['article'=>$article])
             </div>
         </div>
     </form>
@@ -52,5 +53,25 @@
         }).catch( error => {
             console.error( error );
         } );
+
+        $('#thumbnail .remove').on('click',function (e) {
+            e.preventDefault()
+
+            $('#thumbnail div, #thumbnail .remove').addClass('d-none')
+            $('#thumbnail .set').removeClass('d-none')
+            $('input[name=thumbnail_path]').val()
+        })
+
+        $('input[name=thumbnail]').on('change', function(event) {
+            var reader = new FileReader()
+
+            reader.onload = function(){
+                $('#thumbnail img').attr('src',reader.result)
+                $('#thumbnail div, #thumbnail .remove').removeClass('d-none')
+                $('#thumbnail .set').addClass('d-none')
+            }
+
+            reader.readAsDataURL(event.target.files[0])
+        })
     </script>
 @endsection

@@ -5,6 +5,7 @@ namespace App\Repositories\Admin;
 use App\Abstracts\AbstractRepository;
 use App\Models\Article;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\UploadedFile;
 
 class ArticleRepository extends AbstractRepository
 {
@@ -30,5 +31,27 @@ class ArticleRepository extends AbstractRepository
          */
         $article = $this->create($attributes);
         $this->hide($article->id);
+    }
+
+    public function create(array $attributes)
+    {
+        if ($attributes['thumbnail'] instanceof UploadedFile)
+            /**
+             * @var UploadedFile $attributes ['thumbnail']
+             */
+            $attributes['thumbnail_path'] = $attributes['thumbnail']->storePublicly('articles');
+
+        return parent::create($attributes);
+    }
+
+    public function update(array $attributes)
+    {
+        if ($attributes['thumbnail'] instanceof UploadedFile)
+            /**
+             * @var UploadedFile $attributes ['thumbnail']
+             */
+            $attributes['thumbnail_path'] = $attributes['thumbnail']->storePublicly('articles');
+
+        parent::update($attributes);
     }
 }

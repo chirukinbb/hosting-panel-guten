@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Events\ArticlePublishEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ArticleRequest;
 use App\Repositories\Admin\ArticleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,14 +28,14 @@ class ArticleController extends Controller
         return view('admin.article.create',compact('token'));
     }
 
-    public function store(Request $request)
+    public function store(ArticleRequest $request)
     {
         if ($request->input('save_to') === '0') {
             $message = __('admin/article.submit.trashed');
             $this->repository->trashed($request->all());
         } else {
             $article = $this->repository->published($request->all());
-            $message = __('admin/article.submit.publish');//dd($article);
+            $message = __('admin/article.submit.publish');
             event(new ArticlePublishEvent($article));
         }
 

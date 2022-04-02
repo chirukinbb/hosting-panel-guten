@@ -13,11 +13,18 @@ class Article extends AbstractModel
         'content',
         'meta_content',
         'keywords',
+        'thumbnail_path',
+        'type'
     ];
 
-    private static array $statuses = [
+    public static array $statuses = [
         'admin/article.trash',
         'admin/article.publish'
+    ];
+
+    public static array $types = [
+        'Post',
+        'Page'
     ];
 
     public function setSlugAttribute($value)
@@ -33,10 +40,5 @@ class Article extends AbstractModel
     public function getStatus()
     {
         return $this->deleted_at ? __(self::$statuses[0]) : __(self::$statuses[1]);
-    }
-
-    public static function getStatuses()
-    {
-        return self::$statuses;
     }
 }

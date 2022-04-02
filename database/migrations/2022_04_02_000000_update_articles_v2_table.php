@@ -5,7 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateArticlesTable extends Migration
+class UpdateArticlesV2Table extends Migration
 {
     /**
      * Run the migrations.
@@ -15,8 +15,8 @@ class UpdateArticlesTable extends Migration
     public function up()
     {
         Schema::table('articles', function (Blueprint $table) {
-            $table->string('keywords')->nullable();
-            $table->text('meta_content')->nullable();
+            $table->string('thumbnail_path')->nullable();
+            $table->integer('type');
         });
     }
 
@@ -28,8 +28,8 @@ class UpdateArticlesTable extends Migration
     public function down()
     {
         Schema::table('articles', function (Blueprint $table) {
-            $table->dropColumn('keywords');
-            $table->dropColumn('meta_content');
+            $table->dropColumn('thumbnail_path');
+            $table->dropColumn('type');
         });
     }
 }

@@ -40,6 +40,8 @@ namespace App\Models{
  * @property string $content
  * @property string $meta_content
  * @property string $keywords
+ * @property string $thumbnail_path
+ * @property int $type
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -52,6 +54,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Article whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Article whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Article whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Article whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Article whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Article whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|Article withTrashed()
