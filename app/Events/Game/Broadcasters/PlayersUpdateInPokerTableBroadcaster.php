@@ -4,7 +4,7 @@ namespace App\Events\Game\Broadcasters;
 
 use App\Abstracts\AbstractBroadcaster;
 
-class PlayersUpdateInPokerTableEvent extends AbstractBroadcaster
+class PlayersUpdateInPokerTableBroadcaster extends AbstractBroadcaster
 {
     protected string $event = 'turn';
 

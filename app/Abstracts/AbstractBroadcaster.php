@@ -3,6 +3,7 @@
 namespace App\Abstracts;
 
 use App\Models\Game\Table;
+use App\Repositories\PokerTableRepository;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -13,15 +14,17 @@ abstract class AbstractBroadcaster implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public object $table;
     protected string $event = '';
     protected AbstractPokerTable $tableObj;
+    protected PokerTableRepository $repository;
 
     public function __construct(
         int $tableId,
         public string      $screen,
         protected string   $channel
     ) {
-        $this->tableObj = Table::find($tableId)->object;
+        $this->repository = new PokerTableRepository($tableId);
     }
 
     public function broadcastOn()

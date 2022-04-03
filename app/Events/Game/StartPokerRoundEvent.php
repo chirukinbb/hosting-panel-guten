@@ -14,21 +14,16 @@ use Illuminate\Queue\SerializesModels;
 
 class StartPokerRoundEvent extends AbstractBroadcaster
 {
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    public function __construct(
-        int $tableId,
-        public string      $screen,
-        protected string   $channel
-    ) {
-        $table = Table::find($tableId)->object;
+    protected string $event = 'table';
 
-        $table->startRound(1);
-        $table->changeStatuses(0);
-        $table->payBlinds();
-        $table->preFlop();
+    public function __construct(int $tableId, string $screen, string $channel)
+    {
+        parent::__construct($tableId, $screen, $channel);
+
+        $this->table = $this->repository->startRound()
+            ->save()
+            ->getTable();
+
+        self::broadcast(new StartPokerRoundEvent($tableId,$screen,$channel));
     }
 }

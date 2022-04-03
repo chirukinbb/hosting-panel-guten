@@ -68,7 +68,7 @@ abstract class AbstractPokerTable
                 $id++;
             }
         }
-$this->payBlinds();
+
         return $cards->removeFirsts($this->minNominal*count($deckSuitsPool));
     }
 

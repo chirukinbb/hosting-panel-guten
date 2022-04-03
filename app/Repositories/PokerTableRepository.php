@@ -11,7 +11,7 @@ class PokerTableRepository
     protected AbstractPokerTable $tableObj;
     protected object $table;
 
-    public function __construct(int $id)
+    public function __construct(protected int $id)
     {
         $this->tableObj = Table::find($id)->object;
     }
@@ -28,7 +28,7 @@ class PokerTableRepository
         return $this;
     }
 
-    protected function setPlayers()
+    public function setPlayers()
     {
         $this->tableObj->eachPlayer(function (Player $player) {
             $this->table['players'][] = (object) [
@@ -71,14 +71,83 @@ class PokerTableRepository
         return $this;
     }
 
-    public function startRound(int $number)
+    public function startRound()
     {
-        $this->tableObj->startRound($number);
+        $this->tableObj->startRound(1);
         // todo: remake
-        $this->tableObj->changeStatuses($number / $this->tableObj->getCurrentPlayersCount());
+        $this->tableObj->changeStatuses(0);
         $this->tableObj->payBlinds();
         $this->tableObj->preFlop();
 
         return $this;
     }
+
+    public function playerTurn()
+    {
+        return $this;
+    }
+
+    public function actionFromPlayer(int $place, array $action)
+    {
+        return $this;
+    }
+
+    public function entTimeForTurn()
+    {
+        return $this;
+    }
+
+    public function flop()
+    {
+        return $this;
+    }
+
+    public function turn()
+    {
+        return $this;
+    }
+
+    public function river()
+    {
+        return $this;
+    }
+
+    public function showdown()
+    {
+        return $this;
+    }
+
+    public function save()
+    {
+        $table = Table::find($this->id);
+        $table->object = $this->tableObj;
+        $table->save();
+
+        return $this;
+    }
+
+    /**
+     * @return object
+     */
+    public function getTable(): object
+    {
+        return $this->table;
+    }
+
+    public function isTurnTransfer(): bool
+    {
+        return true;
+    }
+
+    public function isNewRound(): bool
+    {
+        return true;
+    }
+
+    public function isTableFinish(): bool
+    {
+        return true;
+    }
+
+
 }
