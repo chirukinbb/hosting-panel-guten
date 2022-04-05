@@ -11,7 +11,7 @@ trait RoundTrait
 
     public function startRound(int $number)
     {
-        $this->round  = new Round($number,$this->cardDeck);
+        $this->round  = new Round($this->cardDeck,$number);
     }
 
     public function preFlop()

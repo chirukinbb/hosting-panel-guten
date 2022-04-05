@@ -16,6 +16,9 @@ use Illuminate\Http\Request;
 
 class TurnController extends Controller
 {
+    private object $result;
+    private bool $toTable = false;
+
     public function state()
     {
         $player = Player::whereUserId(\Auth::id())
@@ -25,12 +28,22 @@ class TurnController extends Controller
         if (!is_null($player)) {
             $table = Table::find($player->searched);
 
-            return TurnResource::make(
-                new Turn(
-                    $table->object->getCurrentPlayersCount(),
-                    $table->object->getChannelName('turn')
-                )
-            );
+            $table->object->eachPlayer(function (\App\Game\Player $player) use ($table) {
+                if ($player->getPlayerId() === \Auth::id()) {
+                    $place = $player->getPlace();
+
+                    $this->result = TurnResource::make(
+                        new Turn(
+                            $table->object->getCurrentPlayersCount(),
+                            $table->object->getChannelName('turn.' . $place)
+                        )
+                    );
+                }
+
+                return 1;
+            });
+
+            return $this->result;
         }
 
         $player = Player::whereUserId(\Auth::id())
@@ -43,12 +56,12 @@ class TurnController extends Controller
             return TableResource::make($table->object);
         }
 
-        return json_encode(['screen'=>'list']);
+        return json_encode(['screen' => 'list']);
     }
 
     public function stand(Request $request)
     {
-        $className = 'App\Game\Tables\\'.$request->input('tableClass');
+        $className = 'App\Game\Tables\\' . $request->input('tableClass');
 
         if (!class_exists($className))
             return ErrorResource::make('unable to create table');
@@ -60,7 +73,7 @@ class TurnController extends Controller
                 return ErrorResource::make('you already in game');
         }
 
-        $table = Table::whereTableClass($className)->where('status',Table::SEARCHED)
+        $table = Table::whereTableClass($className)->where('status', Table::SEARCHED)
             ->first();
 
         if (is_null($table)) {
@@ -69,38 +82,32 @@ class TurnController extends Controller
              */
             $tableObj = new $className();
             $tableObj->setId(now()->timestamp);
-            $tableObj->setPlayer(
+            $place = $tableObj->setPlayer(
                 \Auth::id(),
                 \Auth::user()->data?->public_name ?? \Auth::user()->name,
-                \Auth::user()->data?->avatar_path
+                \Auth::user()->data?->avatar_path ?? asset('img/JohnDoe.webp')
             );
 
             $table = Table::getModel();
             $table->table_class = $className;
             $table->object = $tableObj;
         } else {
-            $tableObj  = $table->object;
-            $tableObj->setPlayer(
+            $tableObj = $table->object;
+            $place = $tableObj->setPlayer(
                 \Auth::id(),
                 \Auth::user()->data?->public_name ?? \Auth::user()->name,
-                \Auth::user()->data?->avatar_path
+                \Auth::user()->data?->avatar_path ?? asset('img/JohnDoe.webp')
             );
         }
 
         $table->object = $tableObj;
         $table->save();
 
-        broadcast(new PlayersUpdateInPokerTableBroadcaster(
-            $table->object->getCurrentPlayersCount(),
-            'loader',
-            $table->object->getChannelName('turn')
-        ));
-
-        $player = Player::whereTableClass($className)->where('user_id',\Auth::id())
+        $player = Player::whereTableClass($className)->where('user_id', \Auth::id())
             ->first();
 
         if (is_null($player)) {
-            $player  = Player::getModel();
+            $player = Player::getModel();
             $player->user_id = \Auth::id();
             $player->searched = $table->id;
             $player->table_class = $className;
@@ -110,28 +117,47 @@ class TurnController extends Controller
 
         $player->save();
 
-        if ($table->object->getPlayersCount() === $table->object->getCurrentPlayersCount()) {
-            $table->object->eachPlayer(function (\App\Game\Player $player) use ($table) {
-                $pokerman   = Player::whereSearched($table->id)->where('user_id',$player->getPlayerId())
+
+        $table->object->eachPlayer(function (\App\Game\Player $player) use ($table) {
+            $place = $player->getPlace();
+
+            broadcast(new PlayersUpdateInPokerTableBroadcaster(
+                $table->object->getCurrentPlayersCount(),
+                'loader',
+                $table->object->getChannelName('turn.' . $place)
+            ));
+
+            if ($table->object->getPlayersCount() === $table->object->getCurrentPlayersCount()) {
+                $this->toTable = true;
+
+                $pokerman = Player::whereSearched($table->id)->where('user_id', $player->getPlayerId())
                     ->first();
-                $pokerman->searched = null;
+                $pokerman->searched = 0;
                 $pokerman->gamed = $table->id;
                 $pokerman->save();
 
                 broadcast(new CreatePokerTableBroadcaster(
                     $table->id,
                     'table',
-                    $table->object->getChannelName('turn')
+                    $table->object->getChannelName('turn.' . $place),
+                    $pokerman->user_id
                 ));
-            });
+            }
+        });
+
+        if ($this->toTable) {
+            $table->status = Table::CONTINUE;
+            $table->save();
         }
 
-        return TurnResource::make(
-            new Turn(
-                $table->object->getCurrentPlayersCount(),
-                $table->object->getChannelName('turn')
-            )
-        );
+        return $this->toTable ?
+            TableResource::make($table->object) :
+            TurnResource::make(
+                new Turn(
+                    $table->object->getCurrentPlayersCount(),
+                    $table->object->getChannelName('turn.' . $place)
+                )
+            );
     }
 
     public function leave()
@@ -147,16 +173,20 @@ class TurnController extends Controller
             $table->object = $tableObj;
             $table->save();
 
-            broadcast(new PlayersUpdateInPokerTableBroadcaster(
-                $table->object->getCurrentPlayersCount(),
-                'loader',
-                $table->object->getChannelName('turn')
-            ));
+            $table->object->eachPlayer(function (\App\Game\Player $player) use ($table) {
+                $place = $player->getPlace();
+
+                broadcast(new PlayersUpdateInPokerTableBroadcaster(
+                    $table->object->getCurrentPlayersCount(),
+                    'loader',
+                    $table->object->getChannelName('turn.' . $place)
+                ));
+            });
 
             $player->searched = null;
             $player->save();
         }
 
-        return json_encode(['screen'=>'list']);
+        return json_encode(['screen' => 'list']);
     }
 }

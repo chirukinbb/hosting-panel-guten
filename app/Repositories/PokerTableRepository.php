@@ -16,6 +16,11 @@ class PokerTableRepository
         $this->tableObj = Table::find($id)->object;
     }
 
+    public function getChannelName($slug, $userId)
+    {
+        return $this->tableObj->getChannelName($slug.'.'.$userId);
+    }
+
     public function setTable()
     {
         $this->table = (object) [
@@ -31,7 +36,7 @@ class PokerTableRepository
     public function setPlayers()
     {
         $this->tableObj->eachPlayer(function (Player $player) {
-            $this->table['players'][] = (object) [
+            $this->table->players[] = (object) [
                 'name' => $player->getName(),
                 'avatar' => $player->getAvatar(),
 //                'myTurn' => false,

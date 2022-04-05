@@ -35,10 +35,14 @@ import CardsComponent from "./Table/CardsComponent"
 import ButtonsComponent from "./Table/ButtonsComponent"
 import PlayerComponent from "./Table/PlayerComponent"
 import ButtonComponent from "./Table/ButtonComponent"
+import Echo from "laravel-echo";
 
 export default {
     name: "TableComponent",
-    props:{ table:Object },
+    props:{
+      table:Object,
+      channel:String
+    },
     data:function () {
         return {
             player:{},
@@ -52,6 +56,42 @@ export default {
             if (typeof player.hand === 'object')
                 this.player = player
         })
+
+      this.socket = new Echo({
+        broadcaster: 'pusher',
+        key: '4326370c5eb04b2329d3',
+        wsHost: window.location.hostname,
+        wsPort: 6001,
+        forceTLS: false,
+        authorizer: (channel, options) => {
+          return {
+            authorize: (socketId, callback) => {
+              axios.post('/api/broadcasting/auth', {
+                socket_id: socketId,
+                channel_name: channel.name
+              },{
+                headers: {
+                  Authorization: 'Bearer '+document.querySelector('meta[name="api-token"]').getAttribute('content'),
+                }
+              })
+                  .then(response => {
+                    callback(false, response.data);
+                  })
+                  .catch(error => {
+                    callback(true, error);
+                  });
+            }
+          };
+        },
+        disableStats: false
+      }).private(this.channel).listen('.table', e => {
+          console.log(e)
+        switch (e.screen) {
+          case 'table':
+            this.table = e.table
+            break
+        }
+      })
     },
     computed:{
         canCall:function () {

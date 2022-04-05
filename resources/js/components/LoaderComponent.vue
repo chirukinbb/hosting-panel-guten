@@ -62,14 +62,13 @@ export default {
       },
       disableStats: false
     }).private(this.channel).listen('.turn', e => {
+        console.log(e)
         switch (e.screen) {
             case 'loader':
-                this.count = e.count
+                this.$emit('set-count', e.count)
                 break
             case 'table':
-                this.isTable = true
-                this.channel = e.channel
-                this.table = e.table
+                this.$emit('load-table',e.newChannel, e.table)
                 break
         }
     })

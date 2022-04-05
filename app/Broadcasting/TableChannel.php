@@ -24,9 +24,10 @@ class TableChannel
      * @param  \App\Models\User  $user
      * @return array|bool
      */
-    public function join(User $user, int $tableId)
+    public function join(User $user,int $place, int $tableId)
     {
         $player = Player::whereUserId($user->id)
+            ->whereNotNull('gamed')
             ->first();
 
         if (is_null($player))

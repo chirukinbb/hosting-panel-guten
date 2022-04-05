@@ -72,19 +72,23 @@ abstract class AbstractPokerTable
         return $cards->removeFirsts($this->minNominal*count($deckSuitsPool));
     }
 
-    public function setPlayer(int $userId, string $name, string|null $avatar): void
+    public function setPlayer(int $userId, string $name, string $avatar): int
     {
+        $place = -1;
+
         if ($this->players->count() <= $this->playersCount){
             $place = $this->getLandingPlace();
             $player = new Player($userId);
             $player->setName($name);
-            if (!is_null($avatar)) $player->setAvatar($avatar);
+            $player->setAvatar($avatar);
             $player->setPlaceOnDesc($place);
             $this->players->push($player);
 
             if ($this->getCurrentPlayersCount() === $this->playersCount)
                 $this->players->sortByPlaces();
         }
+
+        return $place;
     }
 
     protected function getPlaces(): array
@@ -138,7 +142,7 @@ abstract class AbstractPokerTable
 
     public function getChannelName(string $type): string
     {
-        return $type.'-'.$this->id;
+        return $type.'.'.$this->id;
     }
 
     public function getTitle()

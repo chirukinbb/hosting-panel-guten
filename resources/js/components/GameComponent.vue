@@ -2,9 +2,24 @@
     <div v-if="error" class="alert alert-danger" role="alert">
         action not available: {{error}}
     </div>
-    <list-component v-if="isList" v-on:load-screen="loadScreen"></list-component>
-    <loader-component v-if="isLoad" v-on:leave-turn="leaveTurn" :count="count" :channel="this.channel"></loader-component>
-    <table-component v-if="isTable" :table="table"></table-component>
+    <list-component
+        v-if="isList"
+        v-on:load-screen="loadScreen"
+    ></list-component>
+    <loader-component
+        v-if="isLoad"
+        v-on:leave-turn="leaveTurn"
+        v-on:load-table="loadTable"
+        v-on:set-count="setCount"
+        :count="count"
+        :channel="this.channel"
+    ></loader-component>
+    <table-component
+        v-if="isTable"
+        v-on:set-table="setTable"
+        :table="table"
+        :channel="channel"
+    ></table-component>
 </template>
 
 <script>
@@ -42,16 +57,25 @@ export default {
                     Authorization: 'Bearer '+document.querySelector('meta[name="api-token"]').getAttribute('content'),
                 }
             }).then(response => {
-
-                if (response.data.screen === 'error') {
-                    this.error = response.data.message
-                }
-
-                if (response.data.screen === 'loader') {
-                    this.isList = false
-                    this.isLoad = true
-                    this.count = response.data.count
-                    this.channel = response.data.channel
+                console.log(response.data)
+                switch (response.data.screen) {
+                    case 'error':
+                        this.error =  response.data.message
+                        break
+                    case 'list':
+                        this.isList = true
+                        break
+                    case 'loader':
+                        this.isList = false
+                        this.isLoad = true
+                        this.count = response.data.count
+                        this.channel = response.data.channel
+                        break
+                    case 'table':
+                        this.channel = response.data.channel
+                        this.table = response.data.table
+                        this.isLoad = false
+                        this.isTable = true
                 }
             })
         },
@@ -65,6 +89,17 @@ export default {
                 this.isList = true
                 this.isLoad = false
             })
+        },
+        loadTable:function (channel, table) {
+            this.table = table
+            this.channel = channel
+            this.isTable = true
+        },
+        setCount:function (count) {
+            this.count = count
+        },
+        setTable:function (table) {
+            this.table = table
         }
     },
     created:function () {
@@ -74,7 +109,7 @@ export default {
                     Authorization: 'Bearer ' + document.querySelector('meta[name="api-token"]').getAttribute('content')
                 }
             }).then(response => {
-            console.log(response.data.table)
+            console.log(response.data)
                 switch (response.data.screen) {
                     case 'list':
                         this.isList = true

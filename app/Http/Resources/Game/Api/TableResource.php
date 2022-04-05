@@ -26,7 +26,7 @@ class TableResource extends JsonResource
          */
         return [
             'screen'=>'table',
-            'channel'=>$this->getChannelName('turn'),
+            'channel'=>$this->getChannelName('table.'.\Auth::id()),
             'table'=> $this->table
         ];
     }

@@ -14,7 +14,7 @@ abstract class AbstractBroadcaster implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public object $table;
-    protected string $event = '';
+    protected string $event = 'table';
     protected AbstractPokerTable $tableObj;
     protected PokerTableRepository $repository;
 
