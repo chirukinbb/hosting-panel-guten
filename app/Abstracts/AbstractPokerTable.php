@@ -72,13 +72,13 @@ abstract class AbstractPokerTable
         return $cards->removeFirsts($this->minNominal*count($deckSuitsPool));
     }
 
-    public function setPlayer(int $userId, string $name, string $avatar): void
+    public function setPlayer(int $userId, string $name, string|null $avatar): void
     {
         if ($this->players->count() <= $this->playersCount){
             $place = $this->getLandingPlace();
             $player = new Player($userId);
             $player->setName($name);
-            $player->setAvatar($avatar);
+            if (!is_null($avatar)) $player->setAvatar($avatar);
             $player->setPlaceOnDesc($place);
             $this->players->push($player);
 

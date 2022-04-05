@@ -3,7 +3,7 @@
         action not available: {{error}}
     </div>
     <list-component v-if="isList" v-on:load-screen="loadScreen"></list-component>
-    <loader-component v-if="isLoad" v-on:leave-turn="leaveTurn" :count="count"></loader-component>
+    <loader-component v-if="isLoad" v-on:leave-turn="leaveTurn" :count="count" :channel="this.channel"></loader-component>
     <table-component v-if="isTable" :table="table"></table-component>
 </template>
 
@@ -42,7 +42,7 @@ export default {
                     Authorization: 'Bearer '+document.querySelector('meta[name="api-token"]').getAttribute('content'),
                 }
             }).then(response => {
-                console.log(response.data)
+
                 if (response.data.screen === 'error') {
                     this.error = response.data.message
                 }
@@ -52,7 +52,6 @@ export default {
                     this.isLoad = true
                     this.count = response.data.count
                     this.channel = response.data.channel
-                    this.reconnect(response.data.listen)
                 }
             })
         },
@@ -63,32 +62,9 @@ export default {
                     Authorization: 'Bearer '+document.querySelector('meta[name="api-token"]').getAttribute('content'),
                 }
             }).then(response => {
-                if (response.data.screen === 'list') {
-                    Echo.leaveChannel(this.channel)
-                }
-
                 this.isList = true
                 this.isLoad = false
             })
-        },
-        reconnect:function (listen) {
-            Echo.leaveChannel(this.channel)
-
-            Echo.channel(this.channel)
-                .listen('.'+listen,data => {
-                    console.log(data)
-                    switch (data.screen) {
-                        case 'loader':
-                            this.count = data.count
-                            break
-                        case 'table':
-                            this.table = data.table
-                            this.isLoad = false
-                            this.isTable =  true
-                            this.reconnect(data.newEvent)
-                            break
-                    }
-                })
         }
     },
     created:function () {
@@ -107,13 +83,11 @@ export default {
                         this.isLoad = true
                         this.count = response.data.count
                         this.channel = response.data.channel
-                        this.reconnect(response.data.listen)
                         break
                     case 'table':
                         this.isTable = true
                         this.channel = response.data.channel
                         this.table = response.data.table
-                        this.reconnect('table')
                         break
                 }
             })

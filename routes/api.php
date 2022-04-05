@@ -28,3 +28,13 @@ Route::post('/table/action', [\App\Http\Controllers\Game\Api\TableController::cl
     ->middleware('auth:sanctum','ability:User,Admin')->name('action');
 Route::post('/table/leave', [\App\Http\Controllers\Game\Api\TableController::class,'leave'])
     ->middleware('auth:sanctum','ability:User,Admin')->name('leave');
+
+Broadcast::routes(
+    [
+        'middleware' =>
+            [
+                'auth:sanctum',
+                'ability:User,Admin'
+            ]
+    ]
+);

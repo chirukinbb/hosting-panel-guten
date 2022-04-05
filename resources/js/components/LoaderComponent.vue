@@ -11,11 +11,20 @@
 </template>
 
 <script>
+import Echo from "laravel-echo"
+window.Pusher = require('pusher-js')
+
 export default {
     name: "LoaderComponent",
-  props:{ count:Number },
+  props:{
+      count:Number,
+      channel:String
+  },
   data:function () {
-    return { isSearch:true }
+    return {
+      isSearch:true,
+      socket:null
+    }
   },
   methods:{
       leaving:function () {
@@ -23,6 +32,47 @@ export default {
 
         this.$emit('leave-turn')
       }
+  },
+  created(event, callback) {
+    this.socket = new Echo({
+      broadcaster: 'pusher',
+      key: '4326370c5eb04b2329d3',
+      wsHost: window.location.hostname,
+      wsPort: 6001,
+      forceTLS: false,
+      authorizer: (channel, options) => {
+        return {
+          authorize: (socketId, callback) => {
+            axios.post('/api/broadcasting/auth', {
+              socket_id: socketId,
+              channel_name: channel.name
+            },{
+              headers: {
+                Authorization: 'Bearer '+document.querySelector('meta[name="api-token"]').getAttribute('content'),
+              }
+            })
+                .then(response => {
+                  callback(false, response.data);
+                })
+                .catch(error => {
+                  callback(true, error);
+                });
+          }
+        };
+      },
+      disableStats: false
+    }).private(this.channel).listen('.turn', e => {
+        switch (e.screen) {
+            case 'loader':
+                this.count = e.count
+                break
+            case 'table':
+                this.isTable = true
+                this.channel = e.channel
+                this.table = e.table
+                break
+        }
+    })
   }
 }
 </script>

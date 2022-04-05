@@ -19,6 +19,14 @@ class Round
         $this->bankCollection = new BankCollection();
     }
 
+    /**
+     * @return int
+     */
+    public function getNumber(): int
+    {
+        return $this->number ?? 0;
+    }
+
     public function preFlop(Player $player, int $cardsInHand)
     {
         for ($i = 0; $i < $cardsInHand; $i ++){

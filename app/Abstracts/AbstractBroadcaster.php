@@ -2,10 +2,9 @@
 
 namespace App\Abstracts;
 
-use App\Models\Game\Table;
 use App\Repositories\PokerTableRepository;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -29,7 +28,7 @@ abstract class AbstractBroadcaster implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new Channel($this->channel);
+        return new PrivateChannel($this->channel);
     }
 
     public function broadcastAs()

@@ -73,11 +73,16 @@ class PokerTableRepository
 
     public function startRound()
     {
-        $this->tableObj->startRound(1);
-        // todo: remake
-        $this->tableObj->changeStatuses(0);
+        $number = $this->tableObj->getRoundNumber();
+        $dealerPlace = $this->tableObj->getDealerPlace();
+        $this->tableObj->startRound($number + 1);
+        $this->tableObj->changeStatuses($dealerPlace + 1);
         $this->tableObj->payBlinds();
         $this->tableObj->preFlop();
+
+        $this->tableObj->eachPlayer();
+
+        $this->table->round =  (object) ['number'=>$number + 1];
 
         return $this;
     }

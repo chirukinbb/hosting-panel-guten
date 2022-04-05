@@ -43,12 +43,25 @@ trait RoundTrait
         $this->putCardsOnTable(1);
     }
 
-    public function auction()
+    public function getRoundNumber()
     {
+        return $this->round->getNumber();
     }
 
     protected function putCardsOnTable(int $count)
     {
         $this->round->putCardsOnTable($count);
+    }
+
+    public function getDealerPlace()
+    {
+        $place = 0;
+
+        $this->eachPlayer(function (Player $player) use (&$place) {
+            if ($player->isDealer())
+                $place = $player->getPlace();
+        });
+
+        return $place;
     }
 }
