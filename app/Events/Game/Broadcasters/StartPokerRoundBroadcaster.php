@@ -3,20 +3,15 @@
 namespace App\Events\Game\Broadcasters;
 
 use App\Abstracts\AbstractBroadcaster;
+use App\Repositories\PokerTableRepository;
 
 class StartPokerRoundBroadcaster extends AbstractBroadcaster
 {
-    public string $newEvent = 'table';
-    protected string $event = 'table';
+    protected string $broadcasterClassName = AuctionPokerRoundBroadcaster::class;
 
-    public function __construct(int $tableId, string $screen, string $channel)
+    public function actions():PokerTableRepository
     {
-        parent::__construct($tableId, $screen, $channel);
-
-        $this->table = $this->repository->startRound()
-            ->save()
-            ->getTable();
-
-        self::broadcast(new AuctionPokerRoundBroadcaster($tableId,$screen,$channel));
+        return $this->repository->startRound()
+            ->setPlayers();
     }
 }

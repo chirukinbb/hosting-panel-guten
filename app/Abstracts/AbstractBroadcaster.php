@@ -13,17 +13,18 @@ abstract class AbstractBroadcaster implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public object $table;
     protected string $event = 'table';
     protected AbstractPokerTable $tableObj;
     protected PokerTableRepository $repository;
+    protected string $broadcasterClassName;
 
     public function __construct(
-        int $tableId,
-        public string      $screen,
-        protected string   $channel
-    ) {
-        $this->repository = new PokerTableRepository($tableId);
+        public int    $tableId,
+        public string $screen,
+        public string $channel,
+        public int    $userId
+    )
+    {
     }
 
     public function broadcastOn()
@@ -35,4 +36,27 @@ abstract class AbstractBroadcaster implements ShouldBroadcast
     {
         return $this->event;
     }
+
+    public function broadcastWith()
+    {
+        $this->repository = new PokerTableRepository($this->tableId);
+
+        $table  = $this->actions()
+            ->save()
+            ->getTable();
+
+        broadcast(new $this->broadcasterClassName(
+            $this->tableId,
+            $this->screen,
+            $this->channel,
+            $this->userId
+        ));
+
+        return [
+            'table' =>$table,
+            'screen'=>$this->screen
+        ];
+    }
+
+    abstract public function actions(): PokerTableRepository;
 }
