@@ -31,8 +31,8 @@ abstract class AbstractPokerTable
         $this->cardsInHand = $this->getCardsInHand();
         $this->blind = $this->getBlind();
         $this->places = $this->getPlaces();
-        $this->cardDeck = $this->getCardDeck();
         $this->players = new PlayersCollection();
+        $this->cardDeck = $this->getCardDeck();
     }
 
     public function setId(int $id): void
@@ -148,5 +148,17 @@ abstract class AbstractPokerTable
     public function getTitle()
     {
         return $this->getType().', '.$this->playersCount.' Players, Blind '.$this->blind;
+    }
+
+    public function getDealerIndex(): int
+    {
+        return $this->players->getDealerIndex();
+    }
+
+    public function removePlayersCards()
+    {
+        $this->players->each(function (Player $player) {
+            $player->removeCards();
+        });
     }
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Game\Api\ErrorResource;
 use App\Http\Resources\Game\Api\TableResource;
 use App\Http\Resources\Game\Api\TurnResource;
+use App\Jobs\Game\StartPokerRoundJob;
 use App\Models\Game\Player;
 use App\Models\Game\Table;
 use Illuminate\Http\Request;
@@ -117,7 +118,6 @@ class TurnController extends Controller
 
         $player->save();
 
-
         $table->object->eachPlayer(function (\App\Game\Player $player) use ($table) {
             $place = $player->getPlace();
 
@@ -128,7 +128,10 @@ class TurnController extends Controller
             ));
 
             if ($table->object->getPlayersCount() === $table->object->getCurrentPlayersCount()) {
-                $this->toTable = true;
+                if (!$this->toTable) {
+                    $this->dispatch(new StartPokerRoundJob($table->id));
+                    $this->toTable = true;
+                }
 
                 $pokerman = Player::whereSearched($table->id)->where('user_id', $player->getPlayerId())
                     ->first();

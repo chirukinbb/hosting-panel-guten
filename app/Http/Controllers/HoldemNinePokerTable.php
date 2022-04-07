@@ -9,7 +9,7 @@ class HoldemNinePokerTable extends \App\Abstracts\AbstractPokerTable
         return 1;
     }
 
-    protected function getCardsInHand()
+    public function getCardsInHand()
     {
         return 2;
     }
@@ -19,8 +19,13 @@ class HoldemNinePokerTable extends \App\Abstracts\AbstractPokerTable
         return 9;
     }
 
-    protected function getBlind()
+    public function getBlind()
     {
         return 10;
+    }
+
+    public function getType()
+    {
+        return 'Holdem';
     }
 }

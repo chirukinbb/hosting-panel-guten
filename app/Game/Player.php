@@ -34,6 +34,11 @@ class Player
         $this->place = $place;
     }
 
+    public function removeCards()
+    {
+        $this->cards->empty();
+    }
+
     public function giveCard(Card $card)
     {
         $this->cards->push($card);
@@ -67,7 +72,6 @@ class Player
 
     public function setLBStatus(bool $isLB)
     {
-        $this->addToBank(0);
         $this->isLB =  $isLB;
     }
 

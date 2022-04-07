@@ -76,20 +76,34 @@ class PokerTableRepository
         return $this;
     }
 
-    public function startRound()
+    public function createRound(): static
     {
         $number = $this->tableObj->getRoundNumber();
         $dealerPlace = $this->tableObj->getDealerPlace();
         $this->tableObj->startRound($number + 1);
         $this->tableObj->changeStatuses($dealerPlace + 1);
         $this->tableObj->payBlinds();
+        $this->tableObj->removePlayersCards();//dd($this->tableObj);
+        //$this->tableObj->refreshDeck();
         $this->tableObj->preFlop();
-
-        $this->tableObj->eachPlayer();
-
-        $this->table->round =  (object) ['number'=>$number + 1];
+        $this->tableObj->flop();
+        $this->tableObj->turn();
+        $this->tableObj->river();
 
         return $this;
+    }
+
+    public function startRound(): static
+    {
+
+        $this->table->round =  (object) ['number'=>$this->tableObj->getRoundNumber()];
+
+        return $this;
+    }
+
+    public function preFlopForPlayer(int $userId)
+    {
+
     }
 
     public function playerTurn()
@@ -141,7 +155,7 @@ class PokerTableRepository
      */
     public function getTable(): object
     {
-        return $this->table;
+        return $this->tableObj;
     }
 
     public function isTurnTransfer(): bool

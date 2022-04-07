@@ -11,11 +11,9 @@ class Round
     protected CardsCollection $tableCards;
     protected array $combos;
     protected BankCollection $bankCollection;
-    protected int $round;
 
-    public function __construct(protected CardsCollection $cardsPool,int $number = 0)
+    public function __construct(protected CardsCollection $cardsPool,protected int $number)
     {
-        $this->round = $number;
         $this->combos = config('poker.combos');
         $this->tableCards = new CardsCollection();
         $this->bankCollection = new BankCollection();
@@ -26,7 +24,7 @@ class Round
      */
     public function getNumber(): int
     {
-        return $this->number;
+        return $this->number ?? 0;
     }
 
     public function preFlop(Player $player, int $cardsInHand)

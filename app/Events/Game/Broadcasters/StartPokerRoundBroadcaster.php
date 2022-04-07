@@ -11,7 +11,6 @@ class StartPokerRoundBroadcaster extends AbstractBroadcaster
 
     public function actions():PokerTableRepository
     {
-        return $this->repository->startRound()
-            ->setPlayers();
+        return $this->repository->startRound();
     }
 }

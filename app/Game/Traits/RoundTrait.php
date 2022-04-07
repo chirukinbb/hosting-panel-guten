@@ -11,7 +11,7 @@ trait RoundTrait
 
     public function startRound(int $number)
     {
-        $this->round  = new Round($this->cardDeck,$number);
+        $this->round  = new Round(clone $this->cardDeck,$number);
     }
 
     public function preFlop()
@@ -45,7 +45,7 @@ trait RoundTrait
 
     public function getRoundNumber()
     {
-        return $this->round->getNumber();
+        return !empty($this->round) ? $this->round->getNumber() : 0;
     }
 
     protected function putCardsOnTable(int $count)
@@ -55,13 +55,6 @@ trait RoundTrait
 
     public function getDealerPlace()
     {
-        $place = 0;
-
-        $this->eachPlayer(function (Player $player) use (&$place) {
-            if ($player->isDealer())
-                $place = $player->getPlace();
-        });
-
-        return $place;
+        return $this->players->getDealerIndex();
     }
 }

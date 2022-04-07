@@ -60,6 +60,7 @@ class PlayersCollection extends AbstractGameCollection
     public function sortFromLB(): PlayersCollection
     {
         $collection = [];
+        $dealerIndex = 0;
 
         /**
          * @var Player $player
@@ -100,5 +101,20 @@ class PlayersCollection extends AbstractGameCollection
     public function removeWhereObj($player): void
     {
         unset($this->collection[array_search($player, $this->collection)]);
+    }
+
+    public function getDealerIndex()
+    {
+        $index = -1;
+
+        foreach ($this->collection as $player) {
+            /**
+             * @var Player $player
+             */
+            if ($player->isDealer())
+                $index = $player->getPlace();
+        }
+
+        return $index;
     }
 }

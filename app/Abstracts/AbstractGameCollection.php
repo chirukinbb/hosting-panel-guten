@@ -46,4 +46,9 @@ class AbstractGameCollection
     {
         return $this->collection;
     }
+
+    public function empty()
+    {
+        $this->collection  = [];
+    }
 }

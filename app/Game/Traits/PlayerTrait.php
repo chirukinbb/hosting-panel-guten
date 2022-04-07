@@ -6,7 +6,7 @@ use App\Game\Player;
 
 trait PlayerTrait
 {
-    private int $currentDealerIndex;
+    private int $currentIndex;
 
     public function changeStatuses(int $currentDealerIndex)
     {
@@ -34,7 +34,7 @@ trait PlayerTrait
                 $currentDealerIndex = ($currentDealerIndex + 1) % $this->playersCount;
             }
 
-            $this->currentDealerIndex = $currentDealerIndex;
+            $this->currentIndex = $currentDealerIndex;
         });
 
         $this->players->sortByPlaces();
