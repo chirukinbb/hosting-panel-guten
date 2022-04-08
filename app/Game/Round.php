@@ -11,6 +11,8 @@ class Round
     protected CardsCollection $tableCards;
     protected array $combos;
     protected BankCollection $bankCollection;
+    protected int $lastRaisePlayerId;
+    protected int $actionTurnOfPlayerId;
 
     public function __construct(protected CardsCollection $cardsPool,protected int $number)
     {
@@ -89,5 +91,37 @@ class Round
         $this->bankCollection->setStep(0);
         $this->bankCollection->add($amount);
         $player->addToBank(0, $amount);
+    }
+
+    /**
+     * @param int $actionTurnOfPlayerId
+     */
+    public function setActionTurnOfPlayerId(int $actionTurnOfPlayerId): void
+    {
+        $this->actionTurnOfPlayerId = $actionTurnOfPlayerId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getActionTurnOfPlayerId(): int
+    {
+        return $this->actionTurnOfPlayerId;
+    }
+
+    /**
+     * @param int $lastRaisePlayerId
+     */
+    public function setLastRaisePlayerId(int $lastRaisePlayerId): void
+    {
+        $this->lastRaisePlayerId = $lastRaisePlayerId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastRaisePlayerId(): int
+    {
+        return $this->lastRaisePlayerId;
     }
 }

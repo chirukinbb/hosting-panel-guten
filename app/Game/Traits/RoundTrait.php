@@ -7,8 +7,6 @@ use App\Game\Round;
 
 trait RoundTrait
 {
-    protected Round $round;
-
     public function startRound(int $number)
     {
         $this->round  = new Round(clone $this->cardDeck,$number);
@@ -56,5 +54,10 @@ trait RoundTrait
     public function getDealerPlace()
     {
         return $this->players->getDealerIndex();
+    }
+
+    public function getAuctionPlayerId()
+    {
+        return $this->round->getActionTurnOfPlayerId();
     }
 }

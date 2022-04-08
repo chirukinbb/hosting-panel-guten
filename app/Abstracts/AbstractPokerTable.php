@@ -3,9 +3,11 @@
 namespace App\Abstracts;
 
 use App\Game\Card;
+use App\Game\Collections\ActionCollection;
 use App\Game\Collections\CardsCollection;
 use App\Game\Collections\PlayersCollection;
 use App\Game\Player;
+use App\Game\Round;
 use App\Game\Traits\CardTrait;
 use App\Game\Traits\PlayerTrait;
 use App\Game\Traits\RoundTrait;
@@ -23,6 +25,7 @@ abstract class AbstractPokerTable
     protected array $places;
     protected PlayersCollection $players;
     protected CardsCollection $cardDeck;
+    protected Round $round;
 
     public function __construct()
     {

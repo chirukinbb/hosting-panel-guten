@@ -45,12 +45,14 @@ abstract class AbstractBroadcaster implements ShouldBroadcast
             ->save()
             ->getTable();
 
-        broadcast(new $this->broadcasterClassName(
-            $this->tableId,
-            $this->screen,
-            $this->channel,
-            $this->userId
-        ));
+        if (class_exists($this->broadcasterClassName)) {
+            broadcast(new $this->broadcasterClassName(
+                $this->tableId,
+                $this->screen,
+                $this->channel,
+                $this->userId
+            ));
+        }
 
         return [
             'table' =>$table,

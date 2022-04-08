@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Abstracts\AbstractGameAction;
 use App\Abstracts\AbstractPokerTable;
+use App\Game\Card;
 use App\Game\Player;
 use App\Models\Game\Table;
 
@@ -83,8 +85,7 @@ class PokerTableRepository
         $this->tableObj->startRound($number + 1);
         $this->tableObj->changeStatuses($dealerPlace + 1);
         $this->tableObj->payBlinds();
-        $this->tableObj->removePlayersCards();//dd($this->tableObj);
-        //$this->tableObj->refreshDeck();
+        $this->tableObj->removePlayersCards();
         $this->tableObj->preFlop();
         $this->tableObj->flop();
         $this->tableObj->turn();
@@ -95,28 +96,51 @@ class PokerTableRepository
 
     public function startRound(): static
     {
-
         $this->table->round =  (object) ['number'=>$this->tableObj->getRoundNumber()];
 
         return $this;
     }
 
-    public function preFlopForPlayer(int $userId)
+    public function preFlop(int $userId): static
     {
+        $this->tableObj->eachPlayer(function (Player $player) use ($userId){
+            if ($player->getPlayerId() === $userId) {
+                $player->eachCard(function (Card $card) use ($player) {
+                    $this->table->players[$player->getPlace()]->hand->cards[] = (object)[
+                        'nominal' => $card->getNominalIndex(),
+                        'suit' => $card->getSuitIndex()
+                    ];
+                });
+            }
+        });
 
+        return $this;
     }
 
-    public function playerTurn()
+    public function startTimer(int $userId): static
+    {
+        $this->tableObj->eachPlayer(function (Player $player) use ($userId){
+            if ($this->tableObj->getAuctionPlayerId() === $userId){
+                $player->eachAction(function (AbstractGameAction $action)  use ($player){
+                    $this->table->players[$player->getPlace()]->actions[$action->getId()] = (object) [
+                        'name'=>$action->getName(),
+                        'is_active'=>$action->isActive()
+                    ];
+                });
+            } else{
+                $this->table->players[$player->getPlace()]->timer = 20;
+            }
+        });
+
+        return $this;
+    }
+
+    public function actionFromPlayer(int $place, array $action): static
     {
         return $this;
     }
 
-    public function actionFromPlayer(int $place, array $action)
-    {
-        return $this;
-    }
-
-    public function entTimeForTurn()
+    public function entTimeForTurn(): static
     {
         return $this;
     }
@@ -172,6 +196,4 @@ class PokerTableRepository
     {
         return true;
     }
-
-
 }

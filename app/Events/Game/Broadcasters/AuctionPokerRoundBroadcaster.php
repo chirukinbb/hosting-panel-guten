@@ -3,19 +3,20 @@
 namespace App\Events\Game\Broadcasters;
 
 use App\Abstracts\AbstractBroadcaster;
+use App\Jobs\Game\FinishPlayerTurnJob;
+use App\Repositories\PokerTableRepository;
 
 class AuctionPokerRoundBroadcaster extends AbstractBroadcaster
 {
-    protected string $event = 'table';
+    protected string $broadcasterClassName = '';
 
-    public function __construct(int $tableId, string $screen, string $channel)
+    public function actions():PokerTableRepository
     {
-        parent::__construct($tableId, $screen, $channel);
+        dispatch(new FinishPlayerTurnJob(
+            $this->tableId,
+            $this->userId
+        ))->delay(now()->addSeconds(21));
 
-        $this->table = $this->repository->playerTurn()
-            ->save()
-            ->getTable();
-
-        dispatch(new EndTimeOnTurnBroadcaster($tableId,$screen,$channel))->delay(now()->addSeconds(30));
+        return $this->repository->startTimer($this->userId);
     }
 }

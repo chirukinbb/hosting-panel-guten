@@ -26,6 +26,7 @@ class Player
     {
         $this->cards = new CardsCollection();
         $this->bank = new BankCollection();
+        $this->actions = new ActionCollection();
         $this->bank->setAmount(1000);
     }
 
@@ -214,5 +215,15 @@ class Player
     public function isInRound(): bool
     {
         return $this->inRound;
+    }
+
+    public function eachCard(callable $func)
+    {
+        $this->cards->each($func);
+    }
+
+    public function eachAction(callable $func)
+    {
+        $this->actions->each($func);
     }
 }

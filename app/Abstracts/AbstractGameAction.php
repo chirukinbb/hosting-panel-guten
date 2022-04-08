@@ -6,7 +6,9 @@ abstract class AbstractGameAction
 {
     protected string $name;
     protected int $id;
-    protected bool $isActive;
+    protected bool $isActive = false;
+    protected bool $payToBank;
+    protected int $amount;
 
     /**
      * @return string
@@ -32,5 +34,43 @@ abstract class AbstractGameAction
         $this->isActive = $isActive;
     }
 
-    abstract public function handle();
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @param bool $payToBank
+     */
+    public function setPayToBank(bool $payToBank): void
+    {
+        $this->payToBank = $payToBank;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPayToBank(): bool
+    {
+        return $this->payToBank;
+    }
+
+    /**
+     * @param int $amount
+     */
+    public function setAmount(int $amount): void
+    {
+        $this->amount = $amount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmount(): int
+    {
+        return $this->amount;
+    }
 }
