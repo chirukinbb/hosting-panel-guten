@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Events\ArticlePublishEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ArticleRequest;
+use App\Models\Article;
 use App\Repositories\Admin\ArticleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,8 @@ use Illuminate\Support\Facades\Auth;
 class ArticleController extends Controller
 {
     public function __construct(protected ArticleRepository $repository)
-    {}
+    {
+    }
 
     public function index()
     {
@@ -36,6 +38,9 @@ class ArticleController extends Controller
         } else {
             $article = $this->repository->published($request->all());
             $message = __('admin/article.submit.publish');
+            /**
+             * @var Article $article
+             */
             event(new ArticlePublishEvent($article));
         }
 

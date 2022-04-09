@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\ArticlePublishEvent;
 use App\Listeners\ArticlePublishPusher;
+use App\Listeners\ArticleTelegramAnnounce;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -20,7 +21,8 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         ArticlePublishEvent::class => [
-            ArticlePublishPusher::class
+            ArticleTelegramAnnounce::class,
+            ArticlePublishPusher::class,
         ]
     ];
 

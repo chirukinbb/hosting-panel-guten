@@ -35,7 +35,7 @@ class ArticleRepository extends AbstractRepository
 
     public function create(array $attributes)
     {
-        if ($attributes['thumbnail'] instanceof UploadedFile)
+        if (isset($attributes['thumbnail']) && $attributes['thumbnail'] instanceof UploadedFile)
             /**
              * @var UploadedFile $attributes ['thumbnail']
              */
@@ -46,7 +46,7 @@ class ArticleRepository extends AbstractRepository
 
     public function update(array $attributes)
     {
-        if ($attributes['thumbnail'] instanceof UploadedFile)
+        if (isset($attributes['thumbnail']) && $attributes['thumbnail'] instanceof UploadedFile)
             /**
              * @var UploadedFile $attributes ['thumbnail']
              */

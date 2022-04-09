@@ -30,7 +30,8 @@
             </div>
             <div class="col-4 widgets-area">
                 @include('admin.article.widgets.submit',['article'=>[]])
-                @include('admin.article.widgets.thumbnail',['article'=>$article])
+                @include('admin.article.widgets.thumbnail',['article'=>[]])
+                @include('admin.article.widgets.announce')
             </div>
         </div>
     </form>
