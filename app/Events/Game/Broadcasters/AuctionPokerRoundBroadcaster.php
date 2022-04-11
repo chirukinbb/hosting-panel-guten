@@ -10,13 +10,8 @@ class AuctionPokerRoundBroadcaster extends AbstractBroadcaster
 {
     protected string $broadcasterClassName = '';
 
-    public function actions():PokerTableRepository
+    public function action(): \App\Builders\PokerTableBuilder
     {
-        dispatch(new FinishPlayerTurnJob(
-            $this->tableId,
-            $this->userId
-        ))->delay(now()->addSeconds(21));
-
-        return $this->repository->startTimer($this->userId);
+        return $this->builder->startTimer($this->userId);
     }
 }

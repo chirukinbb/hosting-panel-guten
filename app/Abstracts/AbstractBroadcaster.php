@@ -2,6 +2,7 @@
 
 namespace App\Abstracts;
 
+use App\Builders\PokerTableBuilder;
 use App\Repositories\PokerTableRepository;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -14,8 +15,7 @@ abstract class AbstractBroadcaster implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     protected string $event = 'table';
-    protected AbstractPokerTable $tableObj;
-    protected PokerTableRepository $repository;
+    protected PokerTableBuilder $builder;
     protected string $broadcasterClassName;
 
     public function __construct(
@@ -39,10 +39,9 @@ abstract class AbstractBroadcaster implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        $this->repository = new PokerTableRepository($this->tableId);
+        $this->builder = new PokerTableBuilder($this->tableId, $this->userId);
 
-        $table  = $this->actions()
-            ->save()
+        $table  = $this->action()
             ->getTable();
 
         if (class_exists($this->broadcasterClassName)) {
@@ -60,5 +59,5 @@ abstract class AbstractBroadcaster implements ShouldBroadcast
         ];
     }
 
-    abstract public function actions(): PokerTableRepository;
+    abstract public function action(): PokerTableBuilder;
 }

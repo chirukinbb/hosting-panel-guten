@@ -12,6 +12,9 @@ class StartAuctionForPlayerJob extends AbstractGameJob
 
     public function action(): PokerTableRepository
     {
+        dispatch(new FinishPlayerTurnJob($this->tableId))
+            ->delay(now()->addSeconds($this->repository->getTimeOnTurn()));// ставим задачу на прекращение хода
+
         return $this->repository->startTimer();
     }
 }

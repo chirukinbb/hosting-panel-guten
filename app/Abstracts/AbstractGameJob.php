@@ -24,8 +24,7 @@ abstract class AbstractGameJob implements ShouldQueue
      */
     public function __construct(
         public int    $tableId,
-        public string $screen,
-        public string $channel
+        public string $screen
     )
     {
         $this->repository = new PokerTableRepository($tableId);
@@ -46,10 +45,10 @@ abstract class AbstractGameJob implements ShouldQueue
 
     protected function eachPlayerFunc(Player $player)
     {
-        broadcast(new $this->broadcasterClass(// оповещение о старте хода в клиет игры
+        broadcast(new $this->broadcasterClass(// оповещение о дейстии в клиет игры
             $this->tableId,
             $this->screen,
-            $this->channel,
+            $this->repository->getChannelName('table', $player->getUserId()),
             $player->getUserId()
         ));
     }

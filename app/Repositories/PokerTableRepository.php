@@ -78,6 +78,16 @@ class PokerTableRepository
         return $this;
     }
 
+    /**
+     * действия при остаче одного игрока за столом
+     *
+     * @return $this
+     */
+    public function finishTable(): static
+    {
+        return $this;
+    }
+
     public function createRound(): static
     {
         $number = $this->tableObj->getRoundNumber();
@@ -92,6 +102,11 @@ class PokerTableRepository
         $this->tableObj->river();
 
         return $this;
+    }
+
+    public function getTimeOnTurn()
+    {
+        return $this->tableObj->getTimeOnTurn();
     }
 
     public function startRound(): static
@@ -134,8 +149,21 @@ class PokerTableRepository
         return $this;
     }
 
+    /**
+     * у игрока закончилось время на ход
+     *
+     * @return $this
+     */
     public function entTimeForTurn(): static
     {
+        $this->tableObj->eachPlayer(function (Player $player) {
+            if ($this->tableObj->getAuctionUserId() === $player->getUserId()) {
+                $player->eachAction(function (AbstractGameAction $action) {
+                    $action->setIsActive(false);
+                });
+            }
+        });
+
         return $this;
     }
 
@@ -189,5 +217,10 @@ class PokerTableRepository
     public function isTableFinish(): bool
     {
         return true;
+    }
+
+    public function getTableObject()
+    {
+        return $this->tableObj;
     }
 }

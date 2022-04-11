@@ -26,6 +26,7 @@ abstract class AbstractPokerTable
     protected PlayersCollection $players;
     protected CardsCollection $cardDeck;
     protected Round $round;
+    protected int $timeOnTurn;
 
     public function __construct()
     {
@@ -46,6 +47,14 @@ abstract class AbstractPokerTable
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeOnTurn(): int
+    {
+        return $this->timeOnTurn;
     }
 
     abstract public function getType();
@@ -165,13 +174,8 @@ abstract class AbstractPokerTable
         });
     }
 
-    public function getLastAuctionUserId()
-    {
-        return $this->round->getLastAuctionUserId();
-    }
-
     /**
-     * установить игрока, кто будет следующим  делать ставку
+     * установить игрока, кто будет сейчас  делать ставку
      */
     public function setNextPlayerAuction()
     {
@@ -213,5 +217,15 @@ abstract class AbstractPokerTable
                 });
             }
         });
+    }
+
+    /**
+     * получить ID игрока, делающего сейчас ставку
+     *
+     * @return int
+     */
+    public function getAuctionUserId()
+    {
+        return $this->round->getLastAuctionUserId();
     }
 }

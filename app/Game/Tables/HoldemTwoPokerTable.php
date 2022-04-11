@@ -7,6 +7,7 @@ use App\Abstracts\AbstractPokerTable;
 class HoldemTwoPokerTable extends AbstractPokerTable
 {
     public static int $count = 2;
+    protected int $timeOnTurn = 20;
 
     protected function getMinNominal()
     {
