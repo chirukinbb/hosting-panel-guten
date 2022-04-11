@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Game\Api\ErrorResource;
 use App\Http\Resources\Game\Api\TableResource;
 use App\Http\Resources\Game\Api\TurnResource;
+use App\Jobs\Game\StartAuctionForPlayerJob;
 use App\Jobs\Game\StartPokerRoundJob;
 use App\Models\Game\Player;
 use App\Models\Game\Table;
@@ -30,7 +31,7 @@ class TurnController extends Controller
             $table = Table::find($player->searched);
 
             $table->object->eachPlayer(function (\App\Game\Player $player) use ($table) {
-                if ($player->getPlayerId() === \Auth::id()) {
+                if ($player->getUserId() === \Auth::id()) {
                     $place = $player->getPlace();
 
                     $this->result = TurnResource::make(
@@ -121,7 +122,7 @@ class TurnController extends Controller
         $table->object->eachPlayer(function (\App\Game\Player $player) use ($table) {
             $place = $player->getPlace();
 
-            broadcast(new PlayersUpdateInPokerTableBroadcaster(
+            broadcast(new PlayersUpdateInPokerTableBroadcaster(// посадка нового игрока за стол(БД) + оповещение остальных о нем в очередь
                 $table->object->getCurrentPlayersCount(),
                 'loader',
                 $table->object->getChannelName('turn.' . $place)
@@ -129,17 +130,17 @@ class TurnController extends Controller
 
             if ($table->object->getPlayersCount() === $table->object->getCurrentPlayersCount()) {
                 if (!$this->toTable) {
-                    $this->dispatch(new StartPokerRoundJob($table->id));
+                    $this->dispatch(new StartPokerRoundJob($table->id));// Разклад карт на раунд в БД
                     $this->toTable = true;
                 }
 
-                $pokerman = Player::whereSearched($table->id)->where('user_id', $player->getPlayerId())
+                $pokerman = Player::whereSearched($table->id)->where('user_id', $player->getUserId())
                     ->first();
                 $pokerman->searched = 0;
                 $pokerman->gamed = $table->id;
                 $pokerman->save();
 
-                broadcast(new CreatePokerTableBroadcaster(
+                broadcast(new CreatePokerTableBroadcaster(// Разсадка игроков в клиенте игры
                     $table->id,
                     'table',
                     $table->object->getChannelName('turn.' . $place),
@@ -151,6 +152,12 @@ class TurnController extends Controller
         if ($this->toTable) {
             $table->status = Table::CONTINUE;
             $table->save();
+
+            $this->dispatch(new StartAuctionForPlayerJob(// старт таймера на ход игрока в БД
+                $table->id,
+                'table',
+                $table->object->getChannelName('turn.' . $place)
+            ));
         }
 
         return $this->toTable ?

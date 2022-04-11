@@ -12,13 +12,47 @@ class Round
     protected array $combos;
     protected BankCollection $bankCollection;
     protected int $lastRaisePlayerId;
-    protected int $actionTurnOfPlayerId;
+    protected int $lastAuctionPlayerId;
+    protected int $maxBidInTurn;
+    protected int $currentStepInTurn;
 
     public function __construct(protected CardsCollection $cardsPool,protected int $number)
     {
         $this->combos = config('poker.combos');
         $this->tableCards = new CardsCollection();
         $this->bankCollection = new BankCollection();
+    }
+
+    /**
+     * @param int $currentStepInTurn
+     */
+    public function setCurrentStepInTurn(int $currentStepInTurn): void
+    {
+        $this->currentStepInTurn = $currentStepInTurn;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCurrentStepInTurn(): int
+    {
+        return $this->currentStepInTurn;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxBidInTurn(): int
+    {
+        return $this->maxBidInTurn;
+    }
+
+    /**
+     * @param int $maxBidInTurn
+     */
+    public function setMaxBidInTurn(int $maxBidInTurn): void
+    {
+        $this->maxBidInTurn = $maxBidInTurn;
     }
 
     /**
@@ -94,25 +128,9 @@ class Round
     }
 
     /**
-     * @param int $actionTurnOfPlayerId
-     */
-    public function setActionTurnOfPlayerId(int $actionTurnOfPlayerId): void
-    {
-        $this->actionTurnOfPlayerId = $actionTurnOfPlayerId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getActionTurnOfPlayerId(): int
-    {
-        return $this->actionTurnOfPlayerId;
-    }
-
-    /**
      * @param int $lastRaisePlayerId
      */
-    public function setLastRaisePlayerId(int $lastRaisePlayerId): void
+    public function setLastRaiseUserId(int $lastRaisePlayerId): void
     {
         $this->lastRaisePlayerId = $lastRaisePlayerId;
     }
@@ -120,8 +138,24 @@ class Round
     /**
      * @return int
      */
-    public function getLastRaisePlayerId(): int
+    public function getLastRaiseUserId(): int
     {
         return $this->lastRaisePlayerId;
+    }
+
+    /**
+     * @param int $lastAuctionPlayerId
+     */
+    public function setLastAuctionUserId(int $lastAuctionPlayerId): void
+    {
+        $this->lastAuctionPlayerId = $lastAuctionPlayerId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastAuctionUserId(): int
+    {
+        return $this->lastAuctionPlayerId;
     }
 }

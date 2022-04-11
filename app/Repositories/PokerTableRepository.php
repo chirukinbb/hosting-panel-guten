@@ -104,7 +104,7 @@ class PokerTableRepository
     public function preFlop(int $userId): static
     {
         $this->tableObj->eachPlayer(function (Player $player) use ($userId){
-            if ($player->getPlayerId() === $userId) {
+            if ($player->getUserId() === $userId) {
                 $player->eachCard(function (Card $card) use ($player) {
                     $this->table->players[$player->getPlace()]->hand->cards[] = (object)[
                         'nominal' => $card->getNominalIndex(),
@@ -117,22 +117,16 @@ class PokerTableRepository
         return $this;
     }
 
-    public function startTimer(int $userId): static
+    public function startTimer(): static
     {
-        $this->tableObj->eachPlayer(function (Player $player) use ($userId){
-            if ($this->tableObj->getAuctionPlayerId() === $userId){
-                $player->eachAction(function (AbstractGameAction $action)  use ($player){
-                    $this->table->players[$player->getPlace()]->actions[$action->getId()] = (object) [
-                        'name'=>$action->getName(),
-                        'is_active'=>$action->isActive()
-                    ];
-                });
-            } else{
-                $this->table->players[$player->getPlace()]->timer = 20;
-            }
-        });
+        $this->tableObj->setNextPlayerAuction();
 
         return $this;
+    }
+
+    public function eachPlayer(callable $func)
+    {
+        $this->tableObj->eachPlayer($func);
     }
 
     public function actionFromPlayer(int $place, array $action): static

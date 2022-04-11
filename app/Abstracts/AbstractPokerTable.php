@@ -136,7 +136,7 @@ abstract class AbstractPokerTable
     public function removePlayer(int $playerId)
     {
         $this->eachPlayer(function (Player $player) use ($playerId) {
-            if ($player->getPlayerId() === $playerId) {
+            if ($player->getUserId() === $playerId) {
                 $this->players->removeWhereObj($player);
                 $this->places[$player->getPlace()] = $player->getPlace();
             }
@@ -162,6 +162,56 @@ abstract class AbstractPokerTable
     {
         $this->players->each(function (Player $player) {
             $player->removeCards();
+        });
+    }
+
+    public function getLastAuctionUserId()
+    {
+        return $this->round->getLastAuctionUserId();
+    }
+
+    /**
+     * установить игрока, кто будет следующим  делать ставку
+     */
+    public function setNextPlayerAuction()
+    {
+        $prevPlayerAuctionUserId = $this->round->getLastAuctionUserId();
+        $newAuctioneer = false;
+
+        $this->players->each(function (Player $player) use ($prevPlayerAuctionUserId, &$newAuctioneer) {
+            if ($prevPlayerAuctionUserId === $player->getUserId()) {
+                $this->players->sortFromPlace($player->getPlace());
+
+                $player->eachAction(function (AbstractGameAction $action) {
+                    $action->setIsActive(false);
+                });
+
+                $newAuctioneer = true;
+            }
+
+            if ($newAuctioneer) {
+                $this->round->setLastAuctionUserId($player->getUserId());
+                $newAuctioneer = false;
+
+                $player->eachAction(function (AbstractGameAction $action) use ($player){
+                    switch ($action->getId()) {
+                        case 1:
+                            $action->setIsActive($player->getBank() === $this->round->getMaxBidInTurn());
+                            break;
+                        case 2:
+                            $action->setIsActive($player->getAmount() > $this->blind);
+                            break;
+                        case 3:
+                            $action->setIsActive($player->getAmount() > 0);
+                            break;
+                        case 4:
+                            $action->setIsActive($player->getBank() < $this->round->getMaxBidInTurn());
+                            break;
+                        default:
+                            $action->setIsActive(true);
+                    }
+                });
+            }
         });
     }
 }

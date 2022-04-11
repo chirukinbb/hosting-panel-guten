@@ -29,8 +29,8 @@ trait PlayerTrait
 
             if (($player->getPlace() === $currentDealerIndex + 1) && $player->isInRound()){
                 $player->setBBStatus(true);
-                $this->round->setLastRaisePlayerId($player->getPlayerId());
-                $this->round->setActionTurnOfPlayerId($player->getPlayerId());
+                $this->round->setLastRaiseUserId($player->getUserId());
+                $this->round->setLastRaiseUserId($player->getUserId());
                 $currentDealerIndex = ($currentDealerIndex + 1) % $this->playersCount;
             }else{
                 $currentDealerIndex = ($currentDealerIndex + 1) % $this->playersCount;

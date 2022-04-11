@@ -50,7 +50,7 @@ class TableResource extends JsonResource
          * @var AbstractPokerTable $this
          */
         $this->eachPlayer(function (Player $player) {
-            $user = User::find($player->getPlayerId());
+            $user = User::find($player->getUserId());
 
             $this->table['players'][] = [
                 'name' => $user->data?->public_name ?? $user->name,

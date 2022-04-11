@@ -56,8 +56,8 @@ trait RoundTrait
         return $this->players->getDealerIndex();
     }
 
-    public function getAuctionPlayerId()
+    public function getAuctionUserId()
     {
-        return $this->round->getActionTurnOfPlayerId();
+        return $this->round->getActionTurnOfUserId();
     }
 }

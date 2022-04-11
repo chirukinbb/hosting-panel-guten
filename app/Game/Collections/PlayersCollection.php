@@ -117,4 +117,16 @@ class PlayersCollection extends AbstractGameCollection
 
         return $index;
     }
+
+    public function sortFromPlace(int $place): static
+    {
+        $collection = array_merge(
+            array_slice($this->collection, $place),
+            array_slice($this->collection, 0, $place)
+        );
+
+        $this->collection = $collection;
+
+        return $this;
+    }
 }

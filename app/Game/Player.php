@@ -132,9 +132,9 @@ class Player
     /**
      * @return int
      */
-    public function getPlayerId(): int
+    public function getUserId(): int
     {
-        return $this->playerId;
+        return $this->userId;
     }
 
     /**
@@ -143,14 +143,6 @@ class Player
     public function setUserId(int $userId): void
     {
         $this->userId = $userId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserId(): int
-    {
-        return $this->userId;
     }
 
     /**
