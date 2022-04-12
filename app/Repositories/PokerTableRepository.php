@@ -13,69 +13,22 @@ class PokerTableRepository
     protected AbstractPokerTable $tableObj;
     protected object $table;
 
-    public function __construct(protected int $id)
+    public function __construct(protected int $tableId)
     {
-        $this->tableObj = Table::find($id)->object;
+        $this->tableObj = Table::find($this->tableId)?->object;
     }
 
     public function getChannelName($slug, $userId)
     {
-        return $this->tableObj->getChannelName($slug.'.'.$userId);
+        return $this->tableObj->getChannelName($slug . '.' . $userId);
     }
 
-    public function setTable()
+    /**
+     * @return int
+     */
+    public function getTableId(): int
     {
-        $this->table = (object) [
-            'title' => $this->tableObj->getTitle(),
-            'blind' => $this->tableObj->getBlind(),
-            'cardsInHand' => $this->tableObj->getCardsInHand(),
-            'players' => []
-        ];
-
-        return $this;
-    }
-
-    public function setPlayers()
-    {
-        $this->tableObj->eachPlayer(function (Player $player) {
-            $this->table->players[] = (object) [
-                'name' => $player->getName(),
-                'avatar' => $player->getAvatar(),
-//                'myTurn' => false,
-//                'isDealer' => false,
-//                'isBB' => false,
-//                'isLB' => false,
-//                'actions' => [
-//                    'canCall' => true,
-//                    'canCheck' => true,
-//                    'canBet' => true,
-//                    'canRaise' => true,
-//                    'canAllIn' => true
-//                ],
-//                'hand' => [
-//                    'cards' => [
-//                        ['nominal' => 5, 'suit' => 2],
-//                    ],
-//                    'combo' => 'jjjjj',
-//                    'amount' => 1000,
-//                    'inGame' => true
-//                ],
-                'amount' => [
-                    'hand' => $player->getAmount(),
-                    'bank' => $player->getBank()
-                ],
-//                'action' => [
-//                    'message' => 'Raise to 100',
-//                    'hand' => 452,
-//                    'bank' => 100
-//                ],
-//                'timer' => [
-//                    'start' => 0
-//                ]
-            ];
-        });
-
-        return $this;
+        return $this->tableId;
     }
 
     /**
@@ -88,12 +41,54 @@ class PokerTableRepository
         return $this;
     }
 
+    static public function instance(string $tableClass): PokerTableRepository
+    {
+        $table = Table::getModel();
+
+        $table->object = new $tableClass(now()->timestamp);
+        $table->table_class = $tableClass;
+
+        $table->save();
+
+        return new self($table->id);
+    }
+
+    /**
+     * заполнение стола игроками
+     *
+     * @return $this
+     */
+    public function createTable(): static
+    {
+        $players = \App\Models\Game\Player::whereTableClass(get_class($this->tableObj))
+            ->whereNotNull('searched')
+            ->limit($this->tableObj->getPlayersCount())
+            ->get();
+
+        foreach ($players as $player) {
+            $this->tableObj->setPlayer(
+                $player->user_id,
+                $player->user->data?->public_name ?? $player->user->name,
+                asset($player->user->data?->avatar_path ?? 'img/JohnDoe.webp')
+            );
+
+            $player->searched = null;
+            $player->gamed = $this->tableId;
+            $player->save();
+        }
+
+        return $this;
+    }
+
+    /**
+     * создание нового раунда
+     *
+     * @return $this
+     */
     public function createRound(): static
     {
-        $number = $this->tableObj->getRoundNumber();
-        $dealerPlace = $this->tableObj->getDealerPlace();
-        $this->tableObj->startRound($number + 1);
-        $this->tableObj->changeStatuses($dealerPlace + 1);
+        $this->tableObj->startRound();
+        $this->tableObj->changeStatuses();
         $this->tableObj->payBlinds();
         $this->tableObj->removePlayersCards();
         $this->tableObj->preFlop();
@@ -107,29 +102,6 @@ class PokerTableRepository
     public function getTimeOnTurn()
     {
         return $this->tableObj->getTimeOnTurn();
-    }
-
-    public function startRound(): static
-    {
-        $this->table->round =  (object) ['number'=>$this->tableObj->getRoundNumber()];
-
-        return $this;
-    }
-
-    public function preFlop(int $userId): static
-    {
-        $this->tableObj->eachPlayer(function (Player $player) use ($userId){
-            if ($player->getUserId() === $userId) {
-                $player->eachCard(function (Card $card) use ($player) {
-                    $this->table->players[$player->getPlace()]->hand->cards[] = (object)[
-                        'nominal' => $card->getNominalIndex(),
-                        'suit' => $card->getSuitIndex()
-                    ];
-                });
-            }
-        });
-
-        return $this;
     }
 
     public function startTimer(): static
@@ -167,33 +139,12 @@ class PokerTableRepository
         return $this;
     }
 
-    public function flop()
-    {
-        return $this;
-    }
-
-    public function turn()
-    {
-        return $this;
-    }
-
-    public function river()
-    {
-        return $this;
-    }
-
-    public function showdown()
-    {
-        return $this;
-    }
-
     public function save()
     {
-        $table = Table::find($this->id);
-        $table->object = $this->tableObj;
-        $table->save();
-
-        return $this;
+        Table::updateOrCreate(
+            ['id' => $this->tableId],
+            ['object' => $this->tableObj]
+        );
     }
 
     /**

@@ -8,11 +8,10 @@ use App\Repositories\PokerTableRepository;
 class CreatePokerTableBroadcaster extends AbstractBroadcaster
 {
     protected string $event   = 'turn';
-    protected string $broadcasterClassName = StartPokerRoundBroadcaster::class;
 
-    public function actions():PokerTableRepository
+    public function action(): \App\Builders\PokerTableBuilder
     {
-        return $this->repository->setTable()
+        return $this->builder->setTable()
             ->setPlayers();
     }
 
@@ -20,7 +19,7 @@ class CreatePokerTableBroadcaster extends AbstractBroadcaster
     {
         return array_merge(
             parent::broadcastWith(),
-            ['newChannel'=>$this->repository->getChannelName('table',$this->userId)]
+            ['newChannel'=>$this->builder->getChannelName('table',$this->userId)]
         );
     }
 }

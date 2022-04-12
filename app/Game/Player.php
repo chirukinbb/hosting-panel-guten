@@ -8,7 +8,6 @@ use App\Game\Collections\CardsCollection;
 
 class Player
 {
-    protected int $userId;
     protected string $name;
     protected string $avatar;
     protected CardsCollection $cards;
@@ -22,7 +21,7 @@ class Player
     protected ActionCollection $actions;
     protected BankCollection $bank;
 
-    public function __construct(protected int $playerId)
+    public function __construct(protected int $userId)
     {
         $this->cards = new CardsCollection();
         $this->bank = new BankCollection();

@@ -8,8 +8,9 @@ trait PlayerTrait
 {
     private int $currentIndex;
 
-    public function changeStatuses(int $currentDealerIndex)
+    public function changeStatuses()
     {
+        $currentDealerIndex = $this->players->getDealerIndex();
         $this->players->sortFromLB();
 
         $this->eachPlayer(function (Player $player) use ($currentDealerIndex) {

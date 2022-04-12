@@ -17,7 +17,6 @@ abstract class AbstractPokerTable
 {
     use RoundTrait,CardTrait,PlayerTrait;
 
-    protected int $id;
     protected int $blind;
     protected int $playersCount;
     protected int $minNominal;
@@ -28,7 +27,7 @@ abstract class AbstractPokerTable
     protected Round $round;
     protected int $timeOnTurn;
 
-    public function __construct()
+    public function __construct(protected int $id)
     {
         $this->minNominal = $this->getMinNominal();
         $this->playersCount = $this->getPlayersCount();
@@ -37,11 +36,6 @@ abstract class AbstractPokerTable
         $this->places = $this->getPlaces();
         $this->players = new PlayersCollection();
         $this->cardDeck = $this->getCardDeck();
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
     }
 
     public function getId(): int

@@ -51,28 +51,4 @@ Route::middleware('role:Admin')->group(function (){
 require __DIR__.'/auth.php';
 
 
-Route::get('/test',function () {
-//    $table = new \App\Http\Controllers\HoldemNinePokerTable();
-//
-//    $table->setPlayer(17,'uuuu','jjjjjjj');
-//    $table->setPlayer(18,'uuuu','jjjjjjj');
-//    $table->setPlayer(18,'uuuu','jjjjjjj');
-//    $table->setPlayer(18,'uuuu','jjjjjjj');
-//    $table->setPlayer(18,'uuuu','jjjjjjj');
-//    $table->setPlayer(18,'uuuu','jjjjjjj');
-//    $table->setPlayer(18,'uuuu','jjjjjjj');
-//    $table->setPlayer(18,'uuuu','jjjjjjj');
-//    $table->setPlayer(18,'uuuu','jjjjjjj');
-//
-//    \App\Models\Game\Table::create([
-//        'object'=>$table,
-//        'table_class'=>'lllllllll'
-//    ]);
-    $r = new PokerTableRepository(9);
-
-    $r->createRound()
-        ->save();
-
-    dd($r->getTable());
-    dd( $table);
-});
+Route::get('/test',[PokerTableRepository::class,'createTable']);

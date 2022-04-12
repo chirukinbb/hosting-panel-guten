@@ -9,9 +9,9 @@ class StartPokerRoundBroadcaster extends AbstractBroadcaster
 {
     protected string $broadcasterClassName = AuctionPokerRoundBroadcaster::class;
 
-    public function actions():PokerTableRepository
+    public function action(): \App\Builders\PokerTableBuilder
     {
-        return $this->repository->startRound()
+        return $this->builder->startRound()
             ->preFlop($this->userId);
     }
 }

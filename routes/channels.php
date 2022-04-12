@@ -13,5 +13,5 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('turn.{place}.{table_id}', \App\Broadcasting\TurnChannel::class);
-Broadcast::channel('table.{place}.{table_id}', \App\Broadcasting\TableChannel::class);
+Broadcast::channel('turn.{user_id}', \App\Broadcasting\TurnChannel::class);
+Broadcast::channel('table.{user_id}.{table_id}', \App\Broadcasting\TableChannel::class);

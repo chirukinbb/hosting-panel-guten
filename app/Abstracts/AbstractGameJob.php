@@ -16,6 +16,8 @@ abstract class AbstractGameJob implements ShouldQueue
 
     protected PokerTableRepository $repository;
     protected string $broadcasterClass;
+    protected string $nextJobClass;
+    protected string $slug = 'table';
 
     /**
      * Create a new job instance.
@@ -23,11 +25,13 @@ abstract class AbstractGameJob implements ShouldQueue
      * @return void
      */
     public function __construct(
-        public int    $tableId,
-        public string $screen
+        public int|string $classNameOrTableId,
+        public string     $screen
     )
     {
-        $this->repository = new PokerTableRepository($tableId);
+        $this->repository = is_int($this->classNameOrTableId) ?
+            new PokerTableRepository($this->classNameOrTableId) :
+            PokerTableRepository::instance($this->classNameOrTableId);
     }
 
     /**
@@ -38,17 +42,21 @@ abstract class AbstractGameJob implements ShouldQueue
     public function handle()
     {
         $this->action()->save();
-        $this->repository->eachPlayer([$this,'eachPlayerFunc']);
+        $this->repository->eachPlayer(function (Player $player) {
+            call_user_func([$this,'eachPlayerFunc'],$player);
+        });
+
+        dispatch(new $this->nextJobClass($this->repository->getTableId(),$this->screen));
     }
 
-    abstract public function  action(): PokerTableRepository;
+    abstract public function action(): PokerTableRepository;
 
     protected function eachPlayerFunc(Player $player)
     {
         broadcast(new $this->broadcasterClass(// оповещение о дейстии в клиет игры
-            $this->tableId,
+            $this->repository->getTableId(),
             $this->screen,
-            $this->repository->getChannelName('table', $player->getUserId()),
+            $this->repository->getChannelName($this->slug, $player->getUserId()),
             $player->getUserId()
         ));
     }

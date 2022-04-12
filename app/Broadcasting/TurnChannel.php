@@ -25,20 +25,8 @@ class TurnChannel
      * @param  \App\Models\User  $user
      * @return array|bool
      */
-    public function join(User $user,int $place, int $tableId)
+    public function join(User $user,int $userId): bool|array
     {
-        $player = Player::whereUserId($user->id)
-            ->whereNotNull('searched')
-            ->first();
-
-        if (is_null($player))
-            return false;
-
-        $table  = Table::find($player->searched);
-
-        if (is_null($table))
-            return false;
-
-        return $table->object->getId() === $tableId;
+        return $user->id === $userId;
     }
 }

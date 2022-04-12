@@ -7,9 +7,10 @@ use App\Game\Round;
 
 trait RoundTrait
 {
-    public function startRound(int $number)
+    public function startRound()
     {
-        $this->round  = new Round(clone $this->cardDeck,$number);
+        $number = $this->round->getNumber();
+        $this->round  = new Round(clone $this->cardDeck,$number + 1);
     }
 
     public function preFlop()
