@@ -65,7 +65,7 @@ export default {
         console.log(e)
         switch (e.screen) {
             case 'loader':
-                this.$emit('set-count', e.count)
+                e.count ? this.$emit('set-count', e.count) : this.$emit('load-table',e.newChannel,e.table)
                 break
             case 'table':
                 this.$emit('load-table',e.newChannel, e.table)

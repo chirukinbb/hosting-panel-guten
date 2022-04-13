@@ -19620,8 +19620,7 @@ window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/d
 
       switch (e.screen) {
         case 'loader':
-          _this.$emit('set-count', e.count);
-
+          e.count ? _this.$emit('set-count', e.count) : _this.$emit('load-table', e.newChannel, e.table);
           break;
 
         case 'table':
@@ -20467,7 +20466,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.table-screen[data-v-8554570c]{\n    z-index: 999;\n    height: 100vh;\n}\n.poker-table[data-v-8554570c]{\n    /* F = 216.5 */\n    height: 250px;\n    width: 500px;\n    border: 2px solid black;\n    background-color: #0c4128;\n    border-radius: 50%;\n    box-shadow: 0 15px 100px 10px rgba(255,255,255,.5);\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.table-screen[data-v-8554570c]{\r\n    z-index: 999;\r\n    height: 100vh;\n}\n.poker-table[data-v-8554570c]{\r\n    /* F = 216.5 */\r\n    height: 250px;\r\n    width: 500px;\r\n    border: 2px solid black;\r\n    background-color: #0c4128;\r\n    border-radius: 50%;\r\n    box-shadow: 0 15px 100px 10px rgba(255,255,255,.5);\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

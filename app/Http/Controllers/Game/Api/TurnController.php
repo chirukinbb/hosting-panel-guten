@@ -75,7 +75,7 @@ class TurnController extends Controller
         dispatch(new PlayersUpdateInTurnJob($className));
         // создание стола и розсадка игроков за стол(БД)
         if (\App\Models\Game\Player::whereTableClass($className)->whereNotNull('searched')->count() >= $className::$count) {
-            dispatch(new CreatePokerTableJob($className,'loader'));
+            dispatch(new CreatePokerTableJob($className,'loader'))->delay(now()->addSecond());
         }
 
         return TurnResource::make(
