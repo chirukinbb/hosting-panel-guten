@@ -64,6 +64,7 @@ class PokerTableRepository
             ->whereNotNull('searched')
             ->limit($this->tableObj->getPlayersCount())
             ->get();
+        //dd($players)    ;
 
         foreach ($players as $player) {
             $this->tableObj->setPlayer(
@@ -74,7 +75,7 @@ class PokerTableRepository
 
             $player->searched = null;
             $player->gamed = $this->tableId;
-            $player->save();
+            //$player->save();
         }
 
         return $this;
@@ -92,9 +93,13 @@ class PokerTableRepository
         $this->tableObj->payBlinds();
         $this->tableObj->removePlayersCards();
         $this->tableObj->preFlop();
+        $this->tableObj->calculateHandValues();
         $this->tableObj->flop();
+        $this->tableObj->calculateHandValues();
         $this->tableObj->turn();
+        $this->tableObj->calculateHandValues();
         $this->tableObj->river();
+        $this->tableObj->calculateHandValues();
 
         return $this;
     }

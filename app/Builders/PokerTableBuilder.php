@@ -47,37 +47,10 @@ class PokerTableBuilder
             $this->table->players[] = (object) [
                 'name' => $player->getName(),
                 'avatar' => $player->getAvatar(),
-//                'myTurn' => false,
-//                'isDealer' => false,
-//                'isBB' => false,
-//                'isLB' => false,
-//                'actions' => [
-//                    'canCall' => true,
-//                    'canCheck' => true,
-//                    'canBet' => true,
-//                    'canRaise' => true,
-//                    'canAllIn' => true
-//                ],
-//                'hand' => [
-//                    'cards' => [
-//                        ['nominal' => 5, 'suit' => 2],
-//                    ],
-//                    'combo' => 'jjjjj',
-//                    'amount' => 1000,
-//                    'inGame' => true
-//                ],
-                'amount' => [
+                'amount' => (object) [
                     'hand' => $player->getAmount(),
                     'bank' => $player->getBank()
-                ],
-//                'action' => [
-//                    'message' => 'Raise to 100',
-//                    'hand' => 452,
-//                    'bank' => 100
-//                ],
-//                'timer' => [
-//                    'start' => 0
-//                ]
+                ]
             ];
         });
 
@@ -91,7 +64,22 @@ class PokerTableBuilder
      */
     public function startRound(): static
     {
-        $this->table->round =  (object) ['number'=>$this->pokerTable->getRoundNumber()];
+        $this->table->title = $this->pokerTable->getTitle();
+        $this->table->round =  (object) [
+            'number'=>$this->pokerTable->getRoundNumber(),
+            'ante'=>$this->pokerTable->getCurrentAnte()
+        ];
+
+        $this->pokerTable->eachPlayer(function (Player $player) {
+            $this->table->players[$player->getPlace()]->round->isDealer = $player->isDealer();
+            $this->table->players[$player->getPlace()]->round->isLB = $player->isLB();
+            $this->table->players[$player->getPlace()]->round->isBB = $player->isBB();
+
+            $this->table->players[$player->getPlace()]->amount = (object) [
+                'hand' => $player->getAmount(),
+                'bank' => $player->getBank()
+            ];
+        });
 
         return $this;
     }
@@ -111,6 +99,7 @@ class PokerTableBuilder
                         'name'=>$action->getName(),
                         'is_active'=>$action->isActive()
                     ];
+                    $this->table->players[$player->getPlace()]->timer = $this->pokerTable->getTimeOnTurn();
                 });
             } else {
                 $this->table->players[$player->getPlace()]->timer = ($this->pokerTable->getAuctionUserId() === $player->getUserId()) ?
@@ -130,6 +119,7 @@ class PokerTableBuilder
                         'nominal' => $card->getNominalIndex(),
                         'suit' => $card->getSuitIndex()
                     ];
+                    $this->table->players[$player->getPlace()]->hand->combo = $player->getCombo(0)->getName();
                 });
             }
         });
@@ -139,23 +129,78 @@ class PokerTableBuilder
 
     public function flop()
     {
+        $order = 0;
+
+        $this->pokerTable->eachCardOnTable(function (Card $card) use (&$order){
+            if ($order < 3) {
+                $this->table->cards[] = (object)[
+                    'nominal' => $card->getNominalIndex(),
+                    'suit' => $card->getSuitIndex()
+                ];
+            }
+
+            $order ++;
+        });
+
         return $this;
     }
 
     public function turn()
     {
+        $order = 0;
+
+        $this->pokerTable->eachCardOnTable(function (Card $card) use (&$order){
+            if ($order === 3) {
+                $this->table->cards[] = (object)[
+                    'nominal' => $card->getNominalIndex(),
+                    'suit' => $card->getSuitIndex()
+                ];
+            }
+
+            $order ++;
+        });
+
         return $this;
     }
 
     public function river()
     {
+        $order = 0;
+
+        $this->pokerTable->eachCardOnTable(function (Card $card) use (&$order){
+            if ($order === 4) {
+                $this->table->cards[] = (object)[
+                    'nominal' => $card->getNominalIndex(),
+                    'suit' => $card->getSuitIndex()
+                ];
+            }
+
+            $order ++;
+        });
+
         return $this;
     }
 
     public function showdown()
     {
+        $this->pokerTable->eachPlayer(function (Player $player) {
+            $player->eachCard(function (Card $card) use ($player) {
+                $this->table->players[$player->getPlace()]->hand->cards[] = (object)[
+                    'nominal' => $card->getNominalIndex(),
+                    'suit' => $card->getSuitIndex()
+                ];
+                $this->table->players[$player->getPlace()]->hand->combo = $player->getCombo();
+            });
+        });
+
         return $this;
     }
+
+    /**
+     * расчет банка согласно силе рук игроков
+     */
+    public function calculateBids()
+    {}
 
     public function getTable(): object
     {

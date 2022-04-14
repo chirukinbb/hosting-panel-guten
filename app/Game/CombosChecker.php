@@ -88,9 +88,10 @@ class CombosChecker
             return $repeatedCards->count() ===  2 ?
                 new UserCombo(
                     sprintf(
-                        'One Pair of %sth, kicker %s',
+                        'One Pair of %sth%s',
                         $card->getNominalName(),
-                        ($highCard  = $this->highCard([$card->getNominalIndex()]))->getNominalName()
+                        ($highCard  = $this->highCard([$card->getNominalIndex()])) ?
+                        ', kicker'.$highCard->getNominalName() : ''
                     ),$card->getNominalIndex(),$highCard->getNominalIndex()
                 )  : false;
         }

@@ -153,7 +153,9 @@ abstract class AbstractPokerTable
 
     public function getTitle()
     {
-        return $this->getType().', '.$this->playersCount.' Players, Blind '.$this->blind;
+        return $this->round->getAnte() ?
+            $this->getType().', '.$this->playersCount.' Players, Blind '.$this->blind.', Ante '.$this->round->getAnte() :
+            $this->getType().', '.$this->playersCount.' Players, Blind '.$this->blind;
     }
 
     public function getDealerIndex(): int

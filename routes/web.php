@@ -51,4 +51,8 @@ Route::middleware('role:Admin')->group(function (){
 require __DIR__.'/auth.php';
 
 
-Route::get('/test',[PokerTableRepository::class,'createTable']);
+Route::get('/test',function (){
+    $table = new PokerTableRepository(4);//::instance(\App\Game\Tables\HoldemTwoPokerTable::class);
+    $table->createTable();
+    dd($table->createRound());
+});

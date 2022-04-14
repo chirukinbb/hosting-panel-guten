@@ -9,8 +9,9 @@ trait RoundTrait
 {
     public function startRound()
     {
-        $number = $this->round->getNumber();
-        $this->round  = new Round(clone $this->cardDeck,$number + 1);
+        $number = isset($this->round) ? $this->round->getNumber() : 0;
+        $ante = intdiv($number,5) * 0.2 * $this->blind;
+        $this->round  = new Round(clone $this->cardDeck,$number + 1,$ante);
     }
 
     public function preFlop()
@@ -22,9 +23,14 @@ trait RoundTrait
 
     public function calculateHandValues()
     {
-         $this->players->each(function (Player $player) {
+         $this->players->each(function (Player $player){
              $this->round->checkHandValue($player, $this->cardsInHand);
          });
+    }
+
+    public function eachCardOnTable(callable $func)
+    {
+        $this->round->eachCardOnTable($func);
     }
 
     public function flop()
@@ -45,6 +51,11 @@ trait RoundTrait
     public function getRoundNumber()
     {
         return !empty($this->round) ? $this->round->getNumber() : 0;
+    }
+
+    public function getCurrentAnte()
+    {
+        return $this->round->getAnte();
     }
 
     protected function putCardsOnTable(int $count)

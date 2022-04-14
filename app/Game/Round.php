@@ -16,11 +16,19 @@ class Round
     protected int $maxBidInTurn;
     protected int $currentStepInTurn;
 
-    public function __construct(protected CardsCollection $cardsPool,protected int $number)
+    public function __construct(protected CardsCollection $cardsPool,protected int $number, protected int $ante)
     {
         $this->combos = config('poker.combos');
         $this->tableCards = new CardsCollection();
         $this->bankCollection = new BankCollection();
+    }
+
+    /**
+     * @return int
+     */
+    public function getAnte(): int
+    {
+        return $this->ante;
     }
 
     /**
@@ -60,7 +68,7 @@ class Round
      */
     public function getNumber(): int
     {
-        return $this->number ?? 0;
+        return $this->number;
     }
 
     public function preFlop(Player $player, int $cardsInHand)
@@ -81,7 +89,7 @@ class Round
         }
     }
 
-    public function checkHandValue(Player $player, int $cardsInHand)
+    public function checkHandValue(Player $player, int $cardsInHand): bool
     {
         for ($i = 1; $i < $cardsInHand;  $i ++) {
             for ($j = $i + 1; $j <= $cardsInHand; $j ++) {
@@ -157,5 +165,10 @@ class Round
     public function getLastAuctionUserId(): int
     {
         return $this->lastAuctionPlayerId;
+    }
+
+    public function eachCardOnTable(callable $func)
+    {
+        $this->tableCards->each($func);
     }
 }

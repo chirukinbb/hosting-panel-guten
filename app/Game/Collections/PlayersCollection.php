@@ -88,7 +88,7 @@ class PlayersCollection extends AbstractGameCollection
             /**
              * @var Player $player
              */
-            $combo =  $player->getCombo();
+            $combo =  $player->getCombo(3);
             $collection[$combo->getComboIndex()][$combo->getHighCardIndex()][$combo->getComboMeterCardIndex()][] = $player->getPlace();
         }
 
@@ -128,5 +128,43 @@ class PlayersCollection extends AbstractGameCollection
         $this->collection = $collection;
 
         return $this;
+    }
+
+    public function changeStatuses()
+    {
+        $currentDealerIndex = $this->getDealerIndex();
+        $dealerAlreadySet = false;
+        $statuses = [
+            'Dealer',
+            'LB',
+            'BB'
+        ];
+
+        do {dump($statuses);
+            /**
+             * @var Player $player
+             */
+            $currentDealerIndex = $this->cycle($currentDealerIndex + 1);
+            if ($currentDealerIndex===5) dd(4);
+            $player = $this->collection[$currentDealerIndex];
+
+            if (!$dealerAlreadySet)
+                $player->setDealerStatus(false);
+
+            $player->setLBStatus(false);
+            $player->setBBStatus(false);
+
+            if ($currentDealerIndex === $player->getPlace()) {
+                if ($player->isInGame()){
+                    call_user_func([$player,'set'.array_shift($statuses).'Status'],true);
+                    $dealerAlreadySet = true;
+                }
+            }
+        } while (!empty($statuses));
+    }
+
+    protected function cycle(int $place)
+    {
+        return $place % $this->count();
     }
 }

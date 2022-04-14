@@ -24,10 +24,23 @@ class CardsCollection extends AbstractGameCollection
         return $this;
     }
 
-    public function getHighCard(array $excludedNominalIds,$isExcluded): Card
+    public function getFirsts(int $count): CardsCollection
+    {
+        $collection = clone $this;
+        $index = 1;
+
+        $collection->each(function ()  use ($collection,&$index,$count) {
+            if ($index > $count)
+                $collection->remove($index - 1);
+        });
+
+        return $collection;
+    }
+
+    public function getHighCard(array $excludedNominalIds,$isExcluded): Card|bool
     {
         $highCardNominalIndex = -1;
-        $highCard  = null;
+        $highCard  = false;
         /**
          * @var Card $card
          */

@@ -5,6 +5,7 @@ namespace App\Game;
 use App\Game\Collections\ActionCollection;
 use App\Game\Collections\BankCollection;
 use App\Game\Collections\CardsCollection;
+use App\Game\Collections\UserComboCollection;
 
 class Player
 {
@@ -12,7 +13,7 @@ class Player
     protected string $avatar;
     protected CardsCollection $cards;
     protected int $place;
-    protected UserCombo $combo;
+    protected UserComboCollection $combo;
     protected bool $inGame = true;
     protected bool $inRound = true;
     protected bool $isDealer = false;
@@ -27,6 +28,7 @@ class Player
         $this->bank = new BankCollection();
         $this->actions = new ActionCollection();
         $this->bank->setAmount(1000);
+        $this->combo = new UserComboCollection();
     }
 
     public function setPlaceOnDesc(int $place)
@@ -90,17 +92,17 @@ class Player
      */
     public function setCombo(UserCombo $combo): UserCombo
     {
-        $this->combo = $combo;
+        $this->combo->push($combo);
 
-        return $this->combo;
+        return $combo;
     }
 
     /**
      * @return UserCombo
      */
-    public function getCombo(): UserCombo
+    public function getCombo(int $index): UserCombo
     {
-        return $this->combo;
+        return $this->combo->get($index);
     }
 
     /**
