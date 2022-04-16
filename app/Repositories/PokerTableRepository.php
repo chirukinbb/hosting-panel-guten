@@ -64,7 +64,6 @@ class PokerTableRepository
             ->whereNotNull('searched')
             ->limit($this->tableObj->getPlayersCount())
             ->get();
-        //dd($players)    ;
 
         foreach ($players as $player) {
             $this->tableObj->setPlayer(
@@ -144,6 +143,21 @@ class PokerTableRepository
         return $this;
     }
 
+    /**
+     * конец раунда:
+     * перевод ставок в общий банк
+     * распределение фишек
+     *
+     * @return $this
+     */
+    public function roundFinish(): static
+    {
+        $this->tableObj->bidsToBank();
+        $this->tableObj->payToWinners();
+
+        return $this;
+    }
+
     public function save()
     {
         Table::updateOrCreate(
@@ -173,6 +187,49 @@ class PokerTableRepository
     public function isTableFinish(): bool
     {
         return true;
+    }
+
+    public function isShowDown(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Turn actions
+     */
+    public function fold()
+    {
+        $this->tableObj->fold();
+
+        return $this;
+    }
+
+    public function check()
+    {
+        $this->tableObj->check();
+
+        return $this;
+    }
+
+    public function raise(int $amount)
+    {
+        $this->tableObj->raise($amount);
+
+        return $this;
+    }
+
+    public function allIn()
+    {
+        $this->tableObj->allIn();
+
+        return $this;
+    }
+
+    public function call()
+    {
+        $this->tableObj->call();
+
+        return $this;
     }
 
     public function getTableObject()

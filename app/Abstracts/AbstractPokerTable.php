@@ -3,7 +3,6 @@
 namespace App\Abstracts;
 
 use App\Game\Card;
-use App\Game\Collections\ActionCollection;
 use App\Game\Collections\CardsCollection;
 use App\Game\Collections\PlayersCollection;
 use App\Game\Player;
@@ -15,7 +14,7 @@ use Illuminate\Support\Arr;
 
 abstract class AbstractPokerTable
 {
-    use RoundTrait,CardTrait,PlayerTrait;
+    use RoundTrait, CardTrait, PlayerTrait;
 
     protected int $blind;
     protected int $playersCount;
@@ -63,26 +62,26 @@ abstract class AbstractPokerTable
 
     protected function getCardDeck()
     {
-        $cards  = new CardsCollection();
+        $cards = new CardsCollection();
         $deckNamesPool = config('poker.card.names');
         $deckSuitsPool = config('poker.card.suits');
         $id = 0;
 
         foreach ($deckNamesPool as $nominalIndex => $nominal) {
             foreach ($deckSuitsPool as $suitIndex => $suit) {
-                $cards->push(new Card($nominalIndex,$suitIndex,$id,$nominal,$suit));
+                $cards->push(new Card($nominalIndex, $suitIndex, $id, $nominal, $suit));
                 $id++;
             }
         }
 
-        return $cards->removeFirsts($this->minNominal*count($deckSuitsPool));
+        return $cards->removeFirsts($this->minNominal * count($deckSuitsPool));
     }
 
     public function setPlayer(int $userId, string $name, string $avatar): int
     {
         $place = -1;
 
-        if ($this->players->count() <= $this->playersCount){
+        if ($this->players->count() <= $this->playersCount) {
             $place = $this->getLandingPlace();
             $player = new Player($userId);
             $player->setName($name);
@@ -148,14 +147,14 @@ abstract class AbstractPokerTable
 
     public function getChannelName(string $type): string
     {
-        return $type.'.'.$this->id;
+        return $type . '.' . $this->id;
     }
 
     public function getTitle()
     {
         return $this->round->getAnte() ?
-            $this->getType().', '.$this->playersCount.' Players, Blind '.$this->blind.', Ante '.$this->round->getAnte() :
-            $this->getType().', '.$this->playersCount.' Players, Blind '.$this->blind;
+            $this->getType() . ', ' . $this->playersCount . ' Players, Blind ' . $this->blind . ', Ante ' . $this->round->getAnte() :
+            $this->getType() . ', ' . $this->playersCount . ' Players, Blind ' . $this->blind;
     }
 
     public function getDealerIndex(): int
@@ -193,7 +192,7 @@ abstract class AbstractPokerTable
                 $this->round->setLastAuctionUserId($player->getUserId());
                 $newAuctioneer = false;
 
-                $player->eachAction(function (AbstractGameAction $action) use ($player){
+                $player->eachAction(function (AbstractGameAction $action) use ($player) {
                     switch ($action->getId()) {
                         case 1:
                             $action->setIsActive($player->getBank() === $this->round->getMaxBidInTurn());
@@ -213,6 +212,65 @@ abstract class AbstractPokerTable
                 });
             }
         });
+    }
+
+    /**
+     * сливаем все ставки в банк
+     */
+    public function bidsToBank()
+    {
+        $bidBorders = $this->players->calculateBidBorders();
+
+        $this->players->each(function (Player $player) use ($bidBorders) {
+            $fullBid = $player->getBank();
+            $i = 0;
+
+            do {
+                // собственно, переливка фишек от ставок игрока в банк по границам
+                $this->round->setBids($i, ($border = array_shift($bidBorders)));
+                $fullBid -= $border;
+            } while ($fullBid > 0);
+        });
+    }
+
+    /**
+     * выплачиваем награды
+     */
+    public function payToWinners()
+    {
+        $playersByCombo = $this->players->getByHandPower();
+        $bidBorders = $this->players->calculateBidBorders();
+
+        do {
+            // отбор игроков с найвысшей комбой
+            $checkedCombo = array_shift($playersByCombo);
+            // находжение игрока, внесшего найменьше фишек
+            $minBid = 10000000000000;
+            foreach ($checkedCombo as $player) {
+                /**
+                 * @var Player $player
+                 */
+                if ($minBid > $player->getBank()) {
+                    $minBid = $player->getBank();
+                    $minBidPlayer = $player;
+                }
+            }
+            // обнуление части банка с этой ставкой
+            $i = 0;
+
+            do {
+                $bankInBorder = $this->round->getPartBank($i);
+                $remainder = $minBid - $bidBorders;
+                $this->round->annulledAmount($i);
+                // зачет игроку призовой суммы с этой части банка
+                foreach ($checkedCombo as $player) {
+                    /**
+                     * @var Player $player
+                     */
+                    $player->addAmount($bankInBorder  / count($checkedCombo));
+                }
+            }while($remainder);
+        } while ($this->round->getFullBank() > 0);
     }
 
     /**

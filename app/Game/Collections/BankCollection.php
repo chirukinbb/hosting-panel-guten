@@ -25,6 +25,11 @@ class BankCollection extends AbstractGameCollection
         return $this->amount;
     }
 
+    public function addAmount(int $amount)
+    {
+        $this->amount += $amount;
+    }
+
     /**
      * @param int $step
      */
@@ -44,11 +49,20 @@ class BankCollection extends AbstractGameCollection
         return array_sum($this->collection);
     }
 
+    public function getPart(int $step)
+    {
+        return $this->collection[$step];
+    }
+
     public function changeAmount(int $delta, $direction = '+')
     {
         $this->amount = ($direction === '+') ?
             $this->amount + $delta :
             $this->amount - $delta;
+    }
 
+    public function annulledAmount(int $step)
+    {
+        $this->collection[$this->step] = 0;
     }
 }

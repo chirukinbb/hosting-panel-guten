@@ -125,14 +125,19 @@ class Round
         $this->tableCards = $tableCards;
     }
 
-    public function auctionForPlayer(int $index)
-    {}
+    public function getFullBank()
+    {
+        return $this->bankCollection->getAll();
+    }
+
+    public function getPartBank(int $step)
+    {
+        return $this->bankCollection->getPart($step);
+    }
 
     public function payBlind(Player $player, int $amount)
     {
-        $this->bankCollection->setStep(0);
-        $this->bankCollection->add($amount);
-        $player->addToBank(0, $amount);
+        $player->addToBank(0,$amount);
     }
 
     /**
@@ -170,5 +175,53 @@ class Round
     public function eachCardOnTable(callable $func)
     {
         $this->tableCards->each($func);
+    }
+
+    /**
+     * @param int $lastAuctionPlayerId
+     */
+    public function setLastAuctionPlayerId(int $lastAuctionPlayerId): void
+    {
+        $this->lastAuctionPlayerId = $lastAuctionPlayerId;
+    }
+
+    /**
+     * @param int $lastRaisePlayerId
+     */
+    public function setLastRaisePlayerId(int $lastRaisePlayerId): void
+    {
+        $this->lastRaisePlayerId = $lastRaisePlayerId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastRaisePlayerId(): int
+    {
+        return $this->lastRaisePlayerId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastAuctionPlayerId(): int
+    {
+        return $this->lastAuctionPlayerId;
+    }
+
+    public function setBids(int $index, int $bid): void
+    {
+        $this->bankCollection->setStep($index);
+        $this->bankCollection->add($bid);
+    }
+
+    public function getBids(int $index, int $bid): int|float
+    {
+        return $this->bankCollection->getAll();
+    }
+
+    public function annulledAmount(int $step)
+    {
+        $this->bankCollection->annulledAmount($step);
     }
 }

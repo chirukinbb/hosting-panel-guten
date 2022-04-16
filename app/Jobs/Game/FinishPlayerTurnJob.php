@@ -40,7 +40,7 @@ class FinishPlayerTurnJob implements ShouldQueue
                 $this->tableId,
                 'table'
             ));
-        } elseif ($this->repository->isNewRound()){
+        } elseif ($this->repository->isShowDown()){
             dispatch(new StartPokerRoundJob(
                 $this->tableId,
                 'table'

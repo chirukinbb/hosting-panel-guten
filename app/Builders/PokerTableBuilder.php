@@ -181,7 +181,27 @@ class PokerTableBuilder
         return $this;
     }
 
-    public function showdown()
+    public function resultOfTurn(): static
+    {
+        $steps = [
+            'preFlop',
+            'flop',
+            'turn',
+            'river'
+        ];
+
+        $this->pokerTable->eachPlayer(function (Player $player) use ($steps){
+            $this->table->players[$player->getPlace()]->amount = (object) [
+                'hand' => $player->getAmount(),
+                'bank' => $player->getBank()
+            ];
+            $this->table->players[$player->getPlace()]->lastAction = $player->getLastActionId();
+        });
+
+        return $this;
+    }
+
+    public function showdown(): static
     {
         $this->pokerTable->eachPlayer(function (Player $player) {
             $player->eachCard(function (Card $card) use ($player) {
@@ -189,7 +209,7 @@ class PokerTableBuilder
                     'nominal' => $card->getNominalIndex(),
                     'suit' => $card->getSuitIndex()
                 ];
-                $this->table->players[$player->getPlace()]->hand->combo = $player->getCombo();
+                $this->table->players[$player->getPlace()]->hand->combo = $player->getCombo(3);
             });
         });
 

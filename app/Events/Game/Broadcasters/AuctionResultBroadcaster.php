@@ -6,21 +6,12 @@ use App\Abstracts\AbstractBroadcaster;
 
 class AuctionResultBroadcaster extends AbstractBroadcaster
 {
-    protected string $event = 'table';
+    protected string $broadcasterClassName = '';
 
-    public function __construct(int $tableId, string $screen, string $channel)
+    public function action(): \App\Builders\PokerTableBuilder
     {
-        parent::__construct($tableId, $screen, $channel);
-
-        $this->table = $this->repository->getTable();
-
-        if ($this->repository->isTurnTransfer())
-            self::broadcast(new AuctionPokerRoundBroadcaster($tableId,$screen,$channel));
-
-        if ($this->repository->isNewRound())
-            self::broadcast(new StartPokerRoundBroadcaster($tableId,$screen,$channel));
-
-        if ($this->repository->isTableFinish())
-            self::broadcast(new GameOverBroadcaster($tableId,'list',$channel));
+        return $this->builder->setTable()
+            ->startRound()
+            ->preFlop($this->userId);
     }
 }

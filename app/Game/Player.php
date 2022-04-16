@@ -21,6 +21,7 @@ class Player
     protected bool $isLB = false;
     protected ActionCollection $actions;
     protected BankCollection $bank;
+    protected int $lastActionId;
 
     public function __construct(protected int $userId)
     {
@@ -29,6 +30,22 @@ class Player
         $this->actions = new ActionCollection();
         $this->bank->setAmount(1000);
         $this->combo = new UserComboCollection();
+    }
+
+    /**
+     * @param int $lastActionId
+     */
+    public function setLastActionId(int $lastActionId): void
+    {
+        $this->lastActionId = $lastActionId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastActionId(): int
+    {
+        return $this->lastActionId;
     }
 
     public function setPlaceOnDesc(int $place)
@@ -120,6 +137,11 @@ class Player
         $this->bank->changeAmount($amount, '-');
     }
 
+    public function getFromBank(int $amount)
+    {
+        $this->bank->changeAmount($amount);
+    }
+
     public function getBank(): int
     {
         return $this->bank->getAll();
@@ -128,6 +150,11 @@ class Player
     public function getAmount():int
     {
         return $this->bank->getAmount();
+    }
+
+    public function addAmount(int $amount)
+    {
+        $this->bank->addAmount($amount);
     }
 
     /**

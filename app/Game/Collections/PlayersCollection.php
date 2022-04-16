@@ -98,6 +98,35 @@ class PlayersCollection extends AbstractGameCollection
         return $strongest[max(array_keys($strongest))];
     }
 
+    public function getByHandPower()
+    {
+        $collection  = [];
+
+        foreach ($this->collection as $player) {
+            /**
+             * @var Player $player
+             */
+            $combo =  $player->getCombo(3);
+            $collection[$combo->getComboIndex()][$combo->getComboMeterCardIndex()][$combo->getHighCardIndex()][] = $player;
+            krsort($collection[$combo->getComboIndex()][$combo->getComboMeterCardIndex()][$combo->getHighCardIndex()]);
+            krsort($collection[$combo->getComboIndex()][$combo->getComboMeterCardIndex()]);
+            krsort($collection[$combo->getComboIndex()]);
+        }
+
+        krsort($collection);
+        $players = [];
+
+        foreach ($collection as $combos) {
+            foreach ($combos as $combs){
+                foreach ($combs as $playersWithCombo){
+                    $players[] = $playersWithCombo;
+                }
+            }
+        }
+
+        return $players;
+    }
+
     public function removeWhereObj($player): void
     {
         unset($this->collection[array_search($player, $this->collection)]);
@@ -140,7 +169,7 @@ class PlayersCollection extends AbstractGameCollection
             'BB'
         ];
 
-        do {dump($statuses);
+        do {
             /**
              * @var Player $player
              */
@@ -161,6 +190,41 @@ class PlayersCollection extends AbstractGameCollection
                 }
             }
         } while (!empty($statuses));
+    }
+
+    /**
+     * расчитать размер награды для
+     * игроков поставивших
+     * разные ставки, но находятся в игре
+     */
+    public function calculateBidBorders()
+    {
+        $bids = [];
+
+        foreach ($this->collection as $item) {
+            /**
+             * @var Player $item
+             */
+            if ($item->isInRound())
+                $bids[] = $item->getBank();
+        }
+
+        $bids = array_unique($bids);
+        sort($bids);
+        $count = count($bids);
+        $i = 0;
+
+        do {
+            $bank[$i] = array_shift($bids);
+
+            foreach ($bids as &$bid) {
+                $bid -= $bank[$i];
+            }
+
+            $i  ++;
+        } while ($count !== count($bank));
+
+        return $bank;
     }
 
     protected function cycle(int $place)

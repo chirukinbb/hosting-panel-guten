@@ -24,7 +24,9 @@ Route::post('/turn/stand',[\App\Http\Controllers\Game\Api\TurnController::class,
 Route::post('/turn/leave',[\App\Http\Controllers\Game\Api\TurnController::class,'leave'])
     ->middleware('auth:sanctum','ability:User,Admin')->name('leave');
 
-Route::post('/table/action', [\App\Http\Controllers\Game\Api\TableController::class,'action'])
+Route::post('/table/turn-action', [\App\Http\Controllers\Game\Api\TableController::class,'turnAction'])
+    ->middleware('auth:sanctum','ability:User,Admin')->name('action');
+Route::post('/table/showdown-action', [\App\Http\Controllers\Game\Api\TableController::class,'showDownAction'])
     ->middleware('auth:sanctum','ability:User,Admin')->name('action');
 Route::post('/table/leave', [\App\Http\Controllers\Game\Api\TableController::class,'leave'])
     ->middleware('auth:sanctum','ability:User,Admin')->name('leave');

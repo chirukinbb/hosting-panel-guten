@@ -13,11 +13,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-//        $table = new HoldemTwoPokerTable();
-//        $table->setPlayer(4);
-//        $table->setPlayer(45);
-//$table->removePlayer(4);
-//        dd($table);
+        $a=[2,1,5];
+sort($a);
+dd($a);
         return view('home');
     }
 }
