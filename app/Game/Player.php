@@ -20,16 +20,17 @@ class Player
     protected bool $isBB = false;
     protected bool $isLB = false;
     protected ActionCollection $actions;
-    protected BankCollection $bank;
+    protected int $bid;
+    protected int $amount;
     protected int $lastActionId;
 
     public function __construct(protected int $userId)
     {
         $this->cards = new CardsCollection();
-        $this->bank = new BankCollection();
         $this->actions = new ActionCollection();
-        $this->bank->setAmount(1000);
         $this->combo = new UserComboCollection();
+        $this->amount = 1000;
+        $this->bid = 0;
     }
 
     /**
@@ -130,31 +131,25 @@ class Player
         return $this->isDealer;
     }
 
-    public function addToBank(int $step, int $amount)
+    public function addToBid(int $amount)
     {
-        $this->bank->setStep($step);
-        $this->bank->add($amount);
-        $this->bank->changeAmount($amount, '-');
+        $this->bid += $amount;
+        $this->amount -= $amount;
     }
 
-    public function getFromBank(int $amount)
+    public function getBid(): int
     {
-        $this->bank->changeAmount($amount);
-    }
-
-    public function getBank(): int
-    {
-        return $this->bank->getAll();
+        return $this->bid;
     }
 
     public function getAmount():int
     {
-        return $this->bank->getAmount();
+        return $this->amount;
     }
 
     public function addAmount(int $amount)
     {
-        $this->bank->addAmount($amount);
+        $this->amount += $amount;
     }
 
     /**

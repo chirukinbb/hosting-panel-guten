@@ -49,7 +49,7 @@ class PokerTableBuilder
                 'avatar' => $player->getAvatar(),
                 'amount' => (object) [
                     'hand' => $player->getAmount(),
-                    'bank' => $player->getBank()
+                    'bid' => $player->getBid()
                 ]
             ];
         });
@@ -77,7 +77,7 @@ class PokerTableBuilder
 
             $this->table->players[$player->getPlace()]->amount = (object) [
                 'hand' => $player->getAmount(),
-                'bank' => $player->getBank()
+                'bid' => $player->getBid()
             ];
         });
 
@@ -193,7 +193,7 @@ class PokerTableBuilder
         $this->pokerTable->eachPlayer(function (Player $player) use ($steps){
             $this->table->players[$player->getPlace()]->amount = (object) [
                 'hand' => $player->getAmount(),
-                'bank' => $player->getBank()
+                'bid' => $player->getBid()
             ];
             $this->table->players[$player->getPlace()]->lastAction = $player->getLastActionId();
         });

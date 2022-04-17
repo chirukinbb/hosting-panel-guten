@@ -41,9 +41,9 @@ trait PlayerTrait
 
         $this->players->each(function (Player $player) use ($userId,$amount){
             if ($player->getUserId() === $userId) {
-                $player->addToBank($this->round->getCurrentStepInTurn(), $amount);
+                $player->addToBid($amount);
 
-                if ($this->round->getMaxBidInTurn() < ($bid = $player->getBank())) {
+                if ($this->round->getMaxBidInTurn() < ($bid = $player->getBid())) {
                     $this->round->setLastRaisePlayerId($userId);
                     $this->round->setMaxBidInTurn($bid);
                 }
@@ -60,9 +60,9 @@ trait PlayerTrait
         $this->players->each(function (Player $player) use ($userId){
             if ($player->getUserId() === $userId) {
                 $amount  = $player->getAmount();
-                $player->addToBank($this->round->getCurrentStepInTurn(), $amount);
+                $player->addToBid($amount);
 
-                if ($this->round->getMaxBidInTurn() < ($bid = $player->getBank())) {
+                if ($this->round->getMaxBidInTurn() < ($bid = $player->getBid())) {
                     $this->round->setMaxBidInTurn($bid);
                     $this->round->setLastRaiseUserId($userId);
                 }
@@ -78,8 +78,8 @@ trait PlayerTrait
 
         $this->players->each(function (Player $player) use ($userId){
             if ($player->getUserId() === $userId) {
-                $amount = $this->round->getMaxBidInTurn() - $player->getBank();
-                $player->addToBank($this->round->getCurrentStepInTurn(), $amount);
+                $amount = $this->round->getMaxBidInTurn() - $player->getBid();
+                $player->addToBid($amount);
                 $player->setLastActionId(4);
             }
         });

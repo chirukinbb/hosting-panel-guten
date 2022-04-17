@@ -137,7 +137,7 @@ class Round
 
     public function payBlind(Player $player, int $amount)
     {
-        $player->addToBank(0,$amount);
+        $player->addToBid($amount);
     }
 
     /**
@@ -211,7 +211,7 @@ class Round
 
     public function setBids(int $index, int $bid): void
     {
-        $this->bankCollection->setStep($index);
+        $this->bankCollection->setBorder($index);
         $this->bankCollection->add($bid);
     }
 
@@ -224,4 +224,7 @@ class Round
     {
         $this->bankCollection->annulledAmount($step);
     }
+
+    public function getBankValueByAbsBorder(int $border)
+    {}
 }

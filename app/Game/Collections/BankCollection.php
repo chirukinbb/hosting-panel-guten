@@ -6,42 +6,20 @@ use App\Abstracts\AbstractGameCollection;
 
 class BankCollection extends AbstractGameCollection
 {
-    protected int  $step;
-    protected int  $amount = 0;
+    protected int  $border;
 
     /**
-     * @param int $amount
+     * @param int $border
      */
-    public function setAmount(int $amount): void
+    public function setBorder(int $border): void
     {
-        $this->amount = $amount;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAmount(): int
-    {
-        return $this->amount;
-    }
-
-    public function addAmount(int $amount)
-    {
-        $this->amount += $amount;
-    }
-
-    /**
-     * @param int $step
-     */
-    public function setStep(int $step): void
-    {
-        $this->step = $step;
+        $this->border = $border;
     }
 
     public function add(int $amount)
     {
-        $this->collection[$this->step] = isset($this->collection[$this->step]) ?
-            $this->collection[$this->step] + $amount : $amount;
+        $this->collection[$this->border] = isset($this->collection[$this->border]) ?
+            $this->collection[$this->border] + $amount : $amount;
     }
 
     public function getAll()
@@ -49,20 +27,18 @@ class BankCollection extends AbstractGameCollection
         return array_sum($this->collection);
     }
 
-    public function getPart(int $step)
+    public function getPart(int $border)
     {
-        return $this->collection[$step];
+        return $this->collection[$border];
     }
 
-    public function changeAmount(int $delta, $direction = '+')
+    public function annulledAmount(int $border)
     {
-        $this->amount = ($direction === '+') ?
-            $this->amount + $delta :
-            $this->amount - $delta;
+        $this->collection[$border] = 0;
     }
 
-    public function annulledAmount(int $step)
+    public function getBankValueByAbsBorder(int $border): int
     {
-        $this->collection[$this->step] = 0;
+        return $this->collection[$border];
     }
 }

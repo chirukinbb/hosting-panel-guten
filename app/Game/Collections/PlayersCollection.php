@@ -107,7 +107,7 @@ class PlayersCollection extends AbstractGameCollection
              * @var Player $player
              */
             $combo =  $player->getCombo(3);
-            $collection[$combo->getComboIndex()][$combo->getComboMeterCardIndex()][$combo->getHighCardIndex()][] = $player;
+            $collection[$combo->getComboIndex()][$combo->getComboMeterCardIndex()][$combo->getHighCardIndex()][$player->getBid()] = $player;
             krsort($collection[$combo->getComboIndex()][$combo->getComboMeterCardIndex()][$combo->getHighCardIndex()]);
             krsort($collection[$combo->getComboIndex()][$combo->getComboMeterCardIndex()]);
             krsort($collection[$combo->getComboIndex()]);
@@ -196,8 +196,9 @@ class PlayersCollection extends AbstractGameCollection
      * расчитать размер награды для
      * игроков поставивших
      * разные ставки, но находятся в игре
+     * с нуля
      */
-    public function calculateBidBorders()
+    public function calculateBidBordersAbsolute()
     {
         $bids = [];
 
@@ -206,18 +207,30 @@ class PlayersCollection extends AbstractGameCollection
              * @var Player $item
              */
             if ($item->isInRound())
-                $bids[] = $item->getBank();
+                $bids[] = $item->getBid();
         }
 
         $bids = array_unique($bids);
         sort($bids);
-        $count = count($bids);
+
+        return $bids;
+    }
+
+    /**
+     * расчитать размер награды для
+     * игроков поставивших
+     * разные ставки, но находятся в игре
+     * относительно следующей границы
+     */
+    public function calculateBidBordersRelative(array $absBorders)
+    {
+        $count = count($absBorders);
         $i = 0;
 
         do {
-            $bank[$i] = array_shift($bids);
+            $bank[$i] = array_shift($absBorders);
 
-            foreach ($bids as &$bid) {
+            foreach ($absBorders as &$bid) {
                 $bid -= $bank[$i];
             }
 

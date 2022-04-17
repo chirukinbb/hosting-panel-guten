@@ -195,7 +195,7 @@ abstract class AbstractPokerTable
                 $player->eachAction(function (AbstractGameAction $action) use ($player) {
                     switch ($action->getId()) {
                         case 1:
-                            $action->setIsActive($player->getBank() === $this->round->getMaxBidInTurn());
+                            $action->setIsActive($player->getBid() === $this->round->getMaxBidInTurn());
                             break;
                         case 2:
                             $action->setIsActive($player->getAmount() > $this->blind);
@@ -204,7 +204,7 @@ abstract class AbstractPokerTable
                             $action->setIsActive($player->getAmount() > 0);
                             break;
                         case 4:
-                            $action->setIsActive($player->getBank() < $this->round->getMaxBidInTurn());
+                            $action->setIsActive($player->getBid() < $this->round->getMaxBidInTurn());
                             break;
                         default:
                             $action->setIsActive(true);
@@ -219,16 +219,18 @@ abstract class AbstractPokerTable
      */
     public function bidsToBank()
     {
-        $bidBorders = $this->players->calculateBidBorders();
+        $absBorders = $this->players->calculateBidBordersAbsolute();
+        $bidBorders = $this->players->calculateBidBordersRelative($absBorders);
 
-        $this->players->each(function (Player $player) use ($bidBorders) {
-            $fullBid = $player->getBank();
+        $this->players->each(function (Player $player) use ($absBorders,$bidBorders) {
+            $fullBid = $player->getBid();
             $i = 0;
 
             do {
                 // собственно, переливка фишек от ставок игрока в банк по границам
-                $this->round->setBids($i, ($border = array_shift($bidBorders)));
-                $fullBid -= $border;
+                $amount = ($bidBorders[$i] > $fullBid) ? $fullBid : $bidBorders[$i];
+                $this->round->setBids($absBorders[$i], $amount);
+                $fullBid -= $amount;
             } while ($fullBid > 0);
         });
     }
@@ -239,19 +241,32 @@ abstract class AbstractPokerTable
     public function payToWinners()
     {
         $playersByCombo = $this->players->getByHandPower();
-        $bidBorders = $this->players->calculateBidBorders();
+        $absBorders = $this->players->calculateBidBordersAbsolute();
 
         do {
             // отбор игроков с найвысшей комбой
             $checkedCombo = array_shift($playersByCombo);
+            ksort($checkedCombo);
+
+            do{
+                $count = count($checkedCombo);
+                /**
+                 * @var Player $player
+                 */
+                // игрок с меньшей ставкой
+                $player = array_shift($checkedCombo);
+                $index = array_search($player->getBid(),$this->round->getFullBank());
+
+            }while($checkedCombo);
+
             // находжение игрока, внесшего найменьше фишек
             $minBid = 10000000000000;
             foreach ($checkedCombo as $player) {
                 /**
                  * @var Player $player
                  */
-                if ($minBid > $player->getBank()) {
-                    $minBid = $player->getBank();
+                if ($minBid > $player->getBid()) {
+                    $minBid = $player->getBid();
                     $minBidPlayer = $player;
                 }
             }
