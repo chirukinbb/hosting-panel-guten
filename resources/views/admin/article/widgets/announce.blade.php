@@ -6,4 +6,10 @@
             <label class="form-check-label" for="telegram_channel">Telegram Channel</label>
         </div>
     @endif
+    @if(env('FACEBOOK_PAGE_ID'))
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="telegram_channel" name="facebook_group" checked value="1">
+            <label class="form-check-label" for="telegram_channel">Facebook Group</label>
+        </div>
+    @endif
 </div>

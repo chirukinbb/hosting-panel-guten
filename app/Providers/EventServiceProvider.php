@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\ArticlePublishEvent;
+use App\Listeners\ArticleFacebookAnnounce;
 use App\Listeners\ArticlePublishPusher;
 use App\Listeners\ArticleTelegramAnnounce;
 use Illuminate\Auth\Events\Registered;
@@ -23,6 +24,7 @@ class EventServiceProvider extends ServiceProvider
         ArticlePublishEvent::class => [
             ArticleTelegramAnnounce::class,
             ArticlePublishPusher::class,
+            ArticleFacebookAnnounce::class
         ]
     ];
 

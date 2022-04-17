@@ -1,4 +1,4 @@
-# Hosting Panel  'Guten' v1.1
+# Hosting Panel  'Guten' v1.1.2
 
 ## About Project
 
