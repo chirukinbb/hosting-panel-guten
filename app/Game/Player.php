@@ -152,6 +152,10 @@ class Player
         $this->amount += $amount;
     }
 
+    public function annulledBid()
+    {
+        $this->bid = 0;
+    }
     /**
      * @return int
      */

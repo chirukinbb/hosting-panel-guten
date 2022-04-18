@@ -126,6 +126,13 @@ class PlayersCollection extends AbstractGameCollection
 
         return $players;
     }
+    function getById($id)
+    {
+        foreach ($this->collection as $item){
+            if ($item->getUserId()===$id)
+                return $item;
+        }
+    }
 
     public function removeWhereObj($player): void
     {

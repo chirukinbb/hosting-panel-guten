@@ -231,6 +231,7 @@ abstract class AbstractPokerTable
                 $amount = ($bidBorders[$i] > $fullBid) ? $fullBid : $bidBorders[$i];
                 $this->round->setBids($absBorders[$i], $amount);
                 $fullBid -= $amount;
+                $i ++;
             } while ($fullBid > 0);
         });
     }
@@ -241,7 +242,6 @@ abstract class AbstractPokerTable
     public function payToWinners()
     {
         $playersByCombo = $this->players->getByHandPower();
-        $absBorders = $this->players->calculateBidBordersAbsolute();
 
         do {
             // отбор игроков с найвысшей комбой
@@ -249,43 +249,28 @@ abstract class AbstractPokerTable
             ksort($checkedCombo);
 
             do{
-                $count = count($checkedCombo);
                 /**
                  * @var Player $player
                  */
                 // игрок с меньшей ставкой
-                $player = array_shift($checkedCombo);
-                $index = array_search($player->getBid(),$this->round->getFullBank());
-
-            }while($checkedCombo);
-
-            // находжение игрока, внесшего найменьше фишек
-            $minBid = 10000000000000;
-            foreach ($checkedCombo as $player) {
+                $player = $checkedCombo[0];
+                $bankInBorder = $this->round->getBankValueByAbsBorder($border = $player->getBid());
                 /**
-                 * @var Player $player
+                 * выплата приза с велъю банка по текущей границе
                  */
-                if ($minBid > $player->getBid()) {
-                    $minBid = $player->getBid();
-                    $minBidPlayer = $player;
-                }
-            }
-            // обнуление части банка с этой ставкой
-            $i = 0;
-
-            do {
-                $bankInBorder = $this->round->getPartBank($i);
-                $remainder = $minBid - $bidBorders;
-                $this->round->annulledAmount($i);
-                // зачет игроку призовой суммы с этой части банка
+                $amountToPayment = $bankInBorder / count($checkedCombo);
                 foreach ($checkedCombo as $player) {
-                    /**
-                     * @var Player $player
-                     */
-                    $player->addAmount($bankInBorder  / count($checkedCombo));
+                    $player->addAmount($amountToPayment);
                 }
-            }while($remainder);
+
+                $this->round->annulledAmount($border);
+                array_shift($checkedCombo);
+            }while($checkedCombo);
         } while ($this->round->getFullBank() > 0);
+
+        $this->players->each(function (Player $player) {
+            $player->annulledBid();
+        });
     }
 
     /**

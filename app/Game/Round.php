@@ -225,6 +225,8 @@ class Round
         $this->bankCollection->annulledAmount($step);
     }
 
-    public function getBankValueByAbsBorder(int $border)
-    {}
+    public function getBankValueByAbsBorder(int $border): int
+    {
+        return $this->bankCollection->getBankValueByAbsBorder($border);
+    }
 }
