@@ -3,63 +3,43 @@
 namespace App\Http\Resources\Game\Api;
 
 use App\Abstracts\AbstractPokerTable;
+use App\Builders\PokerTableBuilder;
 use App\Game\Player;
+use App\Models\Game\Table;
 use App\Models\User;
+use App\Repositories\PokerTableRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TableResource extends JsonResource
 {
     public static $wrap = false;
     protected array $table = [];
+    protected PokerTableBuilder $builder;
 
     public function __construct($resource)
     {
         parent::__construct($resource);
-        $this->setTable();
-        $this->setPlayers();
+        $this->builder = new PokerTableBuilder($resource, auth()->id());
     }
 
     public function toArray($request)
     {
-        /**
-         * @var AbstractPokerTable $this
-         */
-        return [
-            'screen'=>'table',
-            'channel'=>$this->getChannelName('table.'.\Auth::id()),
-            'table'=> $this->table
-        ];
+        return array_merge(
+            ['channel'=>$this->builder->getChannelName('table.',\Auth::id())],
+            $this->buildTable()
+        );
     }
 
-    protected function setTable()
+    protected function buildTable()
     {
-        /**
-         * @var AbstractPokerTable $this
-         */
-        $this->table = [
-            'title' => $this->getTitle(),
-            'blind' => $this->getBlind(),
-            'cardsInHand' => $this->getCardsInHand(),
-            'players' => []
-        ];
-    }
+        $broadcaster  = Table::find($this->resource)->broadcaster_class;
 
-    protected function setPlayers()
-    {
-        /**
-         * @var AbstractPokerTable $this
-         */
-        $this->eachPlayer(function (Player $player) {
-            $user = User::find($player->getUserId());
-
-            $this->table['players'][] = [
-                'name' => $user->data?->public_name ?? $user->name,
-                'avatar' => ($data = $user->data) ? asset($data->avatar_path) : null,
-                'amount' => [
-                    'hand' => 1000,
-                    'bank' => 0
-                ],
-            ];
-        });
+        // todo: remake this sheets
+        return call_user_func([new $broadcaster(
+            $this->resource,
+            'table',
+            $this->builder->getChannelName('table',auth()->id()),
+            auth()->id()
+        ),'broadcastWith']);
     }
 }

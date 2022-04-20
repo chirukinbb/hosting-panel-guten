@@ -7,6 +7,7 @@ use App\Abstracts\AbstractPokerTable;
 use App\Game\Card;
 use App\Game\Player;
 use App\Repositories\PokerTableRepository;
+use Illuminate\Support\Facades\Log;
 
 class PokerTableBuilder
 {
@@ -44,7 +45,7 @@ class PokerTableBuilder
     public function setPlayers()
     {
         $this->pokerTable->eachPlayer(function (Player $player) {
-            $this->table->players[] = (object) [
+            $this->table->players[$player->getPlace()] = (object) [
                 'name' => $player->getName(),
                 'avatar' => $player->getAvatar(),
                 'amount' => (object) [
@@ -67,14 +68,18 @@ class PokerTableBuilder
         $this->table->title = $this->pokerTable->getTitle();
         $this->table->round =  (object) [
             'number'=>$this->pokerTable->getRoundNumber(),
-            'ante'=>$this->pokerTable->getCurrentAnte()
+            'ante'=>$this->pokerTable->getCurrentAnte(),
+            'cards'=> []
         ];
 
         $this->pokerTable->eachPlayer(function (Player $player) {
-            $this->table->players[$player->getPlace()]->round->isDealer = $player->isDealer();
-            $this->table->players[$player->getPlace()]->round->isLB = $player->isLB();
-            $this->table->players[$player->getPlace()]->round->isBB = $player->isBB();
+            $this->table->players[$player->getPlace()]->round = (object) [
+                'isDealer'=>$player->isDealer(),
+                'isLB'=>$player->isLB(),
+                'isBB'=>$player->isBB(),
+                'cards'=> []
 
+            ];
             $this->table->players[$player->getPlace()]->amount = (object) [
                 'hand' => $player->getAmount(),
                 'bid' => $player->getBid()
@@ -217,10 +222,24 @@ class PokerTableBuilder
     }
 
     /**
-     * расчет банка согласно силе рук игроков
+     * обновление инфы о ставках игроков
      */
-    public function calculateBids()
-    {}
+    public function updateBidInfo()
+    {
+        $this->pokerTable->eachPlayer(function (Player $player) {
+            $this->table->players[$player->getPlace()]->amount = (object) [
+                'hand' => $player->getAmount(),
+                'bid' => $player->getBid()
+            ];
+        });
+
+        return $this;
+    }
+
+    public function updateBankInfo()
+    {
+        $this->table->round->bank = (object) $this->pokerTable->getBank();
+    }
 
     public function getTable(): object
     {

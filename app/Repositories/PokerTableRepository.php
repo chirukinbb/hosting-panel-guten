@@ -74,7 +74,7 @@ class PokerTableRepository
 
             $player->searched = null;
             $player->gamed = $this->tableId;
-            //$player->save();
+            $player->save();
         }
 
         return $this;
@@ -158,11 +158,14 @@ class PokerTableRepository
         return $this;
     }
 
-    public function save()
+    public function save($broadcasterClass)
     {
         Table::updateOrCreate(
             ['id' => $this->tableId],
-            ['object' => $this->tableObj]
+            [
+                'object' => $this->tableObj,
+                'broadcaster_class'=>$broadcasterClass
+            ]
         );
     }
 

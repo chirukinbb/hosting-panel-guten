@@ -64,7 +64,7 @@ class CombosChecker
         return method_exists($this,$combo) ? call_user_func([$this,$combo]) : false;
     }
 
-    protected function highCard(array $excludedNominalIds = [],$isExcluded = true): UserCombo|Card
+    protected function highCard(array $excludedNominalIds = [],$isExcluded = true): UserCombo|Card|bool
     {
         $highCard  =  $this->userCardsPool->getHighCard($excludedNominalIds,$isExcluded);
 
@@ -88,11 +88,12 @@ class CombosChecker
             return $repeatedCards->count() ===  2 ?
                 new UserCombo(
                     sprintf(
-                        'One Pair of %sth%s',
+                        'One Pair of %s`th%s',
                         $card->getNominalName(),
                         ($highCard  = $this->highCard([$card->getNominalIndex()])) ?
-                        ', kicker'.$highCard->getNominalName() : ''
-                    ),$card->getNominalIndex(),$highCard->getNominalIndex()
+                        ', kicker '.$highCard->getNominalName() : ''
+                    ), !$highCard ? $card->getNominalIndex() : 0,
+                    !$highCard ? $highCard->getNominalIndex() : 0
                 )  : false;
         }
 

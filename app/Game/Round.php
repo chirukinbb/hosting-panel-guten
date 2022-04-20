@@ -130,6 +130,11 @@ class Round
         return $this->bankCollection->getAll();
     }
 
+    public function getBankCollection()
+    {
+        return $this->bankCollection->getCollection();
+    }
+
     public function getPartBank(int $step)
     {
         return $this->bankCollection->getPart($step);

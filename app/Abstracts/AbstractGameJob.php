@@ -41,7 +41,7 @@ abstract class AbstractGameJob implements ShouldQueue
      */
     public function handle()
     {
-        $this->action()->save();
+        $this->action()->save($this->broadcasterClass);
         $this->repository->eachPlayer(function (Player $player) {
             call_user_func([$this,'eachPlayerFunc'],$player);
         });

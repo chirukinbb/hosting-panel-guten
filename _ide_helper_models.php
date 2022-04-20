@@ -121,6 +121,7 @@ namespace App\Models\Game{
  * @property int $id
  * @property int $status
  * @property string $table_class
+ * @property string $broadcaster_class
  * @property AbstractPokerTable $object
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at

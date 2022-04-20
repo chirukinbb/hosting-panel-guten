@@ -41,9 +41,8 @@ class TurnController extends Controller
             ->first();
 
         if (!is_null($player)) {
-            $table = Table::find($player->gamed);
 
-            return TableResource::make($table->object);
+            return TableResource::make($player->gamed);
         }
 
         return json_encode(['screen' => 'list']);

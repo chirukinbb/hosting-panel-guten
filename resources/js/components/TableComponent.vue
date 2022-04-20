@@ -18,6 +18,8 @@
                   class="position-absolute"
                   :player="player"
                   :style="playerPosition(i)"
+                  :index="i"
+                  :length="table.players.length"
               ></player-component>
           </div>
       </div>
@@ -128,7 +130,7 @@ export default {
                 l = Math.sin(bRad) * 250,
                 h = (Math.cos(bRad) * 250) / 2,
                 delta = (54 * (Math.cos(bRad) - 1)) / 2
-
+            console.log(a)
             return {
                 top: ((h + 125) + delta - 10) + 'px',
                 left: (l + 180) + 'px'

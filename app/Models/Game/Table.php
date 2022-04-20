@@ -14,7 +14,8 @@ class Table extends AbstractModel
         'table_class',
         'round_no',
         'object',
-        'status'
+        'status',
+        'broadcaster_class'
     ];
 
     public function setObjectAttribute($value)

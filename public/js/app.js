@@ -19742,6 +19742,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
           l = Math.sin(bRad) * 250,
           h = Math.cos(bRad) * 250 / 2,
           delta = 54 * (Math.cos(bRad) - 1) / 2;
+      console.log(a);
       return {
         top: h + 125 + delta - 10 + 'px',
         left: l + 180 + 'px'
@@ -19860,7 +19861,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "PlayerComponent",
   props: {
-    player: Object
+    player: Object,
+    index: Number,
+    length: Number
   },
   computed: {
     timer: function timer() {
@@ -19875,6 +19878,20 @@ __webpack_require__.r(__webpack_exports__);
         backgroundPositionX: x + 'px',
         backgroundPositionY: y + 'px',
         marginLeft: -i * (100 - 100 / this.player.hand.cards.length) + '%'
+      };
+    },
+    chipsPosition: function chipsPosition() {
+      var a = 360 / (this.length + 1),
+          b = 180 - a * (this.index + 1),
+          bRad = b * 3.14 / 180,
+          sin = Math.sin(bRad),
+          cos = Math.cos(bRad),
+          top = cos < 0 ? 60 * Math.abs(1 - cos) : -45 * Math.abs(cos),
+          left = sin > 0 ? -45 * Math.pow(sin, 5) : 100 * Math.abs(sin) + 45 * Math.pow(1 + sin, 5);
+      console.log(left, sin);
+      return {
+        top: top + '%',
+        left: left + '%'
       };
     }
   }
@@ -20119,10 +20136,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_player_component, {
       "class": "position-absolute",
       player: player,
-      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)($options.playerPosition(i))
+      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)($options.playerPosition(i)),
+      index: i,
+      length: $props.table.players.length
     }, null, 8
     /* PROPS */
-    , ["player", "style"]);
+    , ["player", "style", "index", "length"]);
   }), 256
   /* UNKEYED_FRAGMENT */
   ))])]), _ctx.player.actions ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_buttons_component, {
@@ -20297,8 +20316,29 @@ var _hoisted_8 = {
   "class": "m-0 text-center"
 };
 var _hoisted_9 = {
+  title: "Bid"
+};
+
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("/");
+
+var _hoisted_11 = {
+  title: "Chips in Hand"
+};
+var _hoisted_12 = {
   key: 0,
   "class": "cards position-absolute bottom-0 d-flex justify-content-center"
+};
+var _hoisted_13 = {
+  key: 0,
+  "class": "dealer"
+};
+var _hoisted_14 = {
+  key: 1,
+  "class": "big-blind"
+};
+var _hoisted_15 = {
+  key: 2,
+  "class": "small-blind"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
@@ -20311,9 +20351,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* TEXT */
   ), $options.timer ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.timer.start), 1
   /* TEXT */
-  )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.amount.bank) + "/" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.amount.hand), 1
+  )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.amount.bid), 1
   /* TEXT */
-  ))])]), $props.player.hand ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_9, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.player.hand.cards, function (card, i) {
+  ), _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.amount.hand), 1
+  /* TEXT */
+  )]))])]), $props.player.hand ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_12, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.player.hand.cards, function (card, i) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "card-slot",
       key: i
@@ -20325,7 +20367,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     )]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
+  ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    "class": "chips d-flex position-absolute",
+    style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)($options.chipsPosition())
+  }, [$props.player.round.isDealer ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_13, "D")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.player.round.isBB ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_14, "BB")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.player.round.isLB ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_15, "SB")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 4
+  /* STYLE */
+  )]);
 }
 
 /***/ }),
@@ -20442,7 +20489,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.spinner-border[data-v-0ccf4ce2]{\n  top: 1px;\n  left: calc(50% - 1rem);\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.spinner-border[data-v-0ccf4ce2]{\r\n  top: 1px;\r\n  left: calc(50% - 1rem);\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -20466,7 +20513,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.table-screen[data-v-8554570c]{\r\n    z-index: 999;\r\n    height: 100vh;\n}\n.poker-table[data-v-8554570c]{\r\n    /* F = 216.5 */\r\n    height: 250px;\r\n    width: 500px;\r\n    border: 2px solid black;\r\n    background-color: #0c4128;\r\n    border-radius: 50%;\r\n    box-shadow: 0 15px 100px 10px rgba(255,255,255,.5);\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.table-screen[data-v-8554570c]{\n    z-index: 999;\n    height: 100vh;\n}\n.poker-table[data-v-8554570c]{\n    /* F = 216.5 */\n    height: 250px;\n    width: 500px;\n    border: 2px solid black;\n    background-color: #0c4128;\n    border-radius: 50%;\n    box-shadow: 0 15px 100px 10px rgba(255,255,255,.5);\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -20514,7 +20561,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.avatar[data-v-b342e840]{\r\n    height: 50px;\r\n    width: 50px;\r\n    display: block;\n}\n.avatar-container[data-v-b342e840]{\r\n    padding: 2px;\n}\n.player[data-v-b342e840]{\r\n    border-radius: 27px;\r\n    border: 1px solid black;\r\n    width: 140px;\n}\n.name[data-v-b342e840]{\r\n    white-space: nowrap;\r\n    text-overflow: ellipsis;\r\n    overflow: hidden;\r\n    width: 85px;\r\n    display: block;\n}\n.player-label[data-v-b342e840]{\r\n    z-index: 10;\r\n    border-radius: 27px;\r\n    background-color: silver;\n}\n.cards[data-v-b342e840]{\r\n    z-index: 9;\r\n    left: 15%;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.avatar[data-v-b342e840]{\n    height: 50px;\n    width: 50px;\n    display: block;\n}\n.avatar-container[data-v-b342e840]{\n    padding: 2px;\n}\n.player[data-v-b342e840]{\n    border-radius: 27px;\n    border: 1px solid black;\n    width: 140px;\n}\n.name[data-v-b342e840]{\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    overflow: hidden;\n    width: 85px;\n    display: block;\n}\n.player-label[data-v-b342e840]{\n    z-index: 10;\n    border-radius: 27px;\n    background-color: silver;\n}\n.cards[data-v-b342e840]{\n    z-index: 9;\n    left: 15%;\n}\n.chips > div[data-v-b342e840]{\n    height: 25px;\n    width: 25px;\n    border-radius: 50%;\n    border: 1px solid black;\n    background-color: antiquewhite;\n    text-align: center;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

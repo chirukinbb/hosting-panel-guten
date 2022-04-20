@@ -11,6 +11,8 @@ class StartPokerRoundBroadcaster extends AbstractBroadcaster
 
     public function action(): \App\Builders\PokerTableBuilder
     {
-        return $this->builder->resultOfTurn();
+        return $this->builder->setTable()
+            ->setPlayers()
+            ->startRound();
     }
 }

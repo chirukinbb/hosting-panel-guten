@@ -152,7 +152,7 @@ abstract class AbstractPokerTable
 
     public function getTitle()
     {
-        return $this->round->getAnte() ?
+        return (isset($this->round) && $this->round->getAnte()) ?
             $this->getType() . ', ' . $this->playersCount . ' Players, Blind ' . $this->blind . ', Ante ' . $this->round->getAnte() :
             $this->getType() . ', ' . $this->playersCount . ' Players, Blind ' . $this->blind;
     }
@@ -281,5 +281,10 @@ abstract class AbstractPokerTable
     public function getAuctionUserId()
     {
         return $this->round->getLastAuctionUserId();
+    }
+
+    public function getBank()
+    {
+        return $this->round->getBankCollection();
     }
 }
