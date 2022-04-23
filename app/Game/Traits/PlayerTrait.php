@@ -8,7 +8,9 @@ trait PlayerTrait
 {
     public function changeStatuses()
     {
-        $this->players->changeStatuses();
+        $place = $this->players->changeStatuses();
+        $this->round->setLastAuctionPlayerPlace($place);
+        $this->round->setLastRaisePlayerPlace($place);
     }
 
     public function fold()
@@ -43,9 +45,9 @@ trait PlayerTrait
             if ($player->getUserId() === $userId) {
                 $player->addToBid($amount);
 
-                if ($this->round->getMaxBidInTurn() < ($bid = $player->getBid())) {
-                    $this->round->setLastRaisePlayerId($userId);
-                    $this->round->setMaxBidInTurn($bid);
+                if ($this->round->getMaxBid() < ($bid = $player->getBid())) {
+                    $this->round->setLastRaisePlayerPlace($userId);
+                    $this->round->setMaxBid($bid);
                 }
 
                 $player->setLastActionId(2);
@@ -62,9 +64,9 @@ trait PlayerTrait
                 $amount  = $player->getAmount();
                 $player->addToBid($amount);
 
-                if ($this->round->getMaxBidInTurn() < ($bid = $player->getBid())) {
-                    $this->round->setMaxBidInTurn($bid);
-                    $this->round->setLastRaiseUserId($userId);
+                if ($this->round->getMaxBid() < ($bid = $player->getBid())) {
+                    $this->round->setMaxBid($bid);
+                    $this->round->setLastRaisePlayerPlace($userId);
                 }
 
                 $player->setLastActionId(3);
@@ -78,7 +80,7 @@ trait PlayerTrait
 
         $this->players->each(function (Player $player) use ($userId){
             if ($player->getUserId() === $userId) {
-                $amount = $this->round->getMaxBidInTurn() - $player->getBid();
+                $amount = $this->round->getMaxBid() - $player->getBid();
                 $player->addToBid($amount);
                 $player->setLastActionId(4);
             }

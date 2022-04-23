@@ -12,6 +12,7 @@ class AuctionPokerRoundBroadcaster extends AbstractBroadcaster
 
     public function action(): \App\Builders\PokerTableBuilder
     {
-        return $this->builder->startTimer($this->userId);
+
+        return $this->builder->startTimer();
     }
 }

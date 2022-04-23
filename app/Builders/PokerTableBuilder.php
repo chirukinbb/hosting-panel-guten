@@ -76,9 +76,7 @@ class PokerTableBuilder
             $this->table->players[$player->getPlace()]->round = (object) [
                 'isDealer'=>$player->isDealer(),
                 'isLB'=>$player->isLB(),
-                'isBB'=>$player->isBB(),
-                'cards'=> []
-
+                'isBB'=>$player->isBB()
             ];
             $this->table->players[$player->getPlace()]->amount = (object) [
                 'hand' => $player->getAmount(),
@@ -90,55 +88,67 @@ class PokerTableBuilder
     }
 
     /**
+     * сдача карт в руку каждого игрока  отдельно
+     * запись названия его текущей комбы
+     *
+     * @param int $userId
+     * @return $this
+     */
+    public function preFlop(): static
+    {
+        $this->pokerTable->eachPlayer(function (Player $player) {
+            if ($player->getUserId() === $this->userId) {
+                $player->eachCard(function (Card $card) use ($player) {
+                    $this->table->players[$player->getPlace()]->round->cards[] = (object)[
+                        'nominal' => $card->getNominalIndex(),
+                        'suit' => $card->getSuitIndex(),
+                    ];
+                });
+
+                $this->table->players[$player->getPlace()]->round->combo = $player->getCombo(0)->getName();
+            }
+        });
+
+        return $this;
+    }
+
+    /**
      * стартуем отсчет таймера на ход игрока
      *
      * @param int $userId
      * @return $this
      */
-    public function startTimer(int $userId): static
+    public function startTimer(): static
     {
-        $this->pokerTable->eachPlayer(function (Player $player) use ($userId){
-            if ($player->getUserId() === $userId){
+        $this->pokerTable->eachPlayer(function (Player $player) {
+            if ($player->getUserId() === $this->userId){
                 $player->eachAction(function (AbstractGameAction $action) use ($player) {
                     $this->table->players[$player->getPlace()]->actions[$action->getId()] = (object) [
                         'name'=>$action->getName(),
                         'is_active'=>$action->isActive()
                     ];
-                    $this->table->players[$player->getPlace()]->timer = $this->pokerTable->getTimeOnTurn();
                 });
-            } else {
-                $this->table->players[$player->getPlace()]->timer = ($this->pokerTable->getAuctionUserId() === $player->getUserId()) ?
-                    $this->pokerTable->getTimeOnTurn() : 0;
             }
+
+            $this->table->players[$player->getPlace()]->timer = ($this->pokerTable->getLastAuctionPlayerPlace() === $player->getPlace()) ?
+                $this->pokerTable->getTimeOnTurn() : 0;
         });
 
         return $this;
     }
 
-    public function preFlop(int $userId): static
-    {
-        $this->pokerTable->eachPlayer(function (Player $player) use ($userId){
-            if ($player->getUserId() === $userId) {
-                $player->eachCard(function (Card $card) use ($player) {
-                    $this->table->players[$player->getPlace()]->hand->cards[] = (object)[
-                        'nominal' => $card->getNominalIndex(),
-                        'suit' => $card->getSuitIndex()
-                    ];
-                    $this->table->players[$player->getPlace()]->hand->combo = $player->getCombo(0)->getName();
-                });
-            }
-        });
-
-        return $this;
-    }
-
+    /**
+     * сдача первых 3-ех карт
+     *
+     * @return $this
+     */
     public function flop()
     {
         $order = 0;
 
         $this->pokerTable->eachCardOnTable(function (Card $card) use (&$order){
             if ($order < 3) {
-                $this->table->cards[] = (object)[
+                $this->table->round->cards[] = (object)[
                     'nominal' => $card->getNominalIndex(),
                     'suit' => $card->getSuitIndex()
                 ];
@@ -147,16 +157,27 @@ class PokerTableBuilder
             $order ++;
         });
 
+        $this->pokerTable->eachPlayer(function (Player $player) {
+            if ($player->getUserId() === $this->userId) {
+                $this->table->players[$player->getPlace()]->round->combo = $player->getCombo(1)->getName();
+            }
+        });
+
         return $this;
     }
 
+    /**
+     * сдача 4-ой карты
+     *
+     * @return $this
+     */
     public function turn()
     {
         $order = 0;
 
         $this->pokerTable->eachCardOnTable(function (Card $card) use (&$order){
             if ($order === 3) {
-                $this->table->cards[] = (object)[
+                $this->table->round->cards[] = (object)[
                     'nominal' => $card->getNominalIndex(),
                     'suit' => $card->getSuitIndex()
                 ];
@@ -165,22 +186,39 @@ class PokerTableBuilder
             $order ++;
         });
 
+        $this->pokerTable->eachPlayer(function (Player $player) {
+            if ($player->getUserId() === $this->userId) {
+                $this->table->players[$player->getPlace()]->round->combo = $player->getCombo(2)->getName();
+            }
+        });
+
         return $this;
     }
 
+    /**
+     * сдача 5-ой карты
+     *
+     * @return $this
+     */
     public function river()
     {
         $order = 0;
 
         $this->pokerTable->eachCardOnTable(function (Card $card) use (&$order){
             if ($order === 4) {
-                $this->table->cards[] = (object)[
+                $this->table->round->cards[] = (object)[
                     'nominal' => $card->getNominalIndex(),
                     'suit' => $card->getSuitIndex()
                 ];
             }
 
             $order ++;
+        });
+
+        $this->pokerTable->eachPlayer(function (Player $player) {
+            if ($player->getUserId() === $this->userId) {
+                $this->table->players[$player->getPlace()]->round->combo = $player->getCombo(3)->getName();
+            }
         });
 
         return $this;

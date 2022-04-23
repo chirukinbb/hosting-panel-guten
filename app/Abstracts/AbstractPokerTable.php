@@ -169,33 +169,32 @@ abstract class AbstractPokerTable
         });
     }
 
+    public function removePlayersCombos()
+    {
+        $this->players->each(function (Player $player) {
+            $player->removeCombos();
+        });
+    }
+
     /**
      * установить игрока, кто будет сейчас  делать ставку
      */
     public function setNextPlayerAuction()
     {
-        $prevPlayerAuctionUserId = $this->round->getLastAuctionUserId();
+        $prevPlayerAuctionPlayerPlace = $this->round->getLastAuctionPlayerPlace();
+        $this->players->sortFromPlace($prevPlayerAuctionPlayerPlace);
+
         $newAuctioneer = false;
 
-        $this->players->each(function (Player $player) use ($prevPlayerAuctionUserId, &$newAuctioneer) {
-            if ($prevPlayerAuctionUserId === $player->getUserId()) {
-                $this->players->sortFromPlace($player->getPlace());
-
-                $player->eachAction(function (AbstractGameAction $action) {
-                    $action->setIsActive(false);
-                });
-
-                $newAuctioneer = true;
-            }
-
-            if ($newAuctioneer) {
-                $this->round->setLastAuctionUserId($player->getUserId());
+        $this->players->each(function (Player $player) use ($prevPlayerAuctionPlayerPlace, &$newAuctioneer) {
+            if ($newAuctioneer && $player->isInRound()) {
+                $this->round->setLastAuctionPlayerPlace($player->getPlace());
                 $newAuctioneer = false;
 
                 $player->eachAction(function (AbstractGameAction $action) use ($player) {
                     switch ($action->getId()) {
                         case 1:
-                            $action->setIsActive($player->getBid() === $this->round->getMaxBidInTurn());
+                            $action->setIsActive($player->getBid() === $this->round->getMaxBid());
                             break;
                         case 2:
                             $action->setIsActive($player->getAmount() > $this->blind);
@@ -204,12 +203,22 @@ abstract class AbstractPokerTable
                             $action->setIsActive($player->getAmount() > 0);
                             break;
                         case 4:
-                            $action->setIsActive($player->getBid() < $this->round->getMaxBidInTurn());
+                            $action->setIsActive($player->getBid() < $this->round->getMaxBid());
                             break;
                         default:
                             $action->setIsActive(true);
                     }
                 });
+            }
+
+            if ($prevPlayerAuctionPlayerPlace === $player->getPlace()) {
+                $this->players->sortFromPlace($player->getPlace());
+
+                $player->eachAction(function (AbstractGameAction $action) {
+                    $action->setIsActive(false);
+                });
+
+                $newAuctioneer = true;
             }
         });
     }
@@ -274,13 +283,13 @@ abstract class AbstractPokerTable
     }
 
     /**
-     * получить ID игрока, делающего сейчас ставку
+     * получить индекс места игрока за столом, делающего сейчас ставку
      *
      * @return int
      */
-    public function getAuctionUserId()
+    public function getLastAuctionPlayerPlace()
     {
-        return $this->round->getLastAuctionUserId();
+        return $this->round->getLastAuctionPlayerPlace();
     }
 
     public function getBank()

@@ -11,10 +11,10 @@ class Round
     protected CardsCollection $tableCards;
     protected array $combos;
     protected BankCollection $bankCollection;
-    protected int $lastRaisePlayerId;
-    protected int $lastAuctionPlayerId;
-    protected int $maxBidInTurn;
-    protected int $currentStepInTurn;
+    protected int $lastRaisePlayerPlace;
+    protected int $lastAuctionPlayerPlace;
+    protected int $maxBid  = 0;
+    protected int $currentStep;
 
     public function __construct(protected CardsCollection $cardsPool,protected int $number, protected int $ante)
     {
@@ -32,35 +32,35 @@ class Round
     }
 
     /**
-     * @param int $currentStepInTurn
+     * @param int $currentStep
      */
-    public function setCurrentStepInTurn(int $currentStepInTurn): void
+    public function setCurrentStep(int $currentStep): void
     {
-        $this->currentStepInTurn = $currentStepInTurn;
+        $this->currentStep = $currentStep;
     }
 
     /**
      * @return int
      */
-    public function getCurrentStepInTurn(): int
+    public function getCurrentStep(): int
     {
-        return $this->currentStepInTurn;
+        return $this->currentStep;
     }
 
     /**
      * @return int
      */
-    public function getMaxBidInTurn(): int
+    public function getMaxBid(): int
     {
-        return $this->maxBidInTurn;
+        return $this->maxBid;
     }
 
     /**
-     * @param int $maxBidInTurn
+     * @param int $maxBid
      */
-    public function setMaxBidInTurn(int $maxBidInTurn): void
+    public function setMaxBid(int $maxBid): void
     {
-        $this->maxBidInTurn = $maxBidInTurn;
+        $this->maxBid = $maxBid;
     }
 
     /**
@@ -146,35 +146,35 @@ class Round
     }
 
     /**
-     * @param int $lastRaisePlayerId
+     * @param int $lastRaisePlayerPlace
      */
-    public function setLastRaiseUserId(int $lastRaisePlayerId): void
+    public function setLastRaisePlayerPlace(int $lastRaisePlayerPlace): void
     {
-        $this->lastRaisePlayerId = $lastRaisePlayerId;
+        $this->lastRaisePlayerPlace = $lastRaisePlayerPlace;
     }
 
     /**
      * @return int
      */
-    public function getLastRaiseUserId(): int
+    public function getLastRaiseUserPlace(): int
     {
-        return $this->lastRaisePlayerId;
+        return $this->lastRaisePlayerPlace;
     }
 
     /**
-     * @param int $lastAuctionPlayerId
+     * @param int $lastAuctionPlayerPlace
      */
-    public function setLastAuctionUserId(int $lastAuctionPlayerId): void
+    public function setLastAuctionPlayerPlace(int $lastAuctionPlayerPlace): void
     {
-        $this->lastAuctionPlayerId = $lastAuctionPlayerId;
+        $this->lastAuctionPlayerPlace = $lastAuctionPlayerPlace;
     }
 
     /**
      * @return int
      */
-    public function getLastAuctionUserId(): int
+    public function getLastAuctionPlayerPlace(): int
     {
-        return $this->lastAuctionPlayerId;
+        return $this->lastAuctionPlayerPlace;
     }
 
     public function eachCardOnTable(callable $func)
@@ -183,35 +183,11 @@ class Round
     }
 
     /**
-     * @param int $lastAuctionPlayerId
-     */
-    public function setLastAuctionPlayerId(int $lastAuctionPlayerId): void
-    {
-        $this->lastAuctionPlayerId = $lastAuctionPlayerId;
-    }
-
-    /**
-     * @param int $lastRaisePlayerId
-     */
-    public function setLastRaisePlayerId(int $lastRaisePlayerId): void
-    {
-        $this->lastRaisePlayerId = $lastRaisePlayerId;
-    }
-
-    /**
      * @return int
      */
-    public function getLastRaisePlayerId(): int
+    public function getLastRaisePlayerPlace(): int
     {
-        return $this->lastRaisePlayerId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLastAuctionPlayerId(): int
-    {
-        return $this->lastAuctionPlayerId;
+        return $this->lastRaisePlayerPlace;
     }
 
     public function setBids(int $index, int $bid): void

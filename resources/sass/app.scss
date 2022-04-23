@@ -5,17 +5,11 @@
 @import 'variables';
 
 .crd{
-    transform: scale(.8);
     background: url('../img/card-deck.svg');
-    height: 215.64px;
-    width: 152.06px;
+    background-size: 746.4px;
+    height: 64.692px;
+    width: 45.618px;
     display: block;
     margin: 5px;
-    border-radius: 7px;
-    .suit-0{
-        background-position-y: 58.239px;
-    }
-    .nominal-0{
-        background-position-x: 98.148px;
-    }
+    border-radius: 2px;
 }

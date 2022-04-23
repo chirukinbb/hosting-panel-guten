@@ -166,6 +166,12 @@ class PlayersCollection extends AbstractGameCollection
         return $this;
     }
 
+    /**
+     * расчет статусов игроков в раунде
+     * возврат места за столом большого блаинда
+     *
+     * @return int
+     */
     public function changeStatuses()
     {
         $currentDealerIndex = $this->getDealerIndex();
@@ -181,7 +187,6 @@ class PlayersCollection extends AbstractGameCollection
              * @var Player $player
              */
             $currentDealerIndex = $this->cycle($currentDealerIndex + 1);
-            if ($currentDealerIndex===5) dd(4);
             $player = $this->collection[$currentDealerIndex];
 
             if (!$dealerAlreadySet)
@@ -197,6 +202,8 @@ class PlayersCollection extends AbstractGameCollection
                 }
             }
         } while (!empty($statuses));
+
+        return $player->getPlace();
     }
 
     /**

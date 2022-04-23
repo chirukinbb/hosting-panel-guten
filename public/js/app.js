@@ -19835,8 +19835,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     position: function position(x, y) {
-      x = -1 * (x * 164.534 + 98.148);
-      y = -1 * (y * 230.623 + 58.239);
+      x = -1 * ((x - 1) * 49.3602 + 29.4444);
+      y = -1 * (y * 69.1869 + 17.4717);
       return {
         backgroundPositionX: x + 'px',
         backgroundPositionY: y + 'px'
@@ -19865,6 +19865,11 @@ __webpack_require__.r(__webpack_exports__);
     index: Number,
     length: Number
   },
+  data: function data() {
+    return {
+      time: 0
+    };
+  },
   computed: {
     timer: function timer() {
       return !!this.player.timer;
@@ -19872,12 +19877,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     position: function position(i, x, y) {
-      x = -1 * (x * 164.534 + 98.148);
-      y = -1 * (y * 230.623 + 58.239);
+      x = -1 * ((x - 1) * 49.3602 + 29.4444);
+      y = -1 * (y * 69.1869 + 17.4717);
       return {
         backgroundPositionX: x + 'px',
         backgroundPositionY: y + 'px',
-        marginLeft: -i * (100 - 100 / this.player.hand.cards.length) + '%'
+        marginLeft: -i * (100 - 100 / this.player.round.cards.length) + '%'
       };
     },
     chipsPosition: function chipsPosition() {
@@ -19894,6 +19899,16 @@ __webpack_require__.r(__webpack_exports__);
         left: left + '%'
       };
     }
+  },
+  created: function created() {
+    var _this = this;
+
+    setInterval(function () {
+      if (_this.player.timer) {
+        _this.player.timer--;
+        console.log(_this.player.timer);
+      }
+    }, 1000);
   }
 });
 
@@ -20349,13 +20364,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* PROPS */
   , _hoisted_4)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.name), 1
   /* TEXT */
-  ), $options.timer ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.timer.start), 1
+  ), $props.player.timer ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.timer), 1
   /* TEXT */
   )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.amount.bid), 1
   /* TEXT */
   ), _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.player.amount.hand), 1
   /* TEXT */
-  )]))])]), $props.player.hand ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_12, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.player.hand.cards, function (card, i) {
+  )]))])]), $props.player.round ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_12, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.player.round.cards, function (card, i) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "card-slot",
       key: i
@@ -20561,7 +20576,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.avatar[data-v-b342e840]{\n    height: 50px;\n    width: 50px;\n    display: block;\n}\n.avatar-container[data-v-b342e840]{\n    padding: 2px;\n}\n.player[data-v-b342e840]{\n    border-radius: 27px;\n    border: 1px solid black;\n    width: 140px;\n}\n.name[data-v-b342e840]{\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    overflow: hidden;\n    width: 85px;\n    display: block;\n}\n.player-label[data-v-b342e840]{\n    z-index: 10;\n    border-radius: 27px;\n    background-color: silver;\n}\n.cards[data-v-b342e840]{\n    z-index: 9;\n    left: 15%;\n}\n.chips > div[data-v-b342e840]{\n    height: 25px;\n    width: 25px;\n    border-radius: 50%;\n    border: 1px solid black;\n    background-color: antiquewhite;\n    text-align: center;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.avatar[data-v-b342e840] {\n    height: 50px;\n    width: 50px;\n    display: block;\n}\n.avatar-container[data-v-b342e840] {\n    padding: 2px;\n}\n.player[data-v-b342e840] {\n    border-radius: 27px;\n    border: 1px solid black;\n    width: 140px;\n}\n.name[data-v-b342e840] {\n    white-space: nowrap;\n    text-overflow: ellipsis;\n    overflow: hidden;\n    width: 85px;\n    display: block;\n}\n.player-label[data-v-b342e840] {\n    z-index: 10;\n    border-radius: 27px;\n    background-color: silver;\n}\n.cards[data-v-b342e840] {\n    z-index: 9;\n    left: 15%;\n}\n.card-slot[data-v-b342e840] {\n    margin-bottom: 15px;\n}\n.chips > div[data-v-b342e840] {\n    height: 25px;\n    width: 25px;\n    border-radius: 50%;\n    border: 1px solid black;\n    background-color: antiquewhite;\n    text-align: center;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

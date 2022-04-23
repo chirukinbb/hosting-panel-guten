@@ -18,8 +18,8 @@ export default {
     },
     methods:{
         position:function (x,y) {
-            x = -1 * (x * 164.534 + 98.148)
-            y  = -1 * (y * 230.623 + 58.239)
+            x = -1 * ((x - 1) * 49.3602 + 29.4444)
+            y  = -1 * (y * 69.1869 + 17.4717)
 
             return {
                 backgroundPositionX:x+'px',

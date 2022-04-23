@@ -68,8 +68,13 @@ trait RoundTrait
         return $this->players->getDealerIndex();
     }
 
-    public function getAuctionUserId()
+    public function setCurrentStepInRound(int $step)
     {
-        return $this->round->getActionTurnOfUserId();
+        $this->round->setCurrentStep($step);
+    }
+
+    public function getCurrentStepInRound()
+    {
+        return $this->round->getCurrentStep();
     }
 }

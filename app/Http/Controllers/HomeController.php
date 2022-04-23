@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Builders\PokerTableBuilder;
+use App\Events\Game\Broadcasters\FlopBroadcaster;
+use App\Events\Game\Broadcasters\PreFlopBroadcaster;
+use App\Events\Game\Broadcasters\StartPlayerAuctionAfterFlopBroadcaster;
 use App\Events\Game\Broadcasters\StartPokerRoundBroadcaster;
+use App\Events\Game\Broadcasters\TurnBroadcaster;
 use App\Game\Player;
 use App\Game\Tables\HoldemTwoPokerTable;
 use App\Repositories\PokerTableRepository;
@@ -37,15 +41,16 @@ class HomeController extends Controller
 //        $table->bidsToBank();
 //        $table->payToWinners();
 //        dd($table);
-        //$repo = new PokerTableBuilder(7,17);
-       // $repo->createRound()->save();
-       // dd($repo);
+        $repo = new PokerTableBuilder(7,17);
+//
+//        $repo->createRound()->setCurrentStepInRound(0)->startTimer()->save(StartPlayerAuctionAfterFlopBroadcaster::class);
+        dump(auth()->id(),$repo);
 dd(
-    call_user_func([new StartPokerRoundBroadcaster(
+    call_user_func([new StartPlayerAuctionAfterFlopBroadcaster(
     7,
     'table',
         'hhhhhh',
-        17
+        18
 ),'broadcastWith'])
 );
         return view('home');

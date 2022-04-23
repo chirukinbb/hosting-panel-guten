@@ -59,6 +59,11 @@ class Player
         $this->cards->empty();
     }
 
+    public function removeCombos()
+    {
+        $this->combo->empty();
+    }
+
     public function giveCard(Card $card)
     {
         $this->cards->push($card);

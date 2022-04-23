@@ -18,6 +18,18 @@ class PokerTableRepository
         $this->tableObj = Table::find($this->tableId)?->object;
     }
 
+    public function setCurrentStepInRound(int $step)
+    {
+        $this->tableObj->setCurrentStepInRound($step);
+
+        return $this;
+    }
+
+    public function getCurrentStepInRound()
+    {
+        return $this->tableObj->getCurrentStepInRound();
+    }
+
     public function getChannelName($slug, $userId)
     {
         return $this->tableObj->getChannelName($slug . '.' . $userId);
@@ -91,6 +103,7 @@ class PokerTableRepository
         $this->tableObj->changeStatuses();
         $this->tableObj->payBlinds();
         $this->tableObj->removePlayersCards();
+        $this->tableObj->removePlayersCombos();
         $this->tableObj->preFlop();
         $this->tableObj->calculateHandValues();
         $this->tableObj->flop();
