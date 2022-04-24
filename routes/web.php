@@ -22,8 +22,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/post/{slug}',[\App\Http\Controllers\BlogController::class,'show'])->name('post');
 
     Route::get('/game',[\App\Http\Controllers\GameController::class,'index'])->name('game');
-    Route::get('/turn/{table}',[\App\Http\Controllers\GameController::class,'turn'])->name('turn');
-    Route::get('/table',[\App\Http\Controllers\GameController::class,'table'])->name('table');
 
     Route::get('/account',[\App\Http\Controllers\AccountController::class,'dashboard'])->name('account');
 

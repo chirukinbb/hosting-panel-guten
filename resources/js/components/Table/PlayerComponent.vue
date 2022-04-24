@@ -68,14 +68,14 @@ export default {
             }
         }
     },
-    created: function () {
-        setInterval(() => {
-            if (this.player.timer) {
-                this.player.timer--
-                console.log(this.player.timer)
-            }
-        }, 1000)
-    }
+    // created: function () {
+    //     setInterval(() => {
+    //         if (this.player.timer) {
+    //             this.player.timer--
+    //             console.log(this.player.timer)
+    //         }
+    //     }, 1000)
+    // }
 }
 </script>
 

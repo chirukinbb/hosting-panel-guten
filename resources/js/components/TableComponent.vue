@@ -1,6 +1,6 @@
 <template>
   <div class="table-screen position-absolute top-0 start-0 end-0 bg-dark">
-      <h3>{{computedTitle}}</h3>
+      <h3 class="text-center text-white">{{computedTitle}}</h3>
       <div class="d-flex justify-content-center mt-5">
           <div class="poker-table position-relative">
               <cards-component
@@ -12,6 +12,7 @@
               <button-component
                   class="position-absolute"
                   style="top:-20px;left: 180px"
+                  :actions="actions"
               ></button-component>
               <player-component
                   v-for="(player,i) in table.players"
@@ -24,9 +25,7 @@
           </div>
       </div>
       <buttons-component
-          v-if="player.actions"
-          :actions="player.actions"
-          :turn="currentTurn"
+          :actions="actions"
           class="position-absolute end-0 start-0 bottom-100"
       ></buttons-component>
     </div>
@@ -47,17 +46,20 @@ export default {
     },
     data:function () {
         return {
-            player:{},
-            currentTurn: false
+            actions:[],
+            combo:''
         }
     },
     created:function () {
         document.querySelector('title').innerHTML = this.computedTitle
 
         this.table.players.forEach((player) => {
-            if (typeof player.hand === 'object')
-                this.player = player
+            if (player.actions){
+                this.actions = player.actions
+                this.combo = player.round.combo
+            }
         })
+        //console.log(this.actions)
 
       this.socket = new Echo({
         broadcaster: 'pusher',
@@ -112,11 +114,9 @@ export default {
             return !(this.player.actions.canAllIn && this.player.myTurn)
         },
         computedTitle:function () {
-            return this.table.round ?
-                this.table.title.replace('{blind}', this.table.blind)
-                    .replace('{ante}', this.table.round.ante)
-                :
-                this.table.title.replace('{blind}', this.table.blind)
+            return this.combo ?
+                this.combo :
+                this.table.title
         }
     },
     methods:{
