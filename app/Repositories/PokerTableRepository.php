@@ -133,20 +133,15 @@ class PokerTableRepository
         $this->tableObj->eachPlayer($func);
     }
 
-    public function actionFromPlayer(int $place, array $action): static
-    {
-        return $this;
-    }
-
     /**
      * у игрока закончилось время на ход
      *
      * @return $this
      */
-    public function entTimeForTurn(): static
+    public function entTimeForAction(): static
     {
         $this->tableObj->eachPlayer(function (Player $player) {
-            if ($this->tableObj->getAuctionUserId() === $player->getUserId()) {
+            if ($this->tableObj->getLastAuctionPlayerPlace() === $player->getPlace()) {
                 $player->eachAction(function (AbstractGameAction $action) {
                     $action->setIsActive(false);
                 });
@@ -157,9 +152,22 @@ class PokerTableRepository
     }
 
     /**
-     * конец раунда:
+     * конец этапа в раунде:
      * перевод ставок в общий банк
-     * распределение фишек
+     *
+     * @return $this
+     */
+    public function lapFinish(): static
+    {
+        $this->tableObj->bidsToBank();
+
+        return $this;
+    }
+
+    /**
+     * конец этапа в раунде:
+     * перевод ставок в общий банк
+     * выплата победителям
      *
      * @return $this
      */
@@ -171,14 +179,16 @@ class PokerTableRepository
         return $this;
     }
 
-    public function save($broadcasterClass)
+    public function save($broadcasterClass = null)
     {
+        $updateAttrs = ['object' => $this->tableObj];
+
+        if ($broadcasterClass)
+            $updateAttrs = array_merge($updateAttrs,['broadcaster_class'=>$broadcasterClass]);
+
         Table::updateOrCreate(
             ['id' => $this->tableId],
-            [
-                'object' => $this->tableObj,
-                'broadcaster_class'=>$broadcasterClass
-            ]
+            $updateAttrs
         );
     }
 
@@ -192,22 +202,27 @@ class PokerTableRepository
 
     public function isTurnTransfer(): bool
     {
-        return true;
+        return $this->tableObj->isTurnTransfer();
     }
 
-    public function isNewRound(): bool
+    public function isNewRoundWithoutShowdown(): bool
     {
-        return true;
+        return $this->tableObj->isNewRoundWithoutShowdown();
     }
 
     public function isTableFinish(): bool
     {
-        return true;
+        return $this->tableObj->isTableFinish();
+    }
+
+    public function isNewLoop():bool
+    {
+        return $this->tableObj->isNewLoop();
     }
 
     public function isShowDown(): bool
     {
-        return true;
+        return $this->tableObj->isShowDown();
     }
 
     /**
@@ -251,5 +266,12 @@ class PokerTableRepository
     public function getTableObject()
     {
         return $this->tableObj;
+    }
+
+    public function showdown(): static
+    {
+        $this->tableObj->payToWinners();
+
+        return $this;
     }
 }

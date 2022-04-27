@@ -233,6 +233,7 @@ abstract class AbstractPokerTable
 
         $this->players->each(function (Player $player) use ($absBorders,$bidBorders) {
             $fullBid = $player->getBid();
+            $player->annulledBid();
             $i = 0;
 
             do {
@@ -243,6 +244,8 @@ abstract class AbstractPokerTable
                 $i ++;
             } while ($fullBid > 0);
         });
+
+        $this->round->normalizeBank();
     }
 
     /**
@@ -276,10 +279,69 @@ abstract class AbstractPokerTable
                 array_shift($checkedCombo);
             }while($checkedCombo);
         } while ($this->round->getFullBank() > 0);
+    }
 
-        $this->players->each(function (Player $player) {
-            $player->annulledBid();
-        });
+    /**
+     * передать ли ход следующему игроку?
+     *
+     * @return bool
+     */
+    public function isTurnTransfer(): bool
+    {
+        $currentPlayerPlace  = $this->getLastAuctionPlayerPlace();
+        $nextPlayer = $this->players->getNextActivePlayer($currentPlayerPlace);
+        $currentPlayer =  $this->players->get($currentPlayerPlace);
+        $isBidEq = ($currentPlayer->getBid() === $this->round->getMaxBid());
+        $isNextPlayerLastRaise = ($nextPlayer->getPlace() === $this->round->getLastRaisePlayerPlace());
+        $isCurrentPlayerLastRaise = ($currentPlayer->getPlace() === $this->round->getLastRaisePlayerPlace());
+
+        return ($isCurrentPlayerLastRaise || ($isBidEq && $isNextPlayerLastRaise));
+    }
+
+    /**
+     * завершить стол?
+     *
+     * @return bool
+     */
+    public function isTableFinish(): bool
+    {
+        return $this->getCurrentPlayersCount() === 1;
+    }
+
+    /**
+     * открывать ли карты сейчас?
+     *
+     * @return bool
+     */
+    public function isShowDown(): bool
+    {
+        if ($this->round->getCurrentStep() < 4)
+            return $this->players->hasOnlyAllInPlayers();
+
+        return true;
+    }
+
+    /**
+     * делать ли новый круг торгов?
+     *
+     * @return bool
+     */
+    public function isNewLoop():bool
+    {
+        return $this->players->isNextPlayerLastRaise(
+            $this->round->getLastAuctionPlayerPlace(),
+            $this->round->getLastRaisePlayerPlace()
+        ) && !$this->players->isOnlyOneActivePlayerInRound();
+    }
+
+    /**
+     * окончить ли раунд без вскрытия карт?
+     *
+     * @return bool
+     */
+    public function isNewRoundWithoutShowdown(): bool
+    {
+        return $this->players->isOnlyOneActivePlayerInRound();
     }
 
     /**

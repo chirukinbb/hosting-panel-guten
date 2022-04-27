@@ -1,0 +1,30 @@
+    игровой процесс
+создал стол, разсадил игроков
+CreatePokerTableJob.php +    ->  CreatePokerTableBroadcaster.php +
+создал, расчитал раунд
+StartPokerRoundJob.php +    ->  StartPokerRoundBroadcaster.php +
+
+PreFlopPokerJob.php +   ->  PreFlopBroadcaster.php +
+
+StartAuctionForPlayerJob.php(поставить задание на конец хода)    ->  StartPlayerAuctionAfterPreFlopBroadcaster.php +
+RiverPokerJob.php(поставить задание на конец хода)   ->  RiverBroadcaster.php
+StartAuctionForPlayerJob.php(поставить задание на конец хода)    ->  StartPlayerAuctionAfterRiverBroadcaster.php
+TurnPokerJob.php(поставить задание на конец хода)    ->  TurnBroadcaster.php
+StartAuctionForPlayerJob.php (поставить задание на конец хода)   ->  StartPlayerAuctionAfterTurnBroadcaster.php
+ShowDownJob.php ->  ShowDownBroadcaster.php
+
+закончилось время на ход
+
+FinishPlayerAuctionJob.php  ->  EndTimeOnTurnBroadcaster.php
+
+подсчет фишек в конце каджого этапа торгов
+
+EndOfLoopJob.php    ->  EndOfLoopBroadcaster.php
+
+игрок проиграл
+
+GameOverPokerJob.php     ->  GameOverBroadcaster.php
+
+игрок выиграл
+
+FinishTableJob.php  ->  FinishTableBroadcaster.php

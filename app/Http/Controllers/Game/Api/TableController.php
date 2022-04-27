@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Game\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\Game\ShowDownJob;
+use App\Jobs\Game\StartAuctionForPlayerJob;
 use App\Models\Game\Player;
 use App\Repositories\PokerTableRepository;
 use Illuminate\Http\Request;
@@ -21,11 +23,19 @@ class TableController extends Controller
 
     public function turnAction(Request $request)
     {
-        if ($request->input('action_id'))
+        if ($request->input('action_id')) {
             call_user_func(
-                [$this, 'action'.$request->input('action_id')],
+                [$this, 'action' . $request->input('action_id')],
                 $request->input('amount')
             );
+
+            if ($this->repository->isTurnTransfer())
+                $this->dispatch(new StartAuctionForPlayerJob($this->repository->getTableId(),'table'));
+            elseif ($this->repository->isNewRoundWithoutShowdown())
+                $this->newRoundWithoutShowdown();
+            elseif ($this->repository->isShowDown())
+                $this->dispatch(new ShowDownJob());
+        }
     }
 
     public function showDownAction()
@@ -60,4 +70,7 @@ class TableController extends Controller
     {
         $this->repository->call();
     }
+
+    protected function newRoundWithoutShowdown()
+    {}
 }

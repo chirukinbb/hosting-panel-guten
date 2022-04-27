@@ -27,7 +27,7 @@ class StartAuctionForPlayerJob extends AbstractGameJob
     {
         $this->setBroadcasterClass();
 
-        dispatch(new FinishPlayerTurnJob($this->classNameOrTableId))
+        dispatch(new FinishPlayerAuctionJob($this->classNameOrTableId))
             ->delay(now()->addSeconds($this->repository->getTimeOnTurn()));// ставим задачу на прекращение хода
 
         parent::handle();

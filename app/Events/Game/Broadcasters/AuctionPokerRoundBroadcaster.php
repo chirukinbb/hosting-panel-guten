@@ -3,7 +3,7 @@
 namespace App\Events\Game\Broadcasters;
 
 use App\Abstracts\AbstractBroadcaster;
-use App\Jobs\Game\FinishPlayerTurnJob;
+use App\Jobs\Game\FinishPlayerAuctionJob;
 use App\Repositories\PokerTableRepository;
 
 class AuctionPokerRoundBroadcaster extends AbstractBroadcaster
@@ -12,7 +12,9 @@ class AuctionPokerRoundBroadcaster extends AbstractBroadcaster
 
     public function action(): \App\Builders\PokerTableBuilder
     {
-
-        return $this->builder->startTimer();
+        return $this->builder->setTable()
+            ->setPlayers()
+            ->startRound()
+            ->startTimer();
     }
 }

@@ -247,13 +247,15 @@ class PokerTableBuilder
     public function showdown(): static
     {
         $this->pokerTable->eachPlayer(function (Player $player) {
-            $player->eachCard(function (Card $card) use ($player) {
-                $this->table->players[$player->getPlace()]->hand->cards[] = (object)[
-                    'nominal' => $card->getNominalIndex(),
-                    'suit' => $card->getSuitIndex()
-                ];
-                $this->table->players[$player->getPlace()]->hand->combo = $player->getCombo(3);
-            });
+            if ($player->getLastActionId() === 3) {
+                $player->eachCard(function (Card $card) use ($player) {
+                    $this->table->players[$player->getPlace()]->hand->cards[] = (object)[
+                        'nominal' => $card->getNominalIndex(),
+                        'suit' => $card->getSuitIndex()
+                    ];
+                    $this->table->players[$player->getPlace()]->hand->combo = $player->getCombo(3);
+                });
+            }
         });
 
         return $this;

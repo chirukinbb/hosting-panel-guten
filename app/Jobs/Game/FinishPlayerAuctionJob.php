@@ -10,7 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class FinishPlayerTurnJob implements ShouldQueue
+class FinishPlayerAuctionJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -33,7 +33,7 @@ class FinishPlayerTurnJob implements ShouldQueue
      */
     public function handle()
     {
-        $this->repository->entTimeForTurn()->save();
+        $this->repository->entTimeForAction()->save();
 
         if ($this->repository->isTurnTransfer()){
             dispatch(new StartAuctionForPlayerJob(

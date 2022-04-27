@@ -10,6 +10,10 @@ use Ratchet\ConnectionInterface;
 class PlayersCollection extends AbstractGameCollection
 {
     /**
+     * @var Player[]
+     */
+    protected array $collection;
+    /**
      * @param int $index
      * @return Player
      */
@@ -257,5 +261,65 @@ class PlayersCollection extends AbstractGameCollection
     protected function cycle(int $place)
     {
         return $place % $this->count();
+    }
+
+    public function getNextActivePlayer(int $currentPlayerPlace): Player|bool
+    {
+        $i = $currentPlayerPlace + 1;
+
+        do{
+            $i = $this->cycle($i);
+            if ($this->collection[$i]->isInRound() && ($this->collection[$i]->getAmount() > 0))
+                return $this->collection[$i];
+
+            $i ++;
+        }while($i !== $currentPlayerPlace);
+
+        return false;
+    }
+
+    public function hasOnlyAllInPlayers(): bool
+    {
+        $inRound = 0;
+        $allIn = 0;
+
+        foreach ($this->collection as $player){
+            /**
+             * @var Player $player
+             */
+            $inRound = $player->isInRound() ? $inRound + 1 :  $inRound;
+            $allIn = $player->getLastActionId() === 3 ? $allIn + 1 : $allIn;
+        }
+
+        return $inRound === $allIn;
+    }
+
+    public function isOnlyOneActivePlayerInRound()
+    {
+        $inRound = 0;
+
+        foreach ($this->collection as $player){
+            $inRound = $player->isInRound() ? $inRound + 1 :  $inRound;
+        }
+
+        return $inRound === 1;
+    }
+
+    public function isNextPlayerLastRaise($currentPlace,$lastRaisePlace):bool
+    {
+        $current = false;
+        $nextPlayer = null;
+
+        foreach ($this->collection as $player){
+            if ($current && $player->isInRound()){
+                $nextPlayer = $player;
+                break;
+            }
+            if ($player->getPlace() === $currentPlace){
+                $current = true;
+            }
+        }
+
+        return $nextPlayer->getPlace() === $lastRaisePlace;
     }
 }

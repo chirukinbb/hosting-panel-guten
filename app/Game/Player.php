@@ -4,6 +4,7 @@ namespace App\Game;
 
 use App\Game\Collections\ActionCollection;
 use App\Game\Collections\BankCollection;
+use App\Game\Collections\BidStorage;
 use App\Game\Collections\CardsCollection;
 use App\Game\Collections\UserComboCollection;
 
@@ -20,7 +21,7 @@ class Player
     protected bool $isBB = false;
     protected bool $isLB = false;
     protected ActionCollection $actions;
-    protected int $bid;
+    protected BidStorage $bid;
     protected int $amount;
     protected int $lastActionId;
 
@@ -30,7 +31,7 @@ class Player
         $this->actions = new ActionCollection();
         $this->combo = new UserComboCollection();
         $this->amount = 1000;
-        $this->bid = 0;
+        $this->bid = new BidStorage();
     }
 
     /**
@@ -136,15 +137,14 @@ class Player
         return $this->isDealer;
     }
 
-    public function addToBid(int $amount)
+    public function addToBid(int $amount,int $step)
     {
-        $this->bid += $amount;
-        $this->amount -= $amount;
+        $this->bid->add($amount, $step);
     }
 
     public function getBid(): int
     {
-        return $this->bid;
+        return $this->bid->all();
     }
 
     public function getAmount():int
@@ -159,7 +159,7 @@ class Player
 
     public function annulledBid()
     {
-        $this->bid = 0;
+        $this->bid->annulled();
     }
     /**
      * @return int
