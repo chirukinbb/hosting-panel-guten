@@ -2,54 +2,42 @@
 
 namespace App\Jobs\Game;
 
+use App\Abstracts\AbstractGameJob;
+use App\Events\Game\Broadcasters\FlopAuctionResultBroadcaster;
+use App\Events\Game\Broadcasters\PreFlopAuctionResultBroadcaster;
+use App\Events\Game\Broadcasters\RiverAuctionResultBroadcaster;
+use App\Events\Game\Broadcasters\TurnAuctionResultBroadcaster;
 use App\Repositories\PokerTableRepository;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 
-class FinishPlayerAuctionJob implements ShouldQueue
+class FinishPlayerAuctionJob extends AbstractGameJob
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    protected string $broadcasterClass = PreFlopAuctionResultBroadcaster::class;
 
-    protected PokerTableRepository $repository;
-
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct(protected int $tableId)
+    public function action(): PokerTableRepository
     {
-        $this->repository = new PokerTableRepository($tableId);
+        return $this->repository->entTimeForAction();
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
-        $this->repository->entTimeForAction()->save();
+        $this->setNextJobClass();
 
-        if ($this->repository->isTurnTransfer()){
-            dispatch(new StartAuctionForPlayerJob(
-                $this->tableId,
-                'table'
-            ));
-        } elseif ($this->repository->isShowDown()){
-            dispatch(new StartPokerRoundJob(
-                $this->tableId,
-                'table'
-            ));
-        }elseif ($this->repository->isTableFinish()){
-            dispatch(new FinishTableJob(
-                $this->tableId,
-                'table'
-            ));
-        }
+        parent::handle();
+    }
+
+    public function setNextJobClass(): void
+    {
+        $this->nextJobClass = $this->repository->isTurnTransfer() ?
+            StartAuctionForPlayerJob::class : EndOfLoopJob::class;
+    }
+
+    public function setBroadcasterClass(): void
+    {
+        $this->broadcasterClass = match ($this->repository->getCurrentStepInRound()) {
+            0 => PreFlopAuctionResultBroadcaster::class,
+            1 => FlopAuctionResultBroadcaster::class,
+            2 => TurnAuctionResultBroadcaster::class,
+            3 => RiverAuctionResultBroadcaster::class,
+        };
     }
 }

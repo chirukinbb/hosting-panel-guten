@@ -4,20 +4,18 @@ namespace App\Jobs\Game;
 
 use App\Abstracts\AbstractGameJob;
 use App\Events\Game\Broadcasters\AuctionPokerRoundBroadcaster;
+use App\Events\Game\Broadcasters\FlopAuctionResultBroadcaster;
+use App\Events\Game\Broadcasters\PreFlopAuctionResultBroadcaster;
+use App\Events\Game\Broadcasters\RiverAuctionResultBroadcaster;
+use App\Events\Game\Broadcasters\StartPlayerAuctionAfterFlopBroadcaster;
 use App\Events\Game\Broadcasters\StartPlayerAuctionAfterPreFlopBroadcaster;
 use App\Events\Game\Broadcasters\StartPlayerAuctionAfterRiverBroadcaster;
 use App\Events\Game\Broadcasters\StartPlayerAuctionAfterTurnBroadcaster;
+use App\Events\Game\Broadcasters\TurnAuctionResultBroadcaster;
 use App\Repositories\PokerTableRepository;
 
 class StartAuctionForPlayerJob extends AbstractGameJob
 {
-    private array $steps = [
-        StartPlayerAuctionAfterPreFlopBroadcaster::class,
-        StartPlayerAuctionAfterPreFlopBroadcaster::class,
-        StartPlayerAuctionAfterTurnBroadcaster::class,
-        StartPlayerAuctionAfterRiverBroadcaster::class
-    ];
-
     public function action(): PokerTableRepository
     {
         return $this->repository->startTimer();
@@ -27,7 +25,7 @@ class StartAuctionForPlayerJob extends AbstractGameJob
     {
         $this->setBroadcasterClass();
 
-        dispatch(new FinishPlayerAuctionJob($this->classNameOrTableId))
+        dispatch(new FinishPlayerAuctionJob($this->classNameOrTableId,'table'))
             ->delay(now()->addSeconds($this->repository->getTimeOnTurn()));// ставим задачу на прекращение хода
 
         parent::handle();
@@ -35,6 +33,11 @@ class StartAuctionForPlayerJob extends AbstractGameJob
 
     protected function setBroadcasterClass()
     {
-        $this->broadcasterClass =  $this->steps[$this->repository->getCurrentStepInRound()];
+        $this->broadcasterClass = match ($this->repository->getCurrentStepInRound()) {
+            0 => StartPlayerAuctionAfterPreFlopBroadcaster::class,
+            1 => StartPlayerAuctionAfterFlopBroadcaster::class,
+            2 => StartPlayerAuctionAfterTurnBroadcaster::class,
+            3 => StartPlayerAuctionAfterRiverBroadcaster::class
+        };
     }
 }

@@ -3,28 +3,41 @@
 CreatePokerTableJob.php +    ->  CreatePokerTableBroadcaster.php +
 создал, расчитал раунд
 StartPokerRoundJob.php +    ->  StartPokerRoundBroadcaster.php +
-
+карты в руку
 PreFlopPokerJob.php +   ->  PreFlopBroadcaster.php +
+начат процесс торга
+StartAuctionForPlayerJob.php(поставить задание на конец хода 0) +   ->  StartPlayerAuctionAfterPreFlopBroadcaster.php +
+---1---> проверка на шоудаун/новый раунд
+три карты на стол
+FlopPokerJob.php +   ->   FlopBroadcaster.php+
+начат процесс торга
+StartAuctionForPlayerJob.php(поставить задание на конец хода 0)  +  ->  StartPlayerAuctionAfterFlopBroadcaster.php+
+---1---> проверка на шоудаун/новый раунд
+четвкртая карта на стол
+TurnPokerJob.php+  ->  TurnBroadcaster.php+
+начат процесс торга
+StartAuctionForPlayerJob.php(поставить задание на конец хода 0) +   ->  StartPlayerAuctionAfterRiverBroadcaster.php+
+---1---> проверка на шоудаун/новый раунд
+пятая карта на стол
+RiverPokerJob.php+   ->  RiverBroadcaster.php+
+начат процесс торга
+StartAuctionForPlayerJob.php (поставить задание на конец хода 0) +  ->  StartPlayerAuctionAfterTurnBroadcaster.php+
+открытие и выплата наград
+AllInShowDownJob.php +   ->  AllInShowDownBroadcaster.php
+ActionShowDownJob.php +   ->  ActionShowDownBroadcaster.php ---> 2?/3?
 
-StartAuctionForPlayerJob.php(поставить задание на конец хода)    ->  StartPlayerAuctionAfterPreFlopBroadcaster.php +
-RiverPokerJob.php(поставить задание на конец хода)   ->  RiverBroadcaster.php
-StartAuctionForPlayerJob.php(поставить задание на конец хода)    ->  StartPlayerAuctionAfterRiverBroadcaster.php
-TurnPokerJob.php(поставить задание на конец хода)    ->  TurnBroadcaster.php
-StartAuctionForPlayerJob.php (поставить задание на конец хода)   ->  StartPlayerAuctionAfterTurnBroadcaster.php
-ShowDownJob.php ->  ShowDownBroadcaster.php
+0 закончилось время на ход
 
-закончилось время на ход
+FinishPlayerAuctionJob.php +  ->  FlopAuctionResultBroadcaster.php+ / RiverAuctionResultBroadcaster.php+ / TurnAuctionResultBroadcaster.php+ / PreFlopAuctionResultBroadcaster.php+
 
-FinishPlayerAuctionJob.php  ->  EndTimeOnTurnBroadcaster.php
-
-подсчет фишек в конце каджого этапа торгов
+1   подсчет фишек в конце каджого этапа торгов
 
 EndOfLoopJob.php    ->  EndOfLoopBroadcaster.php
 
-игрок проиграл
+2   игрок проиграл
 
 GameOverPokerJob.php     ->  GameOverBroadcaster.php
 
-игрок выиграл
+3   игрок выиграл
 
 FinishTableJob.php  ->  FinishTableBroadcaster.php

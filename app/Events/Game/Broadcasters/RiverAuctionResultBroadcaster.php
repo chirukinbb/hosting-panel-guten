@@ -4,14 +4,17 @@ namespace App\Events\Game\Broadcasters;
 
 use App\Abstracts\AbstractBroadcaster;
 
-class AuctionResultBroadcaster extends AbstractBroadcaster
+class RiverAuctionResultBroadcaster extends AbstractBroadcaster
 {
-    protected string $broadcasterClassName = '';
-
     public function action(): \App\Builders\PokerTableBuilder
     {
         return $this->builder->setTable()
+            ->setPlayers()
             ->startRound()
-            ->preFlop($this->userId);
+            ->preFlop()
+            ->flop()
+            ->turn()
+            ->river()
+            ->riverAuctionResult();
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Game\Api;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\Game\ShowDownJob;
+use App\Jobs\Game\AllInShowDownJob;
 use App\Jobs\Game\StartAuctionForPlayerJob;
 use App\Models\Game\Player;
 use App\Repositories\PokerTableRepository;
@@ -34,7 +34,7 @@ class TableController extends Controller
             elseif ($this->repository->isNewRoundWithoutShowdown())
                 $this->newRoundWithoutShowdown();
             elseif ($this->repository->isShowDown())
-                $this->dispatch(new ShowDownJob());
+                $this->dispatch(new AllInShowDownJob());
         }
     }
 

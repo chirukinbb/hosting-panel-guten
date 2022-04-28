@@ -290,4 +290,24 @@ class PokerTableBuilder
     {
         return $this->pokerTable->getChannelName($slug.'.'.$userId);
     }
+
+    public function preFlopAuctionResult(): static
+    {
+        return $this;
+    }
+
+    public function flopAuctionResult(): static
+    {
+        return $this;
+    }
+
+    public function turnAuctionResult(): static
+    {
+        return $this;
+    }
+
+    public function riverAuctionResult(): static
+    {
+        return $this;
+    }
 }
