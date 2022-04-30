@@ -25,9 +25,7 @@ class PlayersCollection extends AbstractGameCollection
     public function sortByPlaces(): PlayersCollection
     {
         $collection = [];
-        /**
-         * @var Player $item
-         */
+
         foreach ($this->collection as $item){
             $collection[$item->getPlace()] = $item;
         }
@@ -41,11 +39,8 @@ class PlayersCollection extends AbstractGameCollection
 
     public function sortFromDealer(): PlayersCollection
     {
-        $collection = [];
+        $dealerIndex  = null;
 
-        /**
-         * @var Player $player
-         */
         foreach ($this->collection as $index => $player) {
             if ($player->isDealer())
                 $dealerIndex  = $index;
@@ -63,12 +58,8 @@ class PlayersCollection extends AbstractGameCollection
 
     public function sortFromLB(): PlayersCollection
     {
-        $collection = [];
         $dealerIndex = 0;
 
-        /**
-         * @var Player $player
-         */
         foreach ($this->collection as $index => $player) {
             if ($player->isLB())
                 $dealerIndex  = $index;
@@ -89,9 +80,6 @@ class PlayersCollection extends AbstractGameCollection
         $collection  = [];
 
         foreach ($this->collection as $player) {
-            /**
-             * @var Player $player
-             */
             $combo =  $player->getCombo(3);
             $collection[$combo->getComboIndex()][$combo->getHighCardIndex()][$combo->getComboMeterCardIndex()][] = $player->getPlace();
         }
@@ -107,9 +95,6 @@ class PlayersCollection extends AbstractGameCollection
         $collection  = [];
 
         foreach ($this->collection as $player) {
-            /**
-             * @var Player $player
-             */
             $combo =  $player->getCombo(3);
             $collection[$combo->getComboIndex()][$combo->getComboMeterCardIndex()][$combo->getHighCardIndex()][$player->getBid()] = $player;
             krsort($collection[$combo->getComboIndex()][$combo->getComboMeterCardIndex()][$combo->getHighCardIndex()]);
@@ -148,9 +133,6 @@ class PlayersCollection extends AbstractGameCollection
         $index = -1;
 
         foreach ($this->collection as $player) {
-            /**
-             * @var Player $player
-             */
             if ($player->isDealer())
                 $index = $player->getPlace();
         }
@@ -221,9 +203,6 @@ class PlayersCollection extends AbstractGameCollection
         $bids = [];
 
         foreach ($this->collection as $item) {
-            /**
-             * @var Player $item
-             */
             if ($item->isInRound())
                 $bids[] = $item->getBid();
         }
@@ -284,9 +263,6 @@ class PlayersCollection extends AbstractGameCollection
         $allIn = 0;
 
         foreach ($this->collection as $player){
-            /**
-             * @var Player $player
-             */
             $inRound = $player->isInRound() ? $inRound + 1 :  $inRound;
             $allIn = $player->getLastActionId() === 3 ? $allIn + 1 : $allIn;
         }
@@ -321,5 +297,52 @@ class PlayersCollection extends AbstractGameCollection
         }
 
         return $nextPlayer->getPlace() === $lastRaisePlace;
+    }
+
+    /**
+     * кто будет делать шоудаун сейчас?
+     *
+     * @param int $lastRaiseUserPlace
+     * @return $this
+     */
+    public function showdownPlayerActions(int $lastRaiseUserPlace):self
+    {
+        $canBeChange = true;
+        $i = 0;
+        $showdownPlayerPlace = $this->getShowdownPlayerPlace();
+
+        if ($lastRaiseUserPlace === -1) {
+            $this->sortFromDealer();
+        }else {
+            if ($showdownPlayerPlace > -1)
+                $this->sortFromPlace($showdownPlayerPlace);
+            else
+                $this->sortFromPlace($lastRaiseUserPlace - 1);
+        }
+
+        $this->each(function (Player $player) use (&$canBeChange,&$i){
+            $player->setIsCurrentShowdown(false);
+
+            if ($player->isInRound() && $canBeChange && $i > 0 && $player->getLastActionId() !== 3){
+                $player->setIsCurrentShowdown(true);
+                $canBeChange = false;
+            }
+
+            $i ++;
+        });
+
+        $this->sortByPlaces();
+
+        return $this;
+    }
+
+    private function getShowdownPlayerPlace():int
+    {
+        foreach ($this->collection as $player){
+            if ($player->isCurrentShowdown())
+                return $player->getPlace();
+        }
+
+        return -1;
     }
 }

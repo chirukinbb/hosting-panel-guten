@@ -267,6 +267,7 @@ abstract class AbstractPokerTable
                 // игрок с меньшей ставкой
                 $player = $checkedCombo[0];
                 $bankInBorder = $this->round->getBankValueByAbsBorder($border = $player->getBid());
+                $player->setWinner(true);
                 /**
                  * выплата приза с велъю банка по текущей границе
                  */
@@ -357,5 +358,10 @@ abstract class AbstractPokerTable
     public function getBank()
     {
         return $this->round->getBankCollection();
+    }
+
+    public function showdownPlayerActions(): void
+    {
+        $this->players->showdownPlayerActions($this->round->getLastRaiseUserPlace());
     }
 }

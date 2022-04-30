@@ -4,7 +4,7 @@ namespace App\Events\Game\Broadcasters;
 
 use App\Abstracts\AbstractBroadcaster;
 
-class FinishTableBroadcaster extends AbstractBroadcaster
+class EndTimeOnFlopAuctionBroadcaster extends AbstractBroadcaster
 {
     public function action(): \App\Builders\PokerTableBuilder
     {
@@ -13,7 +13,6 @@ class FinishTableBroadcaster extends AbstractBroadcaster
             ->startRound()
             ->preFlop()
             ->flop()
-            ->turn()
-            ->endOfLoop();
+            ->endTimeOnPreFlopAuction();
     }
 }

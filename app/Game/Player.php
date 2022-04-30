@@ -24,6 +24,9 @@ class Player
     protected BidStorage $bid;
     protected int $amount;
     protected int $lastActionId;
+    protected  bool $isCurrentShowdown = false;
+    protected  bool $isOpenCards = false;
+    protected  bool $winner = false;
 
     public function __construct(protected int $userId)
     {
@@ -32,6 +35,54 @@ class Player
         $this->combo = new UserComboCollection();
         $this->amount = 1000;
         $this->bid = new BidStorage();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOpenCards(): bool
+    {
+        return $this->isOpenCards;
+    }
+
+    /**
+     * @param bool $isOpenCards
+     */
+    public function setIsOpenCards(bool $isOpenCards): void
+    {
+        $this->isOpenCards = $isOpenCards;
+    }
+
+    /**
+     * @param bool $isCurrentShowdown
+     */
+    public function setIsCurrentShowdown(bool $isCurrentShowdown): void
+    {
+        $this->isCurrentShowdown = $isCurrentShowdown;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCurrentShowdown(): bool
+    {
+        return $this->isCurrentShowdown;
+    }
+
+    /**
+     * @param bool $winner
+     */
+    public function setWinner(bool $winner): void
+    {
+        $this->winner = $winner;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWinner(): bool
+    {
+        return $this->winner;
     }
 
     /**

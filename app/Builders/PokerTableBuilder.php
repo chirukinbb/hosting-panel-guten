@@ -91,7 +91,6 @@ class PokerTableBuilder
      * сдача карт в руку каждого игрока  отдельно
      * запись названия его текущей комбы
      *
-     * @param int $userId
      * @return $this
      */
     public function preFlop(): static
@@ -115,7 +114,6 @@ class PokerTableBuilder
     /**
      * стартуем отсчет таймера на ход игрока
      *
-     * @param int $userId
      * @return $this
      */
     public function startTimer(): static
@@ -224,26 +222,11 @@ class PokerTableBuilder
         return $this;
     }
 
-    public function resultOfTurn(): static
-    {
-        $steps = [
-            'preFlop',
-            'flop',
-            'turn',
-            'river'
-        ];
-
-        $this->pokerTable->eachPlayer(function (Player $player) use ($steps){
-            $this->table->players[$player->getPlace()]->amount = (object) [
-                'hand' => $player->getAmount(),
-                'bid' => $player->getBid()
-            ];
-            $this->table->players[$player->getPlace()]->lastAction = $player->getLastActionId();
-        });
-
-        return $this;
-    }
-
+    /**
+     * раскрытие карт игроков, пошедших в олл-ин
+     *
+     * @return $this
+     */
     public function showdown(): static
     {
         $this->pokerTable->eachPlayer(function (Player $player) {
@@ -264,7 +247,7 @@ class PokerTableBuilder
     /**
      * обновление инфы о ставках игроков
      */
-    public function updateBidInfo()
+    protected function updateBidInfo(): static
     {
         $this->pokerTable->eachPlayer(function (Player $player) {
             $this->table->players[$player->getPlace()]->amount = (object) [
@@ -276,9 +259,11 @@ class PokerTableBuilder
         return $this;
     }
 
-    public function updateBankInfo()
+    protected function updateBankInfo(): static
     {
         $this->table->round->bank = (object) $this->pokerTable->getBank();
+
+        return $this;
     }
 
     public function getTable(): object
@@ -308,6 +293,36 @@ class PokerTableBuilder
 
     public function riverAuctionResult(): static
     {
+        return $this;
+    }
+
+    public function endOfLoop(): static
+    {
+        return $this->updateBidInfo()
+            ->updateBankInfo();
+    }
+
+    public function startShowdownAction(): static
+    {
+        $this->pokerTable->eachPlayer(function (Player $player){
+            $this->table->showdown = (object) [
+                'is_active'=>$player->isCurrentShowdown(),
+                'hidden'=>!$player->isWinner()
+            ];
+        });
+
+        return $this;
+    }
+
+    public function endTimeOnShowdownAction(): static
+    {
+        // todo: create it!
+        return $this;
+    }
+
+    public function endTimeOnPreFlopAuction(): static
+    {
+        // todo: create it!
         return $this;
     }
 }

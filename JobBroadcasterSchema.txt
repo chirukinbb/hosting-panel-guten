@@ -17,14 +17,14 @@ StartAuctionForPlayerJob.php(поставить задание на конец �
 TurnPokerJob.php+  ->  TurnBroadcaster.php+
 начат процесс торга
 StartAuctionForPlayerJob.php(поставить задание на конец хода 0) +   ->  StartPlayerAuctionAfterRiverBroadcaster.php+
----1---> проверка на шоудаун/новый раунд
+---1---> проверка на передача хода/шоудаун/новый раунд
 пятая карта на стол
 RiverPokerJob.php+   ->  RiverBroadcaster.php+
 начат процесс торга
 StartAuctionForPlayerJob.php (поставить задание на конец хода 0) +  ->  StartPlayerAuctionAfterTurnBroadcaster.php+
 открытие и выплата наград
-AllInShowDownJob.php +   ->  AllInShowDownBroadcaster.php
-ActionShowDownJob.php +   ->  ActionShowDownBroadcaster.php ---> 2?/3?
+AllInShowDownJob.php +   ->  AllInShowDownBroadcaster.php+
+ActionShowDownJob.php +   ->  ActionShowDownBroadcaster.php ---> 2?/3? +
 
 0 закончилось время на ход
 
@@ -32,7 +32,7 @@ FinishPlayerAuctionJob.php +  ->  FlopAuctionResultBroadcaster.php+ / RiverAucti
 
 1   подсчет фишек в конце каджого этапа торгов
 
-EndOfLoopJob.php    ->  EndOfLoopBroadcaster.php
+EndOfLoopJob.php +   ->  EndOfPreFlopLoopBroadcaster.php + / EndOfFlopLoopBroadcaster.php  + / EndOfTurnLoopBroadcaster.php + / EndOfRiverLoopBroadcaster.php +
 
 2   игрок проиграл
 

@@ -15,8 +15,8 @@ abstract class AbstractGameJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected PokerTableRepository $repository;
-    protected string $broadcasterClass;
-    protected string $nextJobClass;
+    protected string|null $broadcasterClass = null;
+    protected string|null $nextJobClass = null;
     protected string $slug = 'table';
 
     /**
@@ -42,11 +42,13 @@ abstract class AbstractGameJob implements ShouldQueue
     public function handle()
     {
         $this->action()->save($this->broadcasterClass);
+
         $this->repository->eachPlayer(function (Player $player) {
             call_user_func([$this,'eachPlayerFunc'],$player);
         });
 
-        dispatch(new $this->nextJobClass($this->repository->getTableId(),$this->screen));
+        if ($this->nextJobClass)
+            dispatch(new $this->nextJobClass($this->repository->getTableId(),$this->screen));
     }
 
     abstract public function action(): PokerTableRepository;

@@ -271,7 +271,14 @@ class PokerTableRepository
     public function showdown(): static
     {
         $this->tableObj->payToWinners();
+        $this->tableObj->showdownPlayerActions();
 
         return $this;
+    }
+
+    public function isNewRound()
+    {
+
+        return true;
     }
 }
