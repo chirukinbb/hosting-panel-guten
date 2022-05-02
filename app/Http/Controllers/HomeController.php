@@ -10,7 +10,10 @@ use App\Events\Game\Broadcasters\StartPokerRoundBroadcaster;
 use App\Events\Game\Broadcasters\TurnBroadcaster;
 use App\Game\Player;
 use App\Game\Tables\HoldemTwoPokerTable;
+use App\Jobs\Game\FinishTableJob;
 use App\Repositories\PokerTableRepository;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\Queue;
 
 class HomeController extends Controller
 {
@@ -29,7 +32,7 @@ class HomeController extends Controller
 //        }
 //
 //        $table->eachPlayer(function (Player $player){
-//            $player->addToBid($player->getUserId() * 10 + 100);
+//            $player->addToBid($player->getUserId() * 10 + 100,0);
 //
 //            if (($player->getUserId() % 3) === 0 || $player->getUserId()  ===8)
 //            $player->setInRound(true);
@@ -37,22 +40,23 @@ class HomeController extends Controller
 //                $player->setInRound(false);
 //
 //        });
-//
+
 //        $table->bidsToBank();
 //        $table->payToWinners();
 //        dd($table);
-        $repo = new PokerTableBuilder(7,17);
-//
-//        $repo->createRound()->setCurrentStepInRound(0)->startTimer()->save(StartPlayerAuctionAfterFlopBroadcaster::class);
-        dump(auth()->id(),$repo);
-dd(
-    call_user_func([new StartPlayerAuctionAfterFlopBroadcaster(
-    7,
-    'table',
-        'hhhhhh',
-        18
-),'broadcastWith'])
-);
+//        $repo = new PokerTableBuilder(7,17);
+////
+////        $repo->createRound()->setCurrentStepInRound(0)->startTimer()->save(StartPlayerAuctionAfterFlopBroadcaster::class);
+//        dump(auth()->id(),$repo);
+//dd(
+//    call_user_func([new StartPlayerAuctionAfterFlopBroadcaster(
+//    7,
+//    'table',
+//        'hhhhhh',
+//        18
+//),'broadcastWith'])
+//);
+
         return view('home');
     }
 }

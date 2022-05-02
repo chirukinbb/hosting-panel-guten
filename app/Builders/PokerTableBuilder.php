@@ -325,4 +325,28 @@ class PokerTableBuilder
         // todo: create it!
         return $this;
     }
+
+    public function updateBidsBanks(): static
+    {
+        $this->updateBankInfo();
+        $this->updateBidInfo();
+
+        return $this;
+    }
+
+    public function addAlertAboutLastAction(): static
+    {
+        $this->pokerTable->eachPlayer(function (Player $player) {
+            if ($player->getUserId() === $this->userId){
+                $player->eachAction(function (AbstractGameAction $action) use ($player){
+                    if ($player->getLastActionId() === $action->getId())
+                        $this->table->players[$player->getPlace()]->message = $action->message(
+                            $this->pokerTable->getCurrentBid()
+                        );
+                });
+            }
+        });
+
+        return $this;
+    }
 }

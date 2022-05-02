@@ -17,7 +17,8 @@ class CreateTablesTable extends Migration
         Schema::create('tables', function (Blueprint $table) {
             $table->id();
             $table->string('table_class');
-            $table->string('broadcaster_class');
+            $table->string('broadcaster_class')->nullable();
+            $table->integer('removed_job_id')->nullable();
             $table->binary('object');
             $table->integer('status')->default(\App\Models\Game\Table::SEARCHED);
             $table->softDeletes();

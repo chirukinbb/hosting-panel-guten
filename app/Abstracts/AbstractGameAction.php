@@ -7,7 +7,7 @@ abstract class AbstractGameAction
     protected string $name;
     protected int $id;
     protected bool $isActive = false;
-    protected bool $payToBank;
+    protected bool $amountInMessage;
     protected int $amount;
 
     /**
@@ -72,5 +72,10 @@ abstract class AbstractGameAction
     public function getAmount(): int
     {
         return $this->amount;
+    }
+
+    public function message($getCurrentBid): string
+    {
+        return $this->name.($this->amountInMessage ? $getCurrentBid : '');
     }
 }

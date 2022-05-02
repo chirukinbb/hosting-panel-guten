@@ -8,5 +8,5 @@ class AllIn extends AbstractGameAction
 {
     protected string $name = 'All-In';
     protected int $id = 3;
-    protected bool $payToBank = true;
+    protected bool $amountInMessage = false;
 }

@@ -3,18 +3,18 @@
 namespace App\Jobs\Game;
 
 use App\Abstracts\AbstractGameJob;
-use App\Events\Game\Broadcasters\FinishPlayerFlopAuctionBroadcaster;
-use App\Events\Game\Broadcasters\FinishPlayerPreFlopAuctionBroadcaster;
-use App\Events\Game\Broadcasters\FinishPlayerRiverAuctionBroadcaster;
-use App\Events\Game\Broadcasters\FinishPlayerTurnAuctionBroadcaster;
+use App\Events\Game\Broadcasters\EndOfFlopLoopBroadcaster;
+use App\Events\Game\Broadcasters\EndOfPreFlopLoopBroadcaster;
+use App\Events\Game\Broadcasters\EndTimeOnRiverAuctionBroadcaster;
+use App\Events\Game\Broadcasters\EndTimeOnTurnAuctionBroadcaster;
 use App\Game\Player;
 use App\Repositories\PokerTableRepository;
 
-class FinishPlayerAuctionJob extends AbstractGameJob
+class ResultPlayerActionJob extends AbstractGameJob
 {
     public function action(): PokerTableRepository
     {
-        return $this->repository->entTimeForAction();
+        return $this->repository;
     }
 
     public function handle()
@@ -43,10 +43,10 @@ class FinishPlayerAuctionJob extends AbstractGameJob
     public function setBroadcasterClass(): void
     {
         $this->broadcasterClass = match ($this->repository->getCurrentStepInRound()) {
-            0 => FinishPlayerPreFlopAuctionBroadcaster::class,
-            1 => FinishPlayerFlopAuctionBroadcaster::class,
-            2 => FinishPlayerTurnAuctionBroadcaster::class,
-            3 => FinishPlayerRiverAuctionBroadcaster::class,
+            0 => EndOfPreFlopLoopBroadcaster::class,
+            1 => EndOfFlopLoopBroadcaster::class,
+            2 => EndTimeOnTurnAuctionBroadcaster::class,
+            3 => EndTimeOnRiverAuctionBroadcaster::class,
         };
     }
 }

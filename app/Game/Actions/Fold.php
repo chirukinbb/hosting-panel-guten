@@ -8,5 +8,5 @@ class Fold extends AbstractGameAction
 {
     protected string $name = 'Fold';
     protected int $id = 0;
-    protected bool $payToBank = false;
+    protected bool $amountInMessage = false;
 }

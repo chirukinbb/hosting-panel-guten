@@ -13,6 +13,7 @@ use App\Events\Game\Broadcasters\StartPlayerAuctionAfterRiverBroadcaster;
 use App\Events\Game\Broadcasters\StartPlayerAuctionAfterTurnBroadcaster;
 use App\Events\Game\Broadcasters\TurnAuctionResultBroadcaster;
 use App\Repositories\PokerTableRepository;
+use Illuminate\Support\Facades\Queue;
 
 class StartAuctionForPlayerJob extends AbstractGameJob
 {
@@ -25,8 +26,10 @@ class StartAuctionForPlayerJob extends AbstractGameJob
     {
         $this->setBroadcasterClass();
 
-        dispatch(new FinishPlayerAuctionJob($this->classNameOrTableId,'table'))
-            ->delay(now()->addSeconds($this->repository->getTimeOnTurn()));// ставим задачу на прекращение хода
+        $this->removedJobId = Queue::later(
+            now()->addSeconds($this->repository->getTimeOnTurn()),
+            new FinishPlayerAuctionJob($this->classNameOrTableId,'table')
+        );
 
         parent::handle();
     }

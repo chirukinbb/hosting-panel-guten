@@ -5,10 +5,11 @@ namespace App\Jobs\Game;
 use App\Abstracts\AbstractGameJob;
 use App\Events\Game\Broadcasters\FinishShowdownActionBroadcaster;
 use App\Repositories\PokerTableRepository;
+use Illuminate\Support\Facades\Queue;
 
 class FinishShowdownActionJob extends AbstractGameJob
 {
-    protected string|null $broadcasterClass = FinishShowdownActionBroadcaster::class;
+    protected string $broadcasterClass = FinishShowdownActionBroadcaster::class;
 
     public function handle()
     {

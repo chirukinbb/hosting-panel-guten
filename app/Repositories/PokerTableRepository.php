@@ -12,10 +12,19 @@ class PokerTableRepository
 {
     protected AbstractPokerTable $tableObj;
     protected object $table;
+    protected int $deletedJobId;
 
     public function __construct(protected int $tableId)
     {
-        $this->tableObj = Table::find($this->tableId)?->object;
+        $tableObj = Table::find($this->tableId);
+
+        $this->tableObj = $tableObj->object;
+        $this->deletedJobId = $tableObj->removed_job_id;
+    }
+
+    public function getDeletedJobId(): int
+    {
+        return $this->deletedJobId;
     }
 
     public function setCurrentStepInRound(int $step)
@@ -145,6 +154,11 @@ class PokerTableRepository
                 $player->eachAction(function (AbstractGameAction $action) {
                     $action->setIsActive(false);
                 });
+
+                if ($this->tableObj->getCurrentBid() > $player->getBid())
+                    $this->fold();
+                else
+                    $this->check();
             }
         });
 
@@ -179,11 +193,14 @@ class PokerTableRepository
         return $this;
     }
 
-    public function save($broadcasterClass = null)
+    public function save($broadcasterClass = null, $deletedJobId  = null)
     {
-        $updateAttrs = ['object' => $this->tableObj];
+        $updateAttrs = [
+            'object' => $this->tableObj,
+            'removed_job_id' =>  $deletedJobId
+        ];
 
-        if ($broadcasterClass)
+        if (!is_null($broadcasterClass))
             $updateAttrs = array_merge($updateAttrs,['broadcaster_class'=>$broadcasterClass]);
 
         Table::updateOrCreate(
@@ -280,5 +297,34 @@ class PokerTableRepository
     {
 
         return true;
+    }
+
+    public function isExtractBidsToBank():bool
+    {
+        return true;
+    }
+
+    public function bidsToBank():static
+    {
+        $this->tableObj->bidsToBank();
+
+        return $this;
+    }
+
+    public function resultOfTurnAction(): static
+    {
+        return $this;
+    }
+
+    public function isShowdownAction():bool
+    {
+        return $this->tableObj->isShowdownAction();
+    }
+
+    public function payments():static
+    {
+        $this->tableObj->payToWinners();
+
+        return $this;
     }
 }

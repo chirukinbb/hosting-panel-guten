@@ -364,4 +364,14 @@ abstract class AbstractPokerTable
     {
         $this->players->showdownPlayerActions($this->round->getLastRaiseUserPlace());
     }
+
+    public function getCurrentBid()
+    {
+        return $this->round->getMaxBid();
+    }
+
+    public function isShowdownAction(): bool
+    {
+        return !$this->players->hasOnlyAllInPlayers() || $this->round->getCurrentStep() === 3;
+    }
 }

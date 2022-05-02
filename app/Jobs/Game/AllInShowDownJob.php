@@ -24,7 +24,7 @@ class AllInShowDownJob extends AbstractGameJob
 
     public function setNextJobClass()
     {
-        $this->nextJobClass = $this->repository->isTableFinish() ?
-            FinishTableJob::class : StartPokerRoundJob::class;
+        $this->nextJobClass = $this->repository->isShowdownAction() ?
+            ActionShowDownJob::class : SeparateBankJob::class;
     }
 }
