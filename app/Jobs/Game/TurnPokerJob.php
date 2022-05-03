@@ -10,10 +10,24 @@ use App\Repositories\PokerTableRepository;
 class TurnPokerJob extends AbstractGameJob
 {
     protected string $broadcasterClass = TurnBroadcaster::class;
-    protected string $nextJobClass = StartAuctionForPlayerJob::class;
+
+    public function handle()
+    {
+        $this->setNextJobClass();
+
+        parent::handle();
+    }
 
     public function action(): PokerTableRepository
     {
         return $this->repository->setCurrentStepInRound(2);
+    }
+
+    public function setNextJobClass(): void
+    {
+        if ($this->repository->isShowDown() && $this->repository->isPrevTimeShowdown())
+            $this->nextJobClass = RiverPokerJob::class;
+        else
+            $this->nextJobClass = StartAuctionForPlayerJob::class;
     }
 }

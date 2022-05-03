@@ -349,4 +349,25 @@ class PokerTableBuilder
 
         return $this;
     }
+
+    public function losers()
+    {
+        $this->updateBidInfo();
+        $this->updateBankInfo();
+
+        $this->pokerTable->eachPlayer(function (Player $player) {
+            if ($this->userId && $player->getAmount() === 0)
+                $this->table->players[$player->getPlace()]->exit = (object) [
+                    'message'=>sprintf('Your place: %s', $this->pokerTable->getPlaceInTable()),
+                    'rating'=>$this->pokerTable->getRatingByTable()
+                ];
+        });
+
+        return $this;
+    }
+
+    public function getRatingByTable(): float|int
+    {
+        return $this->pokerTable->getRatingByTable();
+    }
 }

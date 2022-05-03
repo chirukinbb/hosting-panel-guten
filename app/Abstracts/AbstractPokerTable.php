@@ -77,6 +77,13 @@ abstract class AbstractPokerTable
         return $cards->removeFirsts($this->minNominal * count($deckSuitsPool));
     }
 
+    public function setActivePlayersCountOnEndRound()
+    {
+        $this->round->setCountPlayersEnd(
+            $this->players->getActivePlayersCount()
+        );
+    }
+
     public function setPlayer(int $userId, string $name, string $avatar): int
     {
         $place = -1;
@@ -373,5 +380,28 @@ abstract class AbstractPokerTable
     public function isShowdownAction(): bool
     {
         return !$this->players->hasOnlyAllInPlayers() || $this->round->getCurrentStep() === 3;
+    }
+
+    public function existsLosers(): bool
+    {
+        return $this->players->existsLosers();
+    }
+
+    public function getActivePlayersCount():int
+    {
+        return $this->players->getActivePlayersCount();
+    }
+
+    public function getPlaceInTable()
+    {
+        return $this->round->getPlayerPlace();
+    }
+
+    public function getRatingByTable()
+    {
+        $hRating = (100 -  24 * ($this->round->getCountPlayersEnd() + 1));
+        $lRating = (100 -  24 * $this->round->getCountPlayersStart());
+
+        return ($hRating - $lRating) / ($this->round->getCountPlayersStart() -  $this->round->getCountPlayersStart());
     }
 }

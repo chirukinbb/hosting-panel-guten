@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Abstracts\AbstractGameAction;
 use App\Abstracts\AbstractPokerTable;
-use App\Game\Card;
 use App\Game\Player;
 use App\Models\Game\Table;
 
@@ -324,6 +323,29 @@ class PokerTableRepository
     public function payments():static
     {
         $this->tableObj->payToWinners();
+
+        return $this;
+    }
+
+    public function isPrevTimeShowdown(): bool
+    {
+        return $this->getCurrentStepInRound() !== 3;
+    }
+
+    function existsLosers(): bool
+    {
+        return $this->tableObj->existsLosers();
+    }
+
+    public function losers(): static
+    {
+        $this->tableObj->eachPlayer(function (Player $player) {
+            if ($player->getAmount() === 0) {
+                $player->setInRound(false);
+            }
+        });
+
+        $this->tableObj->setActivePlayersCountOnEndRound();
 
         return $this;
     }

@@ -2,7 +2,29 @@
 
 namespace App\Jobs\Game;
 
-class GameOverPokerJob
-{
+use App\Abstracts\AbstractGameJob;
+use App\Events\Game\Broadcasters\GameOverBroadcaster;
+use App\Repositories\PokerTableRepository;
 
+class GameOverPokerJob extends AbstractGameJob
+{
+    protected string $broadcasterClass = GameOverBroadcaster::class;
+
+    public function handle()
+    {
+        parent::handle();
+    }
+
+    public function action(): PokerTableRepository
+    {
+        return $this->repository->losers();
+    }
+
+    public function setNextJobClass(): void
+    {
+        if ($this->repository->isTableFinish())
+            $this->nextJobClass = FinishTableJob::class;
+        else
+            $this->nextJobClass = StartPokerRoundJob::class;
+    }
 }

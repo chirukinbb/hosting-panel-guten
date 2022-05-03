@@ -12,6 +12,7 @@ trait RoundTrait
         $number = isset($this->round) ? $this->round->getNumber() : 0;
         $ante = intdiv($number,5) * 0.2 * $this->blind;
         $this->round  = new Round(clone $this->cardDeck,$number + 1,$ante);
+        $this->round->setCountPlayersStart($this->getActivePlayersCount());
     }
 
     public function preFlop()

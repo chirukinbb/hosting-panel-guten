@@ -24,7 +24,9 @@ class AllInShowDownJob extends AbstractGameJob
 
     public function setNextJobClass()
     {
-        $this->nextJobClass = $this->repository->isShowdownAction() ?
-            ActionShowDownJob::class : SeparateBankJob::class;
+        if ($this->repository->isShowdownAction())
+            $this->nextJobClass =  ActionShowDownJob::class;
+        else
+            $this->nextJobClass = SeparateBankJob::class;
     }
 }

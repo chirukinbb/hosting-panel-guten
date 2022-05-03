@@ -10,21 +10,25 @@ StartAuctionForPlayerJob.php(поставить задание на конец �
 ---1---
 три карты на стол
 FlopPokerJob.php +   ->   FlopBroadcaster.php+
+это преждевременный шоудаун? -> TurnPokerJob
 начат процесс торга
 StartAuctionForPlayerJob.php(поставить задание на конец хода 0)  +  ->  StartPlayerAuctionAfterFlopBroadcaster.php+
 ---1---
-четвкртая карта на стол
+четвертая карта на стол
 TurnPokerJob.php+  ->  TurnBroadcaster.php+
+это преждевременный шоудаун? -> RiverPokerJob
 начат процесс торга
 StartAuctionForPlayerJob.php(поставить задание на конец хода 0) +   ->  StartPlayerAuctionAfterRiverBroadcaster.php+
 ---1---
 пятая карта на стол
 RiverPokerJob.php+   ->  RiverBroadcaster.php+
+это преждевременный шоудаун? -> SeparateBankJob
 начат процесс торга
 StartAuctionForPlayerJob.php (поставить задание на конец хода 0) +  ->  StartPlayerAuctionAfterTurnBroadcaster.php+
 открытие и выплата наград
 AllInShowDownJob.php +   ->  AllInShowDownBroadcaster.php+
 следующее действие:
+*   дострочный шоудаун? выложить все прочие карты на стол
 *   игроку предоставить выбор действия на шоудауне(   ActionShowDownJob  )
 *   распределить выиграш между игроками(  SeparateBankJob  )
 ActionShowDownJob.php +   ->  ActionShowDownBroadcaster.php ---> 2?/3?/ActionShowDownJob? +

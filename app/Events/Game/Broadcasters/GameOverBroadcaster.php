@@ -3,20 +3,18 @@
 namespace App\Events\Game\Broadcasters;
 
 use App\Abstracts\AbstractBroadcaster;
+use App\Builders\PokerTableBuilder;
+use \App\Models\Game\Player;
+use Illuminate\Database\Eloquent\Builder;
 
 class GameOverBroadcaster  extends AbstractBroadcaster
 {
-    public string $newEvent = 'false';
-    protected string $event = 'table';
-
-    public function __construct(int $tableId, string $screen, string $channel)
+    public function action(): PokerTableBuilder
     {
-        parent::__construct($tableId, $screen, $channel);
+        Player::whereUserId($this->userId)->where('table_class',function (Builder $builder) {
+            $builder->where('id',$this->tableId)->get('table_class');
+        })->increment('rating',$this->builder->getRatingByTable());
 
-        $this->table = $this->repository->startRound()
-            ->save()
-            ->getTable();
-
-        self::broadcast(new AuctionPokerRoundBroadcaster($tableId,$screen,$channel));
+        return $this->builder->losers();
     }
 }

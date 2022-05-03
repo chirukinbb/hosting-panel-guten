@@ -345,4 +345,26 @@ class PlayersCollection extends AbstractGameCollection
 
         return -1;
     }
+
+    public function existsLosers():bool
+    {
+        foreach ($this->collection as $player){
+            if ($player->getAmount() === 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    public function getActivePlayersCount()
+    {
+        $count = 0;
+
+        foreach ($this->collection as $player) {
+            if ($player->isInRound())
+                $count ++;
+        }
+
+        return $count;
+    }
 }

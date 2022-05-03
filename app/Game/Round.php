@@ -15,12 +15,57 @@ class Round
     protected int $lastAuctionPlayerPlace;
     protected int $maxBid  = 0;
     protected int $currentStep;
+    protected int $countPlayersStart;
+    protected int $countPlayersEnd;
 
     public function __construct(protected CardsCollection $cardsPool,protected int $number, protected int $ante)
     {
         $this->combos = config('poker.combos');
         $this->tableCards = new CardsCollection();
         $this->bankCollection = new BankCollection();
+    }
+
+    /**
+     * @param int $countPlayersStart
+     */
+    public function setCountPlayersStart(int $countPlayersStart): void
+    {
+        $this->countPlayersStart = $countPlayersStart;
+    }
+
+    /**
+     * @param int $countPlayersEnd
+     */
+    public function setCountPlayersEnd(int $countPlayersEnd): void
+    {
+        $this->countPlayersEnd = $countPlayersEnd;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCountPlayersEnd(): int
+    {
+        return $this->countPlayersEnd;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCountPlayersStart(): int
+    {
+        return $this->countPlayersStart;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPlayerPlace(): string
+    {
+        if ($this->countPlayersStart - $this->countPlayersEnd > 1)
+            return ($this->countPlayersEnd  + 1).'/'.$this->countPlayersStart;
+
+        return $this->countPlayersStart;
     }
 
     /**
