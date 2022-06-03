@@ -18,7 +18,7 @@ class PokerTableRepository
         $tableObj = Table::find($this->tableId);
 
         $this->tableObj = $tableObj->object;
-        $this->deletedJobId = $tableObj->removed_job_id;
+        $this->deletedJobId = $tableObj->removed_job_id ?? 0;
     }
 
     public function getDeletedJobId(): int
@@ -287,6 +287,16 @@ class PokerTableRepository
     public function showdown(): static
     {
         $this->tableObj->payToWinners();
+        $this->tableObj->eachPlayer(function (Player $player) {
+            $player->setIsOpenCards(true);
+            $player->setIsShowdownPass(true);
+        });
+
+        return $this;
+    }
+
+    public function showdownPlayerActions(): static
+    {
         $this->tableObj->showdownPlayerActions();
 
         return $this;
@@ -294,13 +304,15 @@ class PokerTableRepository
 
     public function isNewRound()
     {
+        $isCount = $this->tableObj->getActivePlayersCount() > 1;
+        $isStep = $this->getCurrentStepInRound() === 3;
 
-        return true;
+        return $isCount && $isStep;
     }
 
     public function isExtractBidsToBank():bool
     {
-        return true;
+        return $this->tableObj->isExtractBidsToBank();
     }
 
     public function bidsToBank():static
@@ -342,11 +354,27 @@ class PokerTableRepository
         $this->tableObj->eachPlayer(function (Player $player) {
             if ($player->getAmount() === 0) {
                 $player->setInRound(false);
+                $this->tableObj->addLostPlayer($player);
             }
         });
 
         $this->tableObj->setActivePlayersCountOnEndRound();
 
+        $this->tableObj->eachLooser(function (Player $player) {
+            \App\Models\Game\Player::whereUserId($player->getUserId())->where('table_class', get_class($this->tableObj))
+                ->increment('rating', $this->tableObj->getRatingByTable());
+        });
+
         return $this;
+    }
+
+    public function isNextPlayerShowdownAction()
+    {
+        return $this->tableObj->isNextPlayerShowdownAction();
+    }
+
+    public function setShowdownAction(bool $param)
+    {
+        $this->tableObj->setShowdownAction($param);
     }
 }

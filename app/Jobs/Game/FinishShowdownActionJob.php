@@ -20,16 +20,14 @@ class FinishShowdownActionJob extends AbstractGameJob
 
     public function action(): PokerTableRepository
     {
-        return $this->repository->showdown();
+        return $this->repository->showdownPlayerActions();
     }
 
     public function setNextJobClass()
     {
-        if ($this->repository->isTableFinish())
-            $this->nextJobClass = FinishTableJob::class;
-        elseif ($this->repository->isNewRound())
-            $this->nextJobClass = StartPokerRoundJob::class;
-        else
+        if ($this->repository->isNextPlayerShowdownAction())
             $this->nextJobClass = ActionShowDownJob::class;
+        else
+            $this->nextJobClass = SeparateBankJob::class;
     }
 }

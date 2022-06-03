@@ -22,10 +22,15 @@ class TableChannel
      * Authenticate the user's access to the channel.
      *
      * @param  \App\Models\User  $user
-     * @return array|bool
+     * @param  int $userId
+     * @param  int $tableId
+     * @return bool
      */
-    public function join(User $user,int $place, int $tableId)
+    public function join(User $user,int $userId, int $tableId)
     {
+        if ($user->id !== $userId)
+            return false;
+
         $player = Player::whereUserId($user->id)
             ->whereNotNull('gamed')
             ->first();

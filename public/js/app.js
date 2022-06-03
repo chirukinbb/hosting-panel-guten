@@ -19405,7 +19405,8 @@ __webpack_require__.r(__webpack_exports__);
       error: false,
       channel: null,
       count: 0,
-      table: {}
+      table: {},
+      disable: false
     };
   },
   methods: {
@@ -19469,10 +19470,18 @@ __webpack_require__.r(__webpack_exports__);
     },
     setTable: function setTable(table) {
       this.table = table;
+    },
+    nextJob: function nextJob() {
+      var _this3 = this;
+
+      this.disable = false;
+      axios__WEBPACK_IMPORTED_MODULE_3___default().get('/api/next').then(function () {
+        _this3.disable = false;
+      });
     }
   },
   created: function created() {
-    var _this3 = this;
+    var _this4 = this;
 
     axios__WEBPACK_IMPORTED_MODULE_3___default().post('/api/turn/state', {}, {
       headers: {
@@ -19484,19 +19493,19 @@ __webpack_require__.r(__webpack_exports__);
 
       switch (response.data.screen) {
         case 'list':
-          _this3.isList = true;
+          _this4.isList = true;
           break;
 
         case 'loader':
-          _this3.isLoad = true;
-          _this3.count = response.data.count;
-          _this3.channel = response.data.channel;
+          _this4.isLoad = true;
+          _this4.count = response.data.count;
+          _this4.channel = response.data.channel;
           break;
 
         case 'table':
-          _this3.isTable = true;
-          _this3.channel = response.data.channel;
-          _this3.table = response.data.table;
+          _this4.isTable = true;
+          _this4.channel = response.data.channel;
+          _this4.table = response.data.table;
           break;
       }
     });
@@ -19971,6 +19980,7 @@ var _hoisted_1 = {
   "class": "alert alert-danger",
   role: "alert"
 };
+var _hoisted_2 = ["disabled"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_list_component = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("list-component");
 
@@ -20001,7 +20011,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     channel: _ctx.channel
   }, null, 8
   /* PROPS */
-  , ["onSetTable", "table", "channel"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 64
+  , ["onSetTable", "table", "channel"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn btn-outline-primary",
+    disabled: _ctx.disable,
+    onClick: _cache[0] || (_cache[0] = function () {
+      return $options.nextJob && $options.nextJob.apply($options, arguments);
+    })
+  }, "Next", 8
+  /* PROPS */
+  , _hoisted_2)], 64
   /* STABLE_FRAGMENT */
   );
 }
@@ -20464,12 +20482,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     )]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.player.round ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+    key: 1,
     "class": "chips d-flex position-absolute",
     style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)($options.chipsPosition())
   }, [$props.player.round.isDealer ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_13, "D")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.player.round.isBB ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_14, "BB")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.player.round.isLB ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_15, "SB")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 4
   /* STYLE */
-  )]);
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
 }
 
 /***/ }),

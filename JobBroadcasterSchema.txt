@@ -31,7 +31,7 @@ AllInShowDownJob.php +   ->  AllInShowDownBroadcaster.php+
 *   дострочный шоудаун? выложить все прочие карты на стол
 *   игроку предоставить выбор действия на шоудауне(   ActionShowDownJob  )
 *   распределить выиграш между игроками(  SeparateBankJob  )
-ActionShowDownJob.php +   ->  ActionShowDownBroadcaster.php ---> 2?/3?/ActionShowDownJob? +
+ActionShowDownJob.php(поставить задачу на конец шоудаун-действия 4) +   ->  ActionShowDownBroadcaster.php ---> 2?/3?/ActionShowDownJob? +
 распределить выиграш между игроками
 SeparateBankJob ->  SeparateBankBroadcaster
 вилка действий:
@@ -64,3 +64,20 @@ GameOverPokerJob.php     ->  GameOverBroadcaster.php
 3   игрок выиграл
 
 FinishTableJob.php  ->  FinishTableBroadcaster.php(выход в лобби)
+
+4   принудительное завершение шоудаун-действия
+
+FinishShowdownActionJob + ->  FinishShowdownActionBroadcaster+
+    вилка:
+    *   шоудаун следующего игрока
+    *   распределение банка
+
+шаги:
+
+0 - старт раунда
+1 - префлоп
+2 - флоп
+3 - терн
+4 - ривер
+5 - шоудаун
+6 - выплата наград

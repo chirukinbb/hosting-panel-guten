@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,3 +41,7 @@ Broadcast::routes(
             ]
     ]
 );
+
+Route::get('/next', function (){
+    return Artisan::call('queue:work --once');
+});

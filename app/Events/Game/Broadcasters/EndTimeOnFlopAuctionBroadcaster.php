@@ -13,6 +13,6 @@ class EndTimeOnFlopAuctionBroadcaster extends AbstractBroadcaster
             ->startRound()
             ->preFlop()
             ->flop()
-            ->endTimeOnPreFlopAuction();
+            ->endTimeForTurnAction();
     }
 }

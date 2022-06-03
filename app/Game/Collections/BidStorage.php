@@ -14,7 +14,7 @@ class BidStorage
 
     public function all():int
     {
-        return array_sum($this->storage);
+        return array_sum(empty($this->storage) ? [0] : $this->storage);
     }
 
     public function annulled()

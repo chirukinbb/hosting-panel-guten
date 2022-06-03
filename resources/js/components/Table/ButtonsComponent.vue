@@ -1,33 +1,44 @@
 <template>
-    <div class="action-buttons d-flex justify-content-between position-absolute top-0">
-        <div class="btn-group-left">
-            <button class="btn btn-outline-light" v-on:click="fold" v-if="canFold">
+  <div class="position-absolute top-0">
+    <div class="d-flex justify-content-between action-buttons">
+        <div class="btn-group-left btn-group-lg btn-group d-inline">
+            <button class="btn btn-secondary me-1 rounded-0" v-on:click="fold" v-if="actions.canFold">
                 Fold
             </button>
-            <button class="btn btn-outline-light" v-if="canCheck" v-on:click="check">
+            <button class="btn btn-secondary" v-if="actions.canCheck" v-on:click="check">
                 Check
             </button>
-            <button class="btn btn-outline-light" v-if="canCall" v-on:click="call">
+            <button class="btn btn-secondary" v-if="actions.canCall" v-on:click="call">
                 Call
             </button>
         </div>
-        <div class="btn-group-right">
-            <button class="btn btn-outline-light" v-if="canRaise" v-on:click="raise">
+        <div class="btn-group-right btn-group-lg btn-group d-inline ms-auto">
+            <button class="btn btn-secondary" v-if="actions.canRaise" v-on:click="raise">
                 Raise
             </button>
-            <button class="btn btn-outline-light" v-if="canAllIn" v-on:click="allIn">
+            <button class="btn btn-secondary ms-1 rounded-0" v-if="actions.canAllIn" v-on:click="allIn">
                 All-In
             </button>
-          <div class="d-flex text-white">
-            <div class="raise-on">
-              <input type="number" class="form-control bg-dark text-white" min="1" v-model="amount">
-            </div>
-            <span class="m-2">
-              <small>&#9587;</small> BB
-            </span>
-          </div>
         </div>
     </div>
+    <div class="mt-1 d-flex text-white justify-content-end" style="height: 38px; overflow: hidden">
+      <button class="btn btn-secondary rounded-0 rounded-start" @click="minus" :disabled="minusButtonDisabled">-</button>
+      <div class="raise-on mx-1">
+        <input type="number"
+               class="form-control bg-dark text-white border"
+               inputmode="numeric"
+               min="1"
+               :max="amountInHand"
+               @keyup="checkAmount"
+               v-model="amount"
+        >
+      </div>
+      <button class="btn btn-secondary rounded-0 rounded-end" @click="add" :disabled="addButtonDisabled">+</button>
+      <span class="m-2 mx-1">
+              <small>&#9587;</small> BB
+            </span>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -37,30 +48,33 @@ export default {
     name: "ButtonsComponent",
     props:{
         actions:Array,
-        currentTurn:Boolean
+        currentTurn:Boolean,
+      amountInHand:Number
     },
   data:function () {
-    return { amount:1 }
+    return {
+      amount:1
+    }
   },
-    computed:{
-        canFold:function () {
-          console.log(this.actions)
-            return this.actions[0].is_active
-        },
-        canCall:function () {
-          return true//this.actions[4].is_active
-        },
-        canCheck:function () {
-          return this.actions[1].is_active
-        },
-        canRaise:function () {
-          return this.actions[2].is_active
-        },
-        canAllIn:function () {
-          return this.actions[3].is_active
-        }
+  computed:{
+    addButtonDisabled:function () {
+      return this.amountInHand < (this.amount + 1)
     },
+    minusButtonDisabled:function () {
+      return this.amountInHand > 1  &&  this.amount <= 1
+    }
+  },
   methods:{
+      checkAmount:function () {
+        if (this.amount > this.amountInHand)
+          this.amount = this.amountInHand
+      },
+      add:function () {
+        this.amount ++
+      },
+      minus:function () {
+        this.amount --
+      },
       fold:function () {
         this.request({ action_id:0 })
       },
@@ -72,7 +86,7 @@ export default {
     },
     raise:function () {
       this.request({
-        action_id:1,
+        action_id:2,
         amount: this.amount
       })
     },
@@ -88,10 +102,23 @@ export default {
 
 <style scoped>
 input{
-  width: 70px;
+  width: 48px;
 }
 small{
   font-size: .55em;
 }
 
+input[type=number]{
+  -moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.btn:focus{
+  box-shadow: none!important;
+}
 </style>

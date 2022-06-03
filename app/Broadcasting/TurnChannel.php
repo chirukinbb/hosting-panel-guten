@@ -23,9 +23,9 @@ class TurnChannel
      * Authenticate the user's access to the channel.
      *
      * @param  \App\Models\User  $user
-     * @return array|bool
+     * @return bool
      */
-    public function join(User $user,int $userId): bool|array
+    public function join(User $user,int $userId): bool
     {
         return $user->id === $userId;
     }

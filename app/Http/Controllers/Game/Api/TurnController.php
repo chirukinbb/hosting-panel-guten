@@ -17,6 +17,7 @@ use App\Jobs\Game\StartPokerRoundJob;
 use App\Models\Game\Player;
 use App\Models\Game\Table;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TurnController extends Controller
 {
@@ -74,7 +75,7 @@ class TurnController extends Controller
         dispatch(new PlayersUpdateInTurnJob($className));
         // создание стола и розсадка игроков за стол(БД)
         if (\App\Models\Game\Player::whereTableClass($className)->whereNotNull('searched')->count() >= $className::$count) {
-            dispatch(new CreatePokerTableJob($className,'loader'))->delay(now()->addSecond());
+            dispatch(new CreatePokerTableJob($className,'loader'))->delay(now()->addSecond());Log::info($className::$count);
         }
 
         return TurnResource::make(

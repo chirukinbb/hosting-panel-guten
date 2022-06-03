@@ -17,12 +17,14 @@ class Round
     protected int $currentStep;
     protected int $countPlayersStart;
     protected int $countPlayersEnd;
+    protected PlayersCollection $lostPlayers;
 
     public function __construct(protected CardsCollection $cardsPool,protected int $number, protected int $ante)
     {
         $this->combos = config('poker.combos');
         $this->tableCards = new CardsCollection();
         $this->bankCollection = new BankCollection();
+        $this->lostPlayers = new PlayersCollection();
     }
 
     /**
@@ -66,6 +68,21 @@ class Round
             return ($this->countPlayersEnd  + 1).'/'.$this->countPlayersStart;
 
         return $this->countPlayersStart;
+    }
+
+    /**
+     * @param Player $player
+     */
+    public function addLostPlayer(Player $player): void
+    {
+        $this->lostPlayers->push($player);
+    }
+
+    public function eachLooser(callable $func)
+    {
+        $this->lostPlayers->each(function (Player $player) use ($func){
+            call_user_func($func, $player);
+        });
     }
 
     /**

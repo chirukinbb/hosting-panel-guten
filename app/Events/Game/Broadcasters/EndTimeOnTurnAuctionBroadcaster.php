@@ -14,6 +14,6 @@ class EndTimeOnTurnAuctionBroadcaster extends AbstractBroadcaster
             ->preFlop()
             ->flop()
             ->turn()
-            ->endTimeOnPreFlopAuction();
+            ->endTimeForTurnAction();
     }
 }

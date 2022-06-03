@@ -116,11 +116,6 @@ abstract class AbstractPokerTable
         return $place;
     }
 
-    public function getPlayerWithStrongestHand(): array
-    {
-        return $this->round->getPlayerWithStrongestHand($this->players);
-    }
-
     public function payBlinds()
     {
         $this->players->each(function (Player $player) {
@@ -330,11 +325,11 @@ abstract class AbstractPokerTable
     }
 
     /**
-     * делать ли новый круг торгов?
+     * собирать ли ставки игроков в банк?
      *
      * @return bool
      */
-    public function isNewLoop():bool
+    public function isExtractBidsToBank():bool
     {
         return $this->players->isNextPlayerLastRaise(
             $this->round->getLastAuctionPlayerPlace(),
@@ -403,5 +398,31 @@ abstract class AbstractPokerTable
         $lRating = (100 -  24 * $this->round->getCountPlayersStart());
 
         return ($hRating - $lRating) / ($this->round->getCountPlayersStart() -  $this->round->getCountPlayersStart());
+    }
+
+    public function eachLooser(callable $func)
+    {
+        $this->round->eachLooser($func);
+    }
+
+    public function addLostPlayer(Player $player)
+    {
+        $this->round->addLostPlayer($player);
+    }
+
+    public function isNextPlayerShowdownAction()
+    {
+        return $this->players->isNextPlayerShowdownAction();
+    }
+
+    public function setShowdownAction(bool $action)
+    {
+        $this->players->setShowdownAction($action);
+    }
+
+    public function getTimerForPlayer(Player $player): int
+    {
+        return ($this->round->getLastAuctionPlayerPlace() === $player->getPlace()) ?
+            ($this->getCurrentStepInRound() > 4 ? $this->getTimeOnTurn() : 5) : 0;
     }
 }

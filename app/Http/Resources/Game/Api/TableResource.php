@@ -25,7 +25,7 @@ class TableResource extends JsonResource
     public function toArray($request)
     {
         return array_merge(
-            ['channel'=>$this->builder->getChannelName('table.',\Auth::id())],
+            ['channel'=>$this->builder->getChannelName('table',\Auth::id())],
             $this->buildTable()
         );
     }

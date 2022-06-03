@@ -9,6 +9,7 @@ use App\Jobs\Game\StartAuctionForPlayerJob;
 use App\Models\Game\Player;
 use App\Repositories\PokerTableRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 class TableController extends Controller
 {
@@ -37,8 +38,17 @@ class TableController extends Controller
         }
     }
 
-    public function showDownAction()
-    {}
+    public function showDownAction(Request $request)
+    {
+        if ($request->input('action_id')) {
+            $this->repository->setShowdownAction($request->input('action_id') == 1);
+
+            \DB::table('jobs')->where('id', $this->repository->getDeletedJobId())
+                ->delete();
+
+            $this->dispatch(new ResultPlayerActionJob($this->repository->getTableId(), 'table'));
+        }
+    }
 
     public function leave(Request $request)
     {

@@ -24,9 +24,13 @@ class Player
     protected BidStorage $bid;
     protected int $amount;
     protected int $lastActionId;
+    // его ли ход на шоудауне
     protected  bool $isCurrentShowdown = false;
+    // открыты ли карты
     protected  bool $isOpenCards = false;
     protected  bool $winner = false;
+    // проходил ли шоудаун
+    protected bool $isShowdownPass = true;
 
     public function __construct(protected int $userId)
     {
@@ -35,6 +39,22 @@ class Player
         $this->combo = new UserComboCollection();
         $this->amount = 1000;
         $this->bid = new BidStorage();
+    }
+
+    /**
+     * @param bool $isShowdownPass
+     */
+    public function setIsShowdownPass(bool $isShowdownPass): void
+    {
+        $this->isShowdownPass = $isShowdownPass;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowdownPass(): bool
+    {
+        return $this->isShowdownPass;
     }
 
     /**

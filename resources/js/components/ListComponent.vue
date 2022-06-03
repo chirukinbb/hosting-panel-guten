@@ -41,7 +41,6 @@ export default {
     },
     methods:{
         loaderScreen:function (className,i) {
-            console.log(this.tables[i])
             this.tables[i].inSearch  = true
             this.tables[i].button  = 'Loading...'
 

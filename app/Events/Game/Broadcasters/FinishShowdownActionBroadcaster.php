@@ -15,6 +15,6 @@ class FinishShowdownActionBroadcaster extends AbstractBroadcaster
             ->flop()
             ->turn()
             ->river()
-            ->endTimeOnShowdownAction();
+            ->showdownAction();
     }
 }

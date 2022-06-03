@@ -2,9 +2,12 @@
 
 namespace App\Game;
 
+use App\Game\Collections\CardsCollection;
+
 class UserCombo
 {
     protected int $comboIndex;
+    protected CardsCollection $cards;
 
     public function __construct(
         protected string $name,
@@ -51,5 +54,24 @@ class UserCombo
     public function getComboIndex(): int
     {
         return $this->comboIndex;
+    }
+
+    /**
+     * @param CardsCollection|Card $cards
+     */
+    public function pushCard(CardsCollection|Card $cards): void
+    {
+        if (is_a($cards, CardsCollection::class)) {
+            $cards->each(function (Card $card) {
+                $this->cards->push($card);
+            });
+        }else{
+            $this->cards->push($cards);
+        }
+    }
+
+    public function eachCard(callable $func)
+    {
+        $this->cards->each($func);
     }
 }

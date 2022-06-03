@@ -14,6 +14,6 @@ class AllInShowDownBroadcaster extends AbstractBroadcaster
             ->preFlop()
             ->flop()
             ->turn()
-            ->showdown();
+            ->showdownAction();
     }
 }

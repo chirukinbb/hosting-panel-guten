@@ -1,18 +1,26 @@
 <template>
     <div class="player d-flex">
         <div class="col-auto avatar-container">
-            <img src="" class="img-fluid rounded-circle avatar m-0" alt="">
+            <img src="/img/img.png" class="img-fluid rounded-circle avatar m-0" alt="">
         </div>
         <div class="col">
-            <strong class="name border-bottom">Button</strong>
-            <p class="m-0 text-center">0</p>
+            <strong class="name border-bottom text-center" style="width: 70px">Bank</strong>
+            <p class="m-0 text-center" style="width: 70px">{{banks}}</p>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: "ButtonComponent"
+    name: "ButtonComponent",
+  props:{
+      bank:Array
+  },
+  computed:{
+    banks:function () {
+      return this.bank.join(' | ')
+    }
+  }
 }
 </script>
 

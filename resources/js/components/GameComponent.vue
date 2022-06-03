@@ -1,6 +1,7 @@
 <template>
+  <div>
     <div v-if="error" class="alert alert-danger" role="alert">
-        action not available: {{error}}
+      action not available: {{error}}
     </div>
     <list-component
         v-if="isList"
@@ -20,6 +21,7 @@
         :table="table"
         :channel="channel"
     ></table-component>
+  </div>
 </template>
 
 <script>
@@ -44,7 +46,8 @@ export default {
             error:false,
             channel:null,
             count:0,
-            table:{}
+            table:{},
+            disable:false
         }
     },
     methods: {
@@ -100,6 +103,12 @@ export default {
         },
         setTable:function (table) {
             this.table = table
+        },
+        nextJob:function () {
+            this.disable = false
+
+            axios.get('/api/next').
+            then(()=>{this.disable=false})
         }
     },
     created:function () {

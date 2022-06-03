@@ -22,7 +22,7 @@ class ActionShowDownJob extends AbstractGameJob
 
     public function action(): PokerTableRepository
     {
-        return $this->repository->showdown();
+        return $this->repository->showdownPlayerActions();
     }
 
     public function setNextJobClass()

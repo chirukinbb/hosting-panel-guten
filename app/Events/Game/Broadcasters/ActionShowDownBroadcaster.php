@@ -14,6 +14,7 @@ class ActionShowDownBroadcaster extends AbstractBroadcaster
             ->preFlop()
             ->flop()
             ->turn()
+            ->river()
             ->startShowdownAction();
     }
 }

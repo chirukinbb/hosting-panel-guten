@@ -12,7 +12,7 @@ class PlayersCollection extends AbstractGameCollection
     /**
      * @var Player[]
      */
-    protected array $collection;
+    protected array $collection = [];
     /**
      * @param int $index
      * @return Player
@@ -366,5 +366,23 @@ class PlayersCollection extends AbstractGameCollection
         }
 
         return $count;
+    }
+
+    public function isNextPlayerShowdownAction():bool
+    {
+        foreach ($this->collection as $player){
+            if ($player->isInRound() && !$player->isShowdownPass())
+                return true;
+        }
+
+        return false;
+    }
+
+    public function setShowdownAction(bool $action)
+    {
+        foreach ($this->collection as $player){
+            if ($player->isCurrentShowdown())
+                $player->setIsOpenCards($action);
+        }
     }
 }

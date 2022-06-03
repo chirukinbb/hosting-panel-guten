@@ -15,6 +15,6 @@ class EndTimeOnRiverAuctionBroadcaster extends AbstractBroadcaster
             ->flop()
             ->turn()
             ->river()
-            ->endTimeOnPreFlopAuction();
+            ->endTimeForTurnAction();
     }
 }

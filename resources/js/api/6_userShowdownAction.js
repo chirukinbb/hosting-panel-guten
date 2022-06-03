@@ -1,0 +1,106 @@
+export default {
+    data:{
+        screen:'table',
+        channel:'blabls',
+        table:{
+            title:'Holdem, 9 Players...',
+            blind:10,
+            cardsInHand:2,
+            players:[
+                {
+                    id:6,
+                    name:'John Silva',
+                    avatar:'/img/JohnDoe.webp',
+                    amount:{
+                        hand:99,
+                        bid:1
+                    },
+                    round:{
+                        isActive:true,
+                        number:7,
+                        ante:0,
+                        cards:[
+                            {nominal:6,suit:1},
+                            {nominal:6,suit:3}
+                        ],
+                        chips:{
+                            isDealer:true,
+                            isBB:false,
+                            isLB:false
+                        },
+                        showdown:{
+                            turn:false
+                        }
+                    },
+                    place:null,
+                    rating:null
+                },
+                {
+                    id:4,
+                    name:'John Silva',
+                    avatar:'/img/JohnDoe.webp',
+                    amount:{
+                        hand:980,
+                        bid:20
+                    },
+                    round:{
+                        isActive:true,
+                        timer:5,
+                        number:7,
+                        ante:0,
+                        chips:{
+                            isDealer:true,
+                            isBB:false,
+                            isLB:true
+                        },
+                        showdown:{
+                            turn:true
+                        }
+                    },
+                    place:null,
+                    rating:null
+                },
+                {
+                    id:1,
+                    name:'John Silva',
+                    avatar:'/img/JohnDoe.webp',
+                    amount:{
+                        hand:970,
+                        bid:30
+                    },
+                    round:{
+                        isActive:false,
+                        number:7,
+                        ante:0,
+                        chips:{
+                            isDealer:true,
+                            isBB:false,
+                            isLB:false
+                        },
+                        showdown:{
+                            turn:false
+                        }
+                    },
+                    place:null,
+                    rating:null
+                },
+            ],
+            round:{
+                number: 7,
+                step: 5,
+                ante: 0,
+                cards:[
+                    {suit:2,nominal:2},
+                    {suit:1,nominal:2},
+                    {suit:1,nominal:2},
+                    {suit:1,nominal:2},
+                    {suit:0,nominal:2}
+                ],
+                bank:[
+                    30,20
+                ],
+                isShowdownTime:true
+            }
+        }
+    }
+}
