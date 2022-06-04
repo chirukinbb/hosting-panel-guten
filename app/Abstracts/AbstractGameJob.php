@@ -2,6 +2,7 @@
 
 namespace App\Abstracts;
 
+use App\Events\Game\Broadcasters\StandardPokerTableBroadcaster;
 use App\Game\Player;
 use App\Repositories\PokerTableRepository;
 use Illuminate\Bus\Queueable;
@@ -15,7 +16,7 @@ abstract class AbstractGameJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected PokerTableRepository $repository;
-    protected string $broadcasterClass;
+    protected string $broadcasterClass = StandardPokerTableBroadcaster::class;
     protected string $nextJobClass = '';
     protected string $slug = 'table';
     protected int $removedJobId = 0;
@@ -42,7 +43,7 @@ abstract class AbstractGameJob implements ShouldQueue
      */
     public function handle()
     {
-        $this->action()->save($this->broadcasterClass,$this->removedJobId);
+        $this->action()->save($this->removedJobId);
 
         $this->repository->eachPlayer(function (Player $player) {
             call_user_func([$this,'eachPlayerFunc'],$player);

@@ -192,15 +192,12 @@ class PokerTableRepository
         return $this;
     }
 
-    public function save($broadcasterClass = null, $deletedJobId  = null)
+    public function save($deletedJobId  = null)
     {
         $updateAttrs = [
             'object' => $this->tableObj,
             'removed_job_id' =>  $deletedJobId
         ];
-
-        if (!is_null($broadcasterClass))
-            $updateAttrs = array_merge($updateAttrs,['broadcaster_class'=>$broadcasterClass]);
 
         Table::updateOrCreate(
             ['id' => $this->tableId],

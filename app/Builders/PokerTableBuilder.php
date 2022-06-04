@@ -19,6 +19,7 @@ class PokerTableBuilder
     {
         $repository = new PokerTableRepository($this->tableId);
         $this->pokerTable = $repository->getTableObject();
+        $this->setTable();
     }
 
     /**

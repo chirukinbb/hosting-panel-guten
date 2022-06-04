@@ -8,8 +8,6 @@ use App\Repositories\PokerTableRepository;
 
 class RiverPokerJob extends AbstractGameJob
 {
-    protected string $broadcasterClass = RiverBroadcaster::class;
-
     public function handle()
     {
         $this->setNextJobClass();

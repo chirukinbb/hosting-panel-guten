@@ -9,12 +9,6 @@ class CreatePokerTableBroadcaster extends AbstractBroadcaster
 {
     protected string $event   = 'turn';
 
-    public function action(): \App\Builders\PokerTableBuilder
-    {
-        return $this->builder->setTable()
-            ->setPlayers();
-    }
-
     public function broadcastWith()
     {
         return array_merge(

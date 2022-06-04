@@ -8,7 +8,6 @@ use App\Repositories\PokerTableRepository;
 
 class StartShowdownPokerJob extends AbstractGameJob
 {
-    protected string $broadcasterClass = AllInShowDownBroadcaster::class;
     protected string $nextJobClass = StartPokerRoundJob::class;
 
     public function action(): PokerTableRepository

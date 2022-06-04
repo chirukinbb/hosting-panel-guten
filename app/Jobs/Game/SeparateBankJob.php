@@ -8,8 +8,6 @@ use App\Repositories\PokerTableRepository;
 
 class SeparateBankJob extends AbstractGameJob
 {
-    protected string $broadcasterClass = FlopBroadcaster::class;
-
     public function handle()
     {
         $this->setNextJobClass();

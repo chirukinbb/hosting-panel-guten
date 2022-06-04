@@ -9,8 +9,6 @@ use App\Repositories\PokerTableRepository;
 
 class TurnPokerJob extends AbstractGameJob
 {
-    protected string $broadcasterClass = TurnBroadcaster::class;
-
     public function handle()
     {
         $this->setNextJobClass();

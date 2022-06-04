@@ -28,7 +28,7 @@ class StartAuctionForPlayerJob extends AbstractGameJob
 
         $this->removedJobId = Queue::later(
             now()->addSeconds($this->repository->getTimeOnTurn()),
-            new FinishPlayerAuctionJob($this->classNameOrTableId,'table')
+            (string)new FinishPlayerAuctionJob($this->classNameOrTableId, 'table')
         );
 
         parent::handle();

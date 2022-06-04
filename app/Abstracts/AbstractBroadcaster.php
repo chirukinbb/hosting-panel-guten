@@ -38,14 +38,9 @@ abstract class AbstractBroadcaster implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        $table  = $this->action()
-            ->getTable();
-
         return [
-            'table' =>$table,
+            'table' =>$this->builder->getTable(),
             'screen'=>$this->screen
         ];
     }
-
-    abstract public function action(): PokerTableBuilder;
 }

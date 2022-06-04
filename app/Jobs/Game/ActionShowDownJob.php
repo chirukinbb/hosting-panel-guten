@@ -8,8 +8,6 @@ use App\Repositories\PokerTableRepository;
 
 class ActionShowDownJob extends AbstractGameJob
 {
-    protected string $broadcasterClass = ActionShowDownBroadcaster::class;
-
     public function handle()
     {
         $this->setNextJobClass();

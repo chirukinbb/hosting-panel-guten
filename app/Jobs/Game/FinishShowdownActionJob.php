@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Queue;
 
 class FinishShowdownActionJob extends AbstractGameJob
 {
-    protected string $broadcasterClass = FinishShowdownActionBroadcaster::class;
-
     public function handle()
     {
         $this->setNextJobClass();

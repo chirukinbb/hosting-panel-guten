@@ -11,7 +11,6 @@ use App\Repositories\PokerTableRepository;
 
 class EndOfLoopJob extends AbstractGameJob
 {
-    protected string $broadcasterClass = EndOfPreFlopLoopBroadcaster::class;
     protected string $nextJobClass = StartPokerRoundJob::class;
 
     public function handle()

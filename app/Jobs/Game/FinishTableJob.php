@@ -8,8 +8,6 @@ use App\Repositories\PokerTableRepository;
 
 class FinishTableJob extends AbstractGameJob
 {
-    protected string $broadcasterClass = GameOverBroadcaster::class;
-
     public function action(): PokerTableRepository
     {
         return $this->repository->finishTable();

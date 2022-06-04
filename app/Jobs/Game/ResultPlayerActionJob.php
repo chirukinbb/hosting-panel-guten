@@ -22,7 +22,7 @@ class ResultPlayerActionJob extends AbstractGameJob
         $this->setNextJobClass();
         $this->setBroadcasterClass();
 
-        $this->action()->save($this->broadcasterClass,$this->removedJobId);
+        $this->action()->save($this->removedJobId);
 
         $this->repository->eachPlayer(function (Player $player) {
             call_user_func([$this,'eachPlayerFunc'],$player);

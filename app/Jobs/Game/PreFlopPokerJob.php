@@ -8,7 +8,6 @@ use App\Repositories\PokerTableRepository;
 
 class PreFlopPokerJob extends AbstractGameJob
 {
-    protected string $broadcasterClass = PreFlopBroadcaster::class;
     protected string $nextJobClass = StartAuctionForPlayerJob::class;
 
     public function action(): PokerTableRepository

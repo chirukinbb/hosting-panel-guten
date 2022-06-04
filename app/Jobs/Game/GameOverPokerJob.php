@@ -8,8 +8,6 @@ use App\Repositories\PokerTableRepository;
 
 class GameOverPokerJob extends AbstractGameJob
 {
-    protected string $broadcasterClass = GameOverBroadcaster::class;
-
     public function handle()
     {
         parent::handle();
