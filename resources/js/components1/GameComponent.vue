@@ -1,7 +1,6 @@
 <template>
-  <div>
     <div v-if="error" class="alert alert-danger" role="alert">
-      action not available: {{error}}
+        action not available: {{error}}
     </div>
     <list-component
         v-if="isList"
@@ -21,8 +20,7 @@
         :table="table"
         :channel="channel"
     ></table-component>
-      <button class="btn btn-primary position-absolute bottom-0" v-on:click="nextJob">next job</button>
-  </div>
+    <button class="btn btn-outline-primary" :disabled="disable" v-on:click="nextJob">Next</button>
 </template>
 
 <script>

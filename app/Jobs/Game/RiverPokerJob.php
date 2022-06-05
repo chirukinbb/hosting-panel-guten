@@ -17,7 +17,7 @@ class RiverPokerJob extends AbstractGameJob
 
     public function action(): PokerTableRepository
     {
-        return $this->repository->setCurrentStepInRound(3);
+        return $this->repository->startRiverStep();
     }
 
     public function setNextJobClass(): void

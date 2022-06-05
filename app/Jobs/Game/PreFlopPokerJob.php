@@ -12,6 +12,6 @@ class PreFlopPokerJob extends AbstractGameJob
 
     public function action(): PokerTableRepository
     {
-        return $this->repository->setCurrentStepInRound(0);
+        return $this->repository->startPreFloStep();
     }
 }

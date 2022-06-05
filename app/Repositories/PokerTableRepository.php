@@ -26,9 +26,30 @@ class PokerTableRepository
         return $this->deletedJobId;
     }
 
-    public function setCurrentStepInRound(int $step)
+    public function startTurnStep(): static
     {
-        $this->tableObj->setCurrentStepInRound($step);
+        $this->tableObj->setCurrentStepInRound($this->tableObj::ROUND_TURN_STEP);
+
+        return $this;
+    }
+
+    public function startPreFloStep(): static
+    {
+        $this->tableObj->setCurrentStepInRound($this->tableObj::ROUND_PREFLOP_STEP);
+
+        return $this;
+    }
+
+    public function startFlopStep(): static
+    {
+        $this->tableObj->setCurrentStepInRound($this->tableObj::ROUND_FLOP_STEP);
+
+        return $this;
+    }
+
+    public function startRiverStep(): static
+    {
+        $this->tableObj->setCurrentStepInRound($this->tableObj::ROUND_RIVER_STEP);
 
         return $this;
     }
@@ -120,6 +141,7 @@ class PokerTableRepository
         $this->tableObj->calculateHandValues();
         $this->tableObj->river();
         $this->tableObj->calculateHandValues();
+        $this->tableObj->setCurrentStepInRound($this->tableObj::ROUND_START_STEP);
 
         return $this;
     }
@@ -283,10 +305,13 @@ class PokerTableRepository
 
     public function showdown(): static
     {
+        $this->tableObj->setCurrentStepInRound($this->tableObj::ROUND_SHOWDOWN_STEP);
         $this->tableObj->payToWinners();
         $this->tableObj->eachPlayer(function (Player $player) {
-            $player->setIsOpenCards(true);
-            $player->setIsShowdownPass(true);
+            if ($player->getLastActionId() === 3) {
+                $player->setIsOpenCards(true);
+                $player->setIsShowdownPass(true);
+            }
         });
 
         return $this;
@@ -331,6 +356,7 @@ class PokerTableRepository
 
     public function payments():static
     {
+        $this->tableObj->setCurrentStepInRound($this->tableObj::ROUND_PAYMENT_STEP);
         $this->tableObj->payToWinners();
 
         return $this;
@@ -373,5 +399,10 @@ class PokerTableRepository
     public function setShowdownAction(bool $param)
     {
         $this->tableObj->setShowdownAction($param);
+    }
+
+    public function result(Player $player)
+    {
+        return $this->tableObj->result($player);
     }
 }

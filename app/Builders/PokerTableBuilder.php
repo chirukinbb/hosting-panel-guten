@@ -55,10 +55,10 @@ class PokerTableBuilder
                     'hand' => $player->getAmount(),
                     'bid' => $player->getBid()
                 ],
-                'action_result',
-                'timer',
-                'place',
-                'rating'
+                'action_result'=>$this->pokerTable->result($player),
+                'timer'=>$this->pokerTable->timer($player),
+                'place'=>$player->getPlaceInGame(),
+                'rating'=>$this->pokerTable->rating($player)
             ];
 
             $this->setActions($player);

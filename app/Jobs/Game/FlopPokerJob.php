@@ -17,7 +17,7 @@ class FlopPokerJob extends AbstractGameJob
 
     public function action(): PokerTableRepository
     {
-        return $this->repository->setCurrentStepInRound(1);
+        return $this->repository->startFlopStep();
     }
 
     public function setNextJobClass(): void

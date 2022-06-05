@@ -18,7 +18,7 @@ class TurnPokerJob extends AbstractGameJob
 
     public function action(): PokerTableRepository
     {
-        return $this->repository->setCurrentStepInRound(2);
+        return $this->repository->startTurnStep();
     }
 
     public function setNextJobClass(): void

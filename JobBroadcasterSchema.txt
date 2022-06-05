@@ -33,7 +33,7 @@ AllInShowDownJob.php +   ->  AllInShowDownBroadcaster.php+
 *   распределить выиграш между игроками(  SeparateBankJob  )
 ActionShowDownJob.php(поставить задачу на конец шоудаун-действия 4) +   ->  ActionShowDownBroadcaster.php ---> 2?/3?/ActionShowDownJob? +
 распределить выиграш между игроками
-SeparateBankJob ->  SeparateBankBroadcaster
+SeparateBankJob  + ->  SeparateBankBroadcaster
 вилка действий:
 *   проверить проигравших игроков(   2   )
 *   проверить  есть  ли победитель(   3  )

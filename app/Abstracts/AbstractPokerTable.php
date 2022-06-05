@@ -16,6 +16,14 @@ abstract class AbstractPokerTable
 {
     use RoundTrait, CardTrait, PlayerTrait;
 
+    const ROUND_START_STEP = 0;
+    const ROUND_PREFLOP_STEP = 1;
+    const ROUND_FLOP_STEP = 2;
+    const ROUND_TURN_STEP = 3;
+    const ROUND_RIVER_STEP = 4;
+    const ROUND_SHOWDOWN_STEP = 5;
+    const ROUND_PAYMENT_STEP = 6;
+
     protected int $blind;
     protected int $playersCount;
     protected int $minNominal;
@@ -424,5 +432,17 @@ abstract class AbstractPokerTable
     {
         return ($this->round->getLastAuctionPlayerPlace() === $player->getPlace()) ?
             ($this->getCurrentStepInRound() > 4 ? $this->getTimeOnTurn() : 5) : 0;
+    }
+
+    public function result(Player $player)
+    {
+        return $this->round->getLastAuctionPlayerPlace() === $player->getPlace() ? $player->getLastActionId() : null;
+    }
+
+    public function timer(Player $player)
+    {}
+
+    public function rating(Player $player)
+    {
     }
 }

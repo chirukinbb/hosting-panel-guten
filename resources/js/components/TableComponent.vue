@@ -38,6 +38,7 @@
         class="position-absolute end-0 start-0 bottom-100"
         style="z-index: 999;"
     ></buttons-component>
+
     <showdown-component v-if="player.round.showdown.turn"/>
     <finish-component
         :place="player.place"

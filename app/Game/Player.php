@@ -31,6 +31,7 @@ class Player
     protected  bool $winner = false;
     // проходил ли шоудаун
     protected bool $isShowdownPass = true;
+    protected int $placeInGame = 0;
 
     public function __construct(protected int $userId)
     {
@@ -79,6 +80,22 @@ class Player
     public function setIsCurrentShowdown(bool $isCurrentShowdown): void
     {
         $this->isCurrentShowdown = $isCurrentShowdown;
+    }
+
+    /**
+     * @param int $placeInGame
+     */
+    public function setPlaceInGame(int $placeInGame): void
+    {
+        $this->placeInGame = $placeInGame;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPlaceInGame(): int
+    {
+        return $this->placeInGame;
     }
 
     /**
