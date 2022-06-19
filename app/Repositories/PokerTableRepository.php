@@ -384,8 +384,9 @@ class PokerTableRepository
         $this->tableObj->setActivePlayersCountOnEndRound();
 
         $this->tableObj->eachLooser(function (Player $player) {
+            $player->setPlaceInGame($this->tableObj->avgPlace());
             \App\Models\Game\Player::whereUserId($player->getUserId())->where('table_class', get_class($this->tableObj))
-                ->increment('rating', $this->tableObj->getRatingByTable());
+                ->increment('rating', $this->tableObj->gerRatingByPlace($this->tableObj->avgPlace()));
         });
 
         return $this;

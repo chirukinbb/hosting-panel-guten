@@ -9,9 +9,9 @@ class UserComboCollection extends AbstractGameCollection
 {
     /**
      * @param int $index
-     * @return UserCombo
+     * @return object|null
      */
-    public function get(int $index): object
+    public function get(int $index): ?object
     {
         return parent::get($index);
     }

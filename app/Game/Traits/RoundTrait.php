@@ -51,12 +51,12 @@ trait RoundTrait
 
     public function getRoundNumber()
     {
-        return !empty($this->round) ? $this->round->getNumber() : 0;
+        return isset($this->round) ? $this->round->getNumber() : 0;
     }
 
     public function getCurrentAnte()
     {
-        return $this->round->getAnte();
+        return isset($this->round) ? $this->round->getAnte() : 0;
     }
 
     protected function putCardsOnTable(int $count)
@@ -76,6 +76,6 @@ trait RoundTrait
 
     public function getCurrentStepInRound()
     {
-        return $this->round->getCurrentStep();
+        return isset($this->round) ? $this->round->getCurrentStep() : 0;
     }
 }

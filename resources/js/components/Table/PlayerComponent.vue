@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import TimerComponent from "@/components/Table/TimerComponent";
+import TimerComponent from "./TimerComponent";
 export default {
   name: "PlayerComponent",
   components: {TimerComponent},

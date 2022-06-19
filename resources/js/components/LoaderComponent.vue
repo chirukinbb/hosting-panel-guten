@@ -11,8 +11,7 @@
 </template>
 
 <script>
-//import Echo from "laravel-echo"
-window.Pusher = require('pusher-js')
+import socket from "../socket";
 
 export default {
     name: "LoaderComponent",
@@ -33,46 +32,19 @@ export default {
         this.$emit('leave-turn')
       }
   },
-  // created() {
-  //   this.socket = new Echo({
-  //     broadcaster: 'pusher',
-  //     key: '4326370c5eb04b2329d3',
-  //     wsHost: window.location.hostname,
-  //     wsPort: 6001,
-  //     forceTLS: false,
-  //     authorizer: (channel) => {
-  //       return {
-  //         authorize: (socketId, callback) => {
-  //           axios.post('/api/broadcasting/auth', {
-  //             socket_id: socketId,
-  //             channel_name: channel.name
-  //           },{
-  //             headers: {
-  //               Authorization: 'Bearer '+document.querySelector('meta[name="api-token"]').getAttribute('content'),
-  //             }
-  //           })
-  //               .then(response => {
-  //                 callback(false, response.data);
-  //               })
-  //               .catch(error => {
-  //                 callback(true, error);
-  //               });
-  //         }
-  //       };
-  //     },
-  //     disableStats: false
-  //   }).private(this.channel).listen('.turn', e => {
-  //       console.log(e)
-  //       switch (e.screen) {
-  //           case 'loader':
-  //               e.count ? this.$emit('set-count', e.count) : this.$emit('load-table',e.newChannel,e.table)
-  //               break
-  //           case 'table':
-  //               this.$emit('load-table',e.newChannel, e.table)
-  //               break
-  //       }
-  //   })
-  // }
+  created() {
+    this.socket = socket.connect().private(this.channel).listen('.turn', e => {
+        console.log(e)
+        switch (e.screen) {
+            case 'loader':
+                e.count ? this.$emit('set-count', e.count) : this.$emit('load-table',e.newChannel,e.table)
+                break
+            case 'table':
+                this.$emit('load-table',e.newChannel, e.table)
+                break
+        }
+    })
+  }
 }
 </script>
 

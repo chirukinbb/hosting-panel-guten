@@ -8,11 +8,12 @@ use App\Game\Card;
 class CardsCollection extends AbstractGameCollection
 {
     protected Card $result;
+
     /**
      * @param int $index
-     * @return Card
+     * @return object|null
      */
-    public function get(int $index): object
+    public function get(int $index): ?object
     {
         return parent::get($index);
     }

@@ -27,9 +27,9 @@ class SuitCombinedCardsCollection extends CardsCollection
 
     /**
      * @param int $index
-     * @return CardsCollection
+     * @return object|null
      */
-    public function get(int $index): object
+    public function get(int $index): ?object
     {
         return parent::get($index)->get(0);
     }

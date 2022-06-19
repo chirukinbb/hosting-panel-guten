@@ -11,7 +11,6 @@ class Table extends AbstractModel
     const FINISHED = 2;
 
     protected $fillable = [
-        'table_class',
         'round_no',
         'object',
         'status',

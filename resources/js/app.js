@@ -4,29 +4,7 @@ import { createApp } from 'vue'
 
 import GameComponent from "./components/GameComponent"
 
-const app = createApp(GameComponent)
-   // .use(
-   //      window.Echo = new Echo({
-   //          broadcaster: 'pusher',
-   //          key: '4326370c5eb04b2329d3',
-   //          wsHost: window.location.hostname,
-   //          wsPort: 6001,
-   //          forceTLS: false,
-   //          disableStats: false
-   //      })
-   // )
-    .mount('#game')
+localStorage.csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+localStorage.token = document.querySelector('meta[name="api-token"]').getAttribute('content')
 
-//
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: '1',
-//     wsHost: window.location.hostname,
-//     wsPort: 6001,
-//     forceTLS: false,
-//     disableStats: false,
-// })
-//     .channel('turn-1647934735')
-//     .listen('.turns',function (e) {
-//         console.log(e)
-//     })
+const app = createApp(GameComponent).mount('#game')

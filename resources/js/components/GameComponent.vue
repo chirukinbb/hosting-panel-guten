@@ -21,7 +21,7 @@
         :table="table"
         :channel="channel"
     ></table-component>
-      <button class="btn btn-primary position-absolute bottom-0" v-on:click="nextJob">next job</button>
+      <button class="btn btn-primary position-absolute bottom-0 mb-3" v-on:click="nextJob">{{text}}</button>
   </div>
 </template>
 
@@ -31,6 +31,7 @@ import LoaderComponent from "./LoaderComponent"
 import TableComponent from "./TableComponent"
 
 import axios from 'axios'
+import api from "../api";
 
 export default {
     name: "GameComponent",
@@ -48,19 +49,13 @@ export default {
             channel:null,
             count:0,
             table:{},
-            disable:false
+            disable:false,
+            text:'Next Job'
         }
     },
     methods: {
         loadScreen:function (className) {
-            axios.post('/api/turn/stand',{
-                tableClass:className
-            },{
-                headers:{
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    Authorization: 'Bearer '+document.querySelector('meta[name="api-token"]').getAttribute('content'),
-                }
-            }).then(response => {
+            api.stand(className).then(response => {
                 console.log(response.data)
                 switch (response.data.screen) {
                     case 'error':
@@ -84,12 +79,7 @@ export default {
             })
         },
         leaveTurn:function () {
-            axios.post('/api/turn/leave',{},{
-                headers:{
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    Authorization: 'Bearer '+document.querySelector('meta[name="api-token"]').getAttribute('content'),
-                }
-            }).then(response => {
+            api.leave().then(response => {
                 this.isList = true
                 this.isLoad = false
             })
@@ -106,19 +96,17 @@ export default {
             this.table = table
         },
         nextJob:function () {
-            this.disable = false
+            this.text = 'Wait'
 
             axios.get('/api/next').
-            then(()=>{this.disable=false})
+            then((e)=>{
+                console.log(e.data)
+                this.text='next'
+            })
         }
     },
     created:function () {
-        axios.post('/api/turn/state',{}, {
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    Authorization: 'Bearer ' + document.querySelector('meta[name="api-token"]').getAttribute('content')
-                }
-            }).then(response => {
+        api.state().then(response => {
             console.log(response.data)
                 switch (response.data.screen) {
                     case 'list':

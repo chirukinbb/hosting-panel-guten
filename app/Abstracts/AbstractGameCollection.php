@@ -18,11 +18,11 @@ class AbstractGameCollection
         unset($this->collection[$index]);
     }
 
-    public function get(int $index): object
+    public function get(int $index): ?object
     {
         $index = ($index === 1 && !isset($this->collection[1])) ? 13 : $index;
 
-        return $this->collection[$index];
+        return $this->collection[$index] ?? null;
     }
 
     public function count(): int

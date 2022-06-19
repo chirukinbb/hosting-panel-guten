@@ -367,7 +367,7 @@ abstract class AbstractPokerTable
 
     public function getBank()
     {
-        return $this->round->getBankCollection();
+        return isset($this->round) ? $this->round->getBankCollection() : [0,0];
     }
 
     public function showdownPlayerActions(): void
@@ -402,10 +402,17 @@ abstract class AbstractPokerTable
 
     public function getRatingByTable()
     {
-        $hRating = (100 -  24 * ($this->round->getCountPlayersEnd() + 1));
-        $lRating = (100 -  24 * $this->round->getCountPlayersStart());
+        return $this->gerRatingByPlace($this->avgPlace());
+    }
 
-        return ($hRating - $lRating) / ($this->round->getCountPlayersStart() -  $this->round->getCountPlayersStart());
+    public function avgPlace()
+    {
+        return  array_sum(range($this->round->getCountPlayersStart(),$this->round->getCountPlayersEnd() + 1)) / ($this->round->getCountPlayersStart() - $this->round->getCountPlayersEnd());
+    }
+
+    public function gerRatingByPlace(int $placeInGame): float|int
+    {
+        return  floor(100 -  100 * ($this->getPlayersCount() - $placeInGame) / $this->getPlayersCount());
     }
 
     public function eachLooser(callable $func)
@@ -430,19 +437,23 @@ abstract class AbstractPokerTable
 
     public function getTimerForPlayer(Player $player): int
     {
-        return ($this->round->getLastAuctionPlayerPlace() === $player->getPlace()) ?
-            ($this->getCurrentStepInRound() > 4 ? $this->getTimeOnTurn() : 5) : 0;
+        return isset($this->round) ?
+            (($this->round->getLastAuctionPlayerPlace() === $player->getPlace()) ?
+            ($this->getCurrentStepInRound() > 4 ? $this->getTimeOnTurn() : 5) : 0)
+        : 0;
     }
 
     public function result(Player $player)
     {
-        return $this->round->getLastAuctionPlayerPlace() === $player->getPlace() ? $player->getLastActionId() : null;
+        return isset($this->round) ?
+            ($this->round->getLastAuctionPlayerPlace() === $player->getPlace() ?
+            $player->getLastActionId() : null)
+            : null;
     }
 
     public function timer(Player $player)
-    {}
-
-    public function rating(Player $player)
     {
+        return $player->isCurrentShowdown() ?
+            ($this->round->getLastAuctionPlayerPlace() ? $this->getTimeOnTurn() : 0) : 0;
     }
 }

@@ -55,9 +55,10 @@ import CardsComponent from "./Table/CardsComponent"
 import ButtonsComponent from "./Table/ButtonsComponent"
 import PlayerComponent from "./Table/PlayerComponent"
 import ButtonComponent from "./Table/ButtonComponent"
-import ShowdownComponent from "@/components/Table/ShowdownComponent";
-import FinishComponent from "@/components/Table/FinishComponent";
+import ShowdownComponent from "./Table/ShowdownComponent";
+import FinishComponent from "./Table/FinishComponent";
 import Echo from "laravel-echo";
+import socket from "../socket";
 
 export default {
   name: "TableComponent",
@@ -68,34 +69,8 @@ export default {
   created: function () {
     document.querySelector('title').innerHTML = this.table.title
 
-    this.socket = new Echo({
-      broadcaster: 'pusher',
-      key: '4326370c5eb04b2329d3',
-      wsHost: window.location.hostname,
-      wsPort: 6001,
-      forceTLS: false,
-      authorizer: (channel, options) => {
-        return {
-          authorize: (socketId, callback) => {
-            axios.post('/api/broadcasting/auth', {
-              socket_id: socketId,
-              channel_name: channel.name
-            },{
-              headers: {
-                Authorization: 'Bearer '+document.querySelector('meta[name="api-token"]').getAttribute('content'),
-              }
-            })
-                .then(response => {
-                  callback(false, response.data);
-                })
-                .catch(error => {
-                  callback(true, error);
-                });
-          }
-        };
-      },
-      disableStats: false
-    }).private(this.channel).listen('.table', e => {
+    this.socket = socket.connect().private(this.channel).listen('.table', e => {
+        console.clear()
         console.log(e)
       switch (e.screen) {
         case 'table':

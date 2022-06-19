@@ -13,11 +13,12 @@ class PlayersCollection extends AbstractGameCollection
      * @var Player[]
      */
     protected array $collection = [];
+
     /**
      * @param int $index
-     * @return Player
+     * @return object|null
      */
-    public function get(int $index): object
+    public function get(int $index): ?object
     {
         return parent::get($index);
     }

@@ -210,9 +210,9 @@ class Player
     }
 
     /**
-     * @return UserCombo
+     * @return UserCombo|null
      */
-    public function getCombo(int $index): UserCombo
+    public function getCombo(int $index): ?object
     {
         return $this->combo->get($index);
     }

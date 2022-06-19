@@ -58,7 +58,7 @@ class PokerTableBuilder
                 'action_result'=>$this->pokerTable->result($player),
                 'timer'=>$this->pokerTable->timer($player),
                 'place'=>$player->getPlaceInGame(),
-                'rating'=>$this->pokerTable->rating($player)
+                'rating'=>$this->pokerTable->gerRatingByPlace($player->getPlaceInGame())
             ];
 
             $this->setActions($player);
@@ -76,7 +76,7 @@ class PokerTableBuilder
                 'isBB'=>$player->isBB()
             ],
             'timer'=>$this->pokerTable->getTimerForPlayer($player),
-            'combo'=>$player->getCombo($this->pokerTable->getCurrentStepInRound()),
+            'combo'=>$player->getCombo($this->pokerTable->getCurrentStepInRound())?->getName(),
             'showdown'=>(object)[
                 'turn'=>$player->isCurrentShowdown()
             ]
@@ -88,18 +88,23 @@ class PokerTableBuilder
 
     protected function setCardsInCombo(Player $player)
     {
-        $player->getCombo($this->pokerTable->getCurrentStepInRound())->eachCard(function (Card $card) use ($player) {
-            $this->table->players[$player->getPlace()]->round->showdown->cards[] = (object) [
-                'nominal'=>$card->getNominalName(),
-                'suit'=>$card->getSuitIndex()
-            ];
-        });
+        if (is_null($player->getCombo($this->pokerTable->getCurrentStepInRound()))){
+            $this->table->players[$player->getPlace()]->round->showdown->cards = [];
+        }else {
+            $player->getCombo($this->pokerTable->getCurrentStepInRound())->eachCard(function (Card $card) use ($player) {
+                $this->table->players[$player->getPlace()]->round->showdown->cards[] = (object)[
+                    'nominal' => $card->getNominalName(),
+                    'suit' => $card->getSuitIndex()
+                ];
+            });
+        }
     }
 
     protected function setCardsForPlayer(Player $player)
     {
+        $this->table->players[$player->getPlace()]->round->cards = [];
         $player->eachCard(function (Card $card) use ($player){
-            $this->table->players[$player->getPlace()]->cards[] = (object)[
+            $this->table->players[$player->getPlace()]->round->cards[] = (object)[
                 'nominal'=>$card->getNominalName(),
                 'suit'=>$card->getSuitIndex()
             ];
@@ -108,7 +113,7 @@ class PokerTableBuilder
 
     protected function setActions(Player $player) {
         $player->eachAction(function (AbstractGameAction $action) use ($player){
-            $this->table->players[$player->getPlace()]->actions->{'can'.$action->getName()} = $action->isActive();
+            $this->table->players[$player->getPlace()]->actions['can'.$action->getName()] = $action->isActive();
         });
     }
 
