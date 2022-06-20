@@ -3,6 +3,16 @@
     <h3 class="text-center text-white pb-2  mt-2">{{ table.title }}</h3>
     <div class="d-flex justify-content-center mt-4">
       <div class="poker-table position-relative">
+
+          <showdown-component v-if="player.round.showdown.turn"/>
+          <finish-component
+              :place="player.place"
+              :rating="player.rating"
+              style="z-index: 99"
+              class="position-absolute top-0 bottom-0 start-0 end-0"
+              v-if="player.place !== null"
+          />
+
         <cards-component
             v-if="table.round.cards.length"
             :count="5"
@@ -38,15 +48,6 @@
         class="position-absolute end-0 start-0 bottom-100"
         style="z-index: 999;"
     ></buttons-component>
-
-    <showdown-component v-if="player.round.showdown.turn"/>
-    <finish-component
-        :place="player.place"
-        :rating="player.rating"
-        style="z-index: 99"
-        class="position-absolute top-0 bottom-0 start-0 end-0"
-        v-if="player.place !== null"
-    />
   </div>
 </template>
 

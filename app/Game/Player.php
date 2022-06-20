@@ -31,7 +31,7 @@ class Player
     protected  bool $winner = false;
     // проходил ли шоудаун
     protected bool $isShowdownPass = true;
-    protected int $placeInGame = 0;
+    protected ?int $placeInGame = null;
 
     public function __construct(protected int $userId)
     {
@@ -91,9 +91,9 @@ class Player
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getPlaceInGame(): int
+    public function getPlaceInGame(): ?int
     {
         return $this->placeInGame;
     }

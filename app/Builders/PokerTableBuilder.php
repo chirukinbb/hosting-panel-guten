@@ -58,7 +58,7 @@ class PokerTableBuilder
                 'action_result'=>$this->pokerTable->result($player),
                 'timer'=>$this->pokerTable->timer($player),
                 'place'=>$player->getPlaceInGame(),
-                'rating'=>$this->pokerTable->gerRatingByPlace($player->getPlaceInGame())
+                'rating'=>is_null($player->getPlaceInGame()) ? null : $this->pokerTable->gerRatingByPlace($player->getPlaceInGame())
             ];
 
             $this->setActions($player);

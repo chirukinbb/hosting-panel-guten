@@ -25,21 +25,11 @@ class TableResource extends JsonResource
     public function toArray($request)
     {
         return array_merge(
-            ['channel'=>$this->builder->getChannelName('table',\Auth::id())],
-            $this->buildTable()
+            [
+                'channel'=>$this->builder->getChannelName('table',\Auth::id()),
+                'table'=> $this->builder->getTable(),
+                'screen'=>'table'
+            ]
         );
-    }
-
-    protected function buildTable()
-    {
-        $broadcaster  = Table::find($this->resource)->broadcaster_class;
-
-        // todo: remake this sheets
-        return call_user_func([new $broadcaster(
-            $this->resource,
-            'table',
-            $this->builder->getChannelName('table',auth()->id()),
-            auth()->id()
-        ),'broadcastWith']);
     }
 }

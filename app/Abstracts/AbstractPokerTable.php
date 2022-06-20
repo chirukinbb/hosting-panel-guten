@@ -367,7 +367,7 @@ abstract class AbstractPokerTable
 
     public function getBank()
     {
-        return isset($this->round) ? $this->round->getBankCollection() : [0,0];
+        return isset($this->round) ? $this->round->getBankCollection() : [0];
     }
 
     public function showdownPlayerActions(): void
