@@ -1,16 +1,10 @@
-import Echo from "laravel-echo"
+require('./bootstrap');
 
-window.Pusher = require('pusher-js')
+import { createApp } from 'vue'
 
-window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: '4326370c5eb04b2329d3',
-    wsHost: window.location.hostname,
-    wsPort: 6001,
-    forceTLS: false,
-    disableStats: false,
-})
-    .channel('article-publish-channel')
-    .listen('ArticlePublishEvent',function (e) {
-        console.log(e)
-    })
+import GameComponent from "./components/GameComponent"
+
+localStorage.csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+localStorage.token = document.querySelector('meta[name="api-token"]').getAttribute('content')
+
+const app = createApp(GameComponent).mount('#game')

@@ -1,0 +1,15 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+.crd{
+    background: url('../img/card-deck.svg');
+    background-size: 746.4px;
+    height: 64.692px;
+    width: 45.618px;
+    display: block;
+    margin: 5px;
+    border-radius: 2px;
+}

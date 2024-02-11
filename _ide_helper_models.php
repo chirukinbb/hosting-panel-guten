@@ -10,6 +10,20 @@
  */
 
 
+namespace App\Abstracts{
+/**
+ * App\Abstracts\AbstractModel
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|AbstractModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AbstractModel newQuery()
+ * @method static \Illuminate\Database\Query\Builder|AbstractModel onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|AbstractModel query()
+ * @method static \Illuminate\Database\Query\Builder|AbstractModel withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|AbstractModel withoutTrashed()
+ */
+	class AbstractModel extends \Eloquent {}
+}
+
 namespace App\Models\Account{
 /**
  * App\Models\Account\Setting
@@ -60,6 +74,75 @@ namespace App\Models{
 	class Article extends \Eloquent {}
 }
 
+namespace App\Models\Game{
+/**
+ * App\Models\Game\Player
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $table_class
+ * @property int $count_tables
+ * @property int $rating
+ * @property int|null $gamed
+ * @property int|null $searched
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Game\Table[] $tables
+ * @property-read int|null $tables_count
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Player newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Player newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Player onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Player query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereCountTables($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereRating($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereSearched($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereGamed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereTableClass($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Player whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|Player withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Player withoutTrashed()
+ */
+	class Player extends \Eloquent {}
+}
+
+namespace App\Models\Game{
+
+    use App\Abstracts\AbstractPokerTable;
+
+    /**
+ * App\Models\Game\Table
+ *
+ * @property int $id
+ * @property int $status
+ * @property AbstractPokerTable $object
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Game\Player[] $players
+ * @property-read int|null $players_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Table newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Table newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Table onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Table query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Table whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Table whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Table whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Table whereObject($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Table whereTableClass($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Table whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Table whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|Table withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Table withoutTrashed()
+ */
+	class Table extends \Eloquent {}
+}
+
 namespace App\Models{
 /**
  * App\Models\Setting
@@ -96,6 +179,7 @@ namespace App\Models{
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
  * @property-read int|null $permissions_count
+ * @property-read \App\Models\Game\Player|null $player
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Role[] $roles
  * @property-read int|null $roles_count
  * @property-read \App\Models\Account\Setting|null $settings

@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -26,6 +27,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar_url'
     ];
 
     /**
@@ -54,10 +56,10 @@ class User extends Authenticatable
 
     public function createApiToken()
     {
-        return empty($this->tokens) ? $this->tokens[0] : $this->createToken(
+        return $this->createToken(
             'api_token',
             [$this->getRoleNames()[0]]
-        );
+        )->plainTextToken;
     }
 
     public function settings()
@@ -68,5 +70,10 @@ class User extends Authenticatable
     public function data()
     {
         return $this->hasOne(\App\Models\UserData::class);
+    }
+
+    public function player()
+    {
+        return $this->hasOne(\App\Models\Game\Player::class);
     }
 }

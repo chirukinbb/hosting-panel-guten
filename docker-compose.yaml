@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  # PHP Service
+  php:
+    build:
+      dockerfile: php.Dockerfile
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8080:80"
+      - "6001:6001"
+    depends_on:
+      - postgres
+    networks:
+      - laravel_network
+
+  # PostgreSQL Service
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: database_name
+      POSTGRES_USER: database_user
+      POSTGRES_PASSWORD: database_pass
+    ports:
+      - "5432:5432"
+    networks:
+      - laravel_network
+
+networks:
+  laravel_network:

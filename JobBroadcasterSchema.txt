@@ -1,0 +1,83 @@
+    игровой процесс
+создал стол, разсадил игроков
+CreatePokerTableJob.php +    ->  CreatePokerTableBroadcaster.php +
+создал, расчитал раунд
+StartPokerRoundJob.php +    ->  StartPokerRoundBroadcaster.php +
+карты в руку
+PreFlopPokerJob.php +   ->  PreFlopBroadcaster.php +
+начат процесс торга
+StartAuctionForPlayerJob.php(поставить задание на конец хода 0) +   ->  StartPlayerAuctionAfterPreFlopBroadcaster.php +
+---1---
+три карты на стол
+FlopPokerJob.php +   ->   FlopBroadcaster.php+
+это преждевременный шоудаун? -> TurnPokerJob
+начат процесс торга
+StartAuctionForPlayerJob.php(поставить задание на конец хода 0)  +  ->  StartPlayerAuctionAfterFlopBroadcaster.php+
+---1---
+четвертая карта на стол
+TurnPokerJob.php+  ->  TurnBroadcaster.php+
+это преждевременный шоудаун? -> RiverPokerJob
+начат процесс торга
+StartAuctionForPlayerJob.php(поставить задание на конец хода 0) +   ->  StartPlayerAuctionAfterRiverBroadcaster.php+
+---1---
+пятая карта на стол
+RiverPokerJob.php+   ->  RiverBroadcaster.php+
+это преждевременный шоудаун? -> SeparateBankJob
+начат процесс торга
+StartAuctionForPlayerJob.php (поставить задание на конец хода 0) +  ->  StartPlayerAuctionAfterTurnBroadcaster.php+
+открытие и выплата наград
+AllInShowDownJob.php +   ->  AllInShowDownBroadcaster.php+
+следующее действие:
+*   дострочный шоудаун? выложить все прочие карты на стол
+*   игроку предоставить выбор действия на шоудауне(   ActionShowDownJob  )
+*   распределить выиграш между игроками(  SeparateBankJob  )
+ActionShowDownJob.php(поставить задачу на конец шоудаун-действия 4) +   ->  ActionShowDownBroadcaster.php ---> 2?/3?/ActionShowDownJob? +
+распределить выиграш между игроками
+SeparateBankJob  + ->  SeparateBankBroadcaster
+вилка действий:
+*   проверить проигравших игроков(   2   )
+*   проверить  есть  ли победитель(   3  )
+*   начать новый раунд(  StartPokerRoundJob  )
+
+0 закончилось время на ход
+
+FinishPlayerAuctionJob.php +  ->  FlopAuctionResultBroadcaster.php+ / RiverAuctionResultBroadcaster.php+ / TurnAuctionResultBroadcaster.php+ / PreFlopAuctionResultBroadcaster.php+
+вычисляем следующее действие:
+*   перелив ставок игроов в банк(  2  )
+*   передача хода следующему игроку(  StartAuctionForPlayerJob  )
+
+1   игрок сделал ставку(  ResultPlayerActionJob  ) или кончилось время на ход( FinishPlayerAuctionJob + ) ->
+  FinishPlayerPreFlopAuctionBroadcaster.php+/FinishPlayerFlopAuctionBroadcaster.php+/FinishPlayerTurnAuctionBroadcaster.php+/FinishPlayerRiverAuctionBroadcaster.php+
+вилка действий:
+*   передать ход следующему игроку(   StartAuctionForPlayerJob  )
+*   переливка фишек в банк(  ExtractBidsToBankJob +  ->  ExtractBidsToBankPreFlopBroadcaster+/ExtractBidsToBankFlopBroadcaster+/ExtractBidsToBankTurnBroadcaster+/ExtractBidsToBankRiverBroadcaster+  )
+**  шоудан(  AllInShowDownJob +  ) или новый круг на столе(   FlopPokerJob+/ TurnPokerJob+/ RiverPokerJob+  )
+
+EndOfLoopJob.php +   ->  EndOfPreFlopLoopBroadcaster.php + / EndOfFlopLoopBroadcaster.php  + / EndOfTurnLoopBroadcaster.php + / EndOfRiverLoopBroadcaster.php +
+
+
+2   игрок проиграл
+
+GameOverPokerJob.php     ->  GameOverBroadcaster.php
+*   старт нового раунда(  StartPokerRoundJob  )
+
+3   игрок выиграл
+
+FinishTableJob.php  ->  FinishTableBroadcaster.php(выход в лобби)
+
+4   принудительное завершение шоудаун-действия
+
+FinishShowdownActionJob + ->  FinishShowdownActionBroadcaster+
+    вилка:
+    *   шоудаун следующего игрока
+    *   распределение банка
+
+шаги:
+
+0 - старт раунда
+1 - префлоп
+2 - флоп
+3 - терн
+4 - ривер
+5 - шоудаун
+6 - выплата наград

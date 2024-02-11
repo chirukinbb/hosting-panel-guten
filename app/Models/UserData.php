@@ -17,6 +17,11 @@ class UserData extends AbstractModel
         'public_name'
     ];
 
+    public function setAvatarPathAttribute($value)
+    {
+        $this->attributes['avatar_path'] = empty($value) ? 'https://interesnyefakty.org/wp-content/uploads/chto-takoe-inkognito.jpg' : $value;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
