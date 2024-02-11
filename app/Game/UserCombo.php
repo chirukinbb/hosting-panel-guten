@@ -14,7 +14,9 @@ class UserCombo
         protected int    $highCardIndex,
         protected int    $comboMeterCardIndex =  0,
         protected int    $comboMeterSecondCardIndex =  0
-    ) {}
+    ) {
+        $this->cards = new CardsCollection();
+    }
 
     /**
      * @return string

@@ -10,7 +10,7 @@ class BankCollection extends AbstractGameCollection
     /**
      * @var BankStorage[]
      */
-    protected array $collection;
+    protected array $collection = [];
 
     /**
      * @param int $border

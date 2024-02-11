@@ -3,83 +3,44 @@
 namespace App\Http\Controllers\Game\Api;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\Game\AllInShowDownJob;
-use App\Jobs\Game\ResultPlayerActionJob;
-use App\Jobs\Game\StartAuctionForPlayerJob;
 use App\Models\Game\Player;
 use App\Repositories\PokerTableRepository;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 
 class TableController extends Controller
 {
-    protected PokerTableRepository $repository;
+    protected PokerTableRepository|null $repository;
 
     public function __construct()
     {
         $player = Player::whereUserId(auth()->id())
             ->whereNotNull('gamed')
-            ->first('gamed');
-        $this->repository = new PokerTableRepository($player->gamed);
+            ->first();
+
+        $this->repository = $player ? new PokerTableRepository($player->gamed) : null;
     }
 
-    public function turnAction(Request $request)
-    {
-        if ($request->input('action_id')) {
-            call_user_func(
-                [$this, 'action' . $request->input('action_id')],
-                $request->input('amount')
-            );
-
-            \DB::table('jobs')->where('id',$this->repository->getDeletedJobId())
-                ->delete();
-
-            $this->dispatch(new ResultPlayerActionJob($this->repository->getTableId(),'table'));
-        }
-    }
-
-    public function showDownAction(Request $request)
-    {
-        if ($request->input('action_id')) {
-            $this->repository->setShowdownAction($request->input('action_id') == 1);
-
-            \DB::table('jobs')->where('id', $this->repository->getDeletedJobId())
-                ->delete();
-
-            $this->dispatch(new ResultPlayerActionJob($this->repository->getTableId(), 'table'));
-        }
-    }
-
-    public function leave(Request $request)
-    {
-        return json_encode(['screen'=>'list']);
-    }
-
-    protected function action0()
+    protected function fold()
     {
         $this->repository->fold();
     }
 
-    protected function action1()
+    protected function check()
     {
         $this->repository->check();
     }
 
-    protected function action2(int $amount)
+    protected function raise(int $amount)
     {
         $this->repository->raise($amount);
     }
 
-    protected function action3()
+    protected function default()
     {
-        $this->repository->allIn();
+        $this->repository->default();
     }
 
-    protected function action4()
+    protected function call()
     {
         $this->repository->call();
     }
-
-    protected function newRoundWithoutShowdown()
-    {}
 }

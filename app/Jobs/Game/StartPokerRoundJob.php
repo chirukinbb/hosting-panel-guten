@@ -3,15 +3,13 @@
 namespace App\Jobs\Game;
 
 use App\Abstracts\AbstractGameJob;
-use App\Events\Game\Broadcasters\StartPokerRoundBroadcaster;
-use App\Repositories\PokerTableRepository;
 
 class StartPokerRoundJob extends AbstractGameJob
 {
     protected string $nextJobClass = PreFlopPokerJob::class;
 
-    public function action(): PokerTableRepository
+    public function action()
     {
-        return $this->repository->createRound();
+        $this->repository->createRound();
     }
 }

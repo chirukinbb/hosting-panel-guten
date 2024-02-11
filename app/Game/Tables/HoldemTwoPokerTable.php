@@ -6,7 +6,8 @@ use App\Abstracts\AbstractPokerTable;
 
 class HoldemTwoPokerTable extends AbstractPokerTable
 {
-    public static int $count = 2;
+    const PLAYER_COUNT = 2;
+    const POKER_TYPE = 'Holdem';
     protected int $timeOnTurn = 20;
 
     protected function getMinNominal()
@@ -21,7 +22,7 @@ class HoldemTwoPokerTable extends AbstractPokerTable
 
     public function getPlayersCount()
     {
-        return self::$count;
+        return self::PLAYER_COUNT;
     }
 
     public function getBlind()
@@ -31,6 +32,6 @@ class HoldemTwoPokerTable extends AbstractPokerTable
 
     public function getType()
     {
-        return 'Holdem';
+        return self::POKER_TYPE;
     }
 }

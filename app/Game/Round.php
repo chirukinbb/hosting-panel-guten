@@ -13,13 +13,13 @@ class Round
     protected BankCollection $bankCollection;
     protected int $lastRaisePlayerPlace;
     protected int $lastAuctionPlayerPlace;
-    protected int $maxBid  = 0;
-    protected int $currentStep;
+    protected int $maxBid = 0;
+    protected int $currentStep = 0;
     protected int $countPlayersStart;
     protected int $countPlayersEnd;
     protected PlayersCollection $lostPlayers;
 
-    public function __construct(protected CardsCollection $cardsPool,protected int $number, protected int $ante)
+    public function __construct(protected CardsCollection $cardsPool, protected int $number, protected int $ante)
     {
         $this->combos = config('poker.combos');
         $this->tableCards = new CardsCollection();
@@ -65,7 +65,7 @@ class Round
     public function getPlayerPlace(): string
     {
         if ($this->countPlayersStart - $this->countPlayersEnd > 1)
-            return ($this->countPlayersEnd  + 1).'/'.$this->countPlayersStart;
+            return ($this->countPlayersEnd + 1) . '/' . $this->countPlayersStart;
 
         return $this->countPlayersStart;
     }
@@ -80,7 +80,7 @@ class Round
 
     public function eachLooser(callable $func)
     {
-        $this->lostPlayers->each(function (Player $player) use ($func){
+        $this->lostPlayers->each(function (Player $player) use ($func) {
             call_user_func($func, $player);
         });
     }
@@ -99,6 +99,7 @@ class Round
     public function setCurrentStep(int $currentStep): void
     {
         $this->currentStep = $currentStep;
+        $this->maxBid = 0;
     }
 
     /**
@@ -135,7 +136,7 @@ class Round
 
     public function preFlop(Player $player, int $cardsInHand)
     {
-        for ($i = 0; $i < $cardsInHand; $i ++){
+        for ($i = 0; $i < $cardsInHand; $i++) {
             $cardIndex = \Arr::random($this->cardsPool->keys());
             $player->giveCard($this->cardsPool->get($cardIndex));
             $this->cardsPool->remove($cardIndex);
@@ -144,7 +145,7 @@ class Round
 
     public function putCardsOnTable(int $count)
     {
-        for ($i = 0; $i < $count; $i ++){
+        for ($i = 0; $i < $count; $i++) {
             $cardIndex = \Arr::random($this->cardsPool->keys());
             $this->tableCards->push($this->cardsPool->get($cardIndex));
             $this->cardsPool->remove($cardIndex);
@@ -153,8 +154,8 @@ class Round
 
     public function checkHandValue(Player $player, int $cardsInHand): bool
     {
-        for ($i = 1; $i < $cardsInHand;  $i ++) {
-            for ($j = $i + 1; $j <= $cardsInHand; $j ++) {
+        for ($i = 1; $i < $cardsInHand; $i++) {
+            for ($j = $i + 1; $j <= $cardsInHand; $j++) {
                 $playerHandCards = $player->getCards();
                 $tableCards = clone $this->tableCards;
                 $userCardsPool = $tableCards->push($playerHandCards->get($i - 1));
@@ -204,7 +205,7 @@ class Round
 
     public function payBlind(Player $player, int $amount)
     {
-        $player->addToBid($amount,$this->getCurrentStep());
+        $player->addToBid($amount, $this->getCurrentStep());
     }
 
     /**

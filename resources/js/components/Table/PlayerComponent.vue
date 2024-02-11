@@ -90,7 +90,7 @@ export default {
       return this.player.round.isActive
     },
     showCloseCard:function () {
-      return this.player.round.isActive && this.player.round.cards.length === 0 && this.step > 0
+      return this.player.round.isActive && this.player.round.cards.length === 0 && this.step >= 0
     },
     isNotYourShowdown:function () {
       if (this.step !== 6)

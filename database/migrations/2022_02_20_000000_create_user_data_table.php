@@ -8,8 +8,8 @@ class CreateUserDataTable extends \Illuminate\Database\Migrations\Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('avatar_path',100);
-            $table->string('public_name',100);
-            $table->text('biography');
+            $table->string('public_name',100)->nullable();
+            $table->text('biography')->nullable();
             $table->softDeletes();
 
             $table->foreign('user_id')->on('users')

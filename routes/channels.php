@@ -13,5 +13,5 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('turn.{user_id}', \App\Broadcasting\TurnChannel::class);
-Broadcast::channel('table.{user_id}.{table_id}', \App\Broadcasting\TableChannel::class);
+Broadcast::channel('user.{user_id}', \App\Broadcasting\UserChannel::class);
+Broadcast::routes(['middleware' =>['auth:sanctum']]);

@@ -2,7 +2,7 @@
 
 namespace App\Abstracts;
 
-use App\Events\Game\Broadcasters\StandardPokerTableBroadcaster;
+use App\Events\PokerTableStateEvent;
 use App\Game\Player;
 use App\Repositories\PokerTableRepository;
 use Illuminate\Bus\Queueable;
@@ -16,24 +16,16 @@ abstract class AbstractGameJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected PokerTableRepository $repository;
-    protected string $broadcasterClass = StandardPokerTableBroadcaster::class;
-    protected string $nextJobClass = '';
-    protected string $slug = 'table';
-    protected int $removedJobId = 0;
+    protected string $nextJobClass;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(
-        public int|string $classNameOrTableId,
-        public string     $screen
-    )
+    public function __construct(int $tableId)
     {
-        $this->repository = is_int($this->classNameOrTableId) ?
-            new PokerTableRepository($this->classNameOrTableId) :
-            PokerTableRepository::instance($this->classNameOrTableId);
+        $this->repository = PokerTableRepository::instance($tableId);
     }
 
     /**
@@ -43,25 +35,16 @@ abstract class AbstractGameJob implements ShouldQueue
      */
     public function handle()
     {
-        $this->action()->save($this->removedJobId);
+        $this->action();
 
         $this->repository->eachPlayer(function (Player $player) {
-            call_user_func([$this,'eachPlayerFunc'],$player);
+            // оповещение о состоянии стола в клиет игры
+            broadcast(new PokerTableStateEvent($this->repository->getTableObject(), $player->getUserId()));
         });
 
         if ($this->nextJobClass)
-            dispatch(new $this->nextJobClass($this->repository->getTableId(),$this->screen));
+            dispatch(new $this->nextJobClass($this->repository->getTableId()));
     }
 
-    abstract public function action(): PokerTableRepository;
-
-    protected function eachPlayerFunc(Player $player)
-    {
-        broadcast(new $this->broadcasterClass(// оповещение о дейстии в клиет игры
-            $this->repository->getTableId(),
-            $this->screen,
-            $this->repository->getChannelName($this->slug, $player->getUserId()),
-            $player->getUserId()
-        ));
-    }
+    abstract public function action();
 }

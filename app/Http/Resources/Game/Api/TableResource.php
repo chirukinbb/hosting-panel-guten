@@ -16,12 +16,6 @@ class TableResource extends JsonResource
     protected array $table = [];
     protected PokerTableBuilder $builder;
 
-    public function __construct($resource)
-    {
-        parent::__construct($resource);
-        $this->builder = new PokerTableBuilder($resource, auth()->id());
-    }
-
     public function toArray($request)
     {
         return array_merge(

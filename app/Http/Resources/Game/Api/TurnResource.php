@@ -8,12 +8,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class TurnResource extends JsonResource
 {
     public static $wrap = false;
+    /**
+     * @var Turn
+     */
+    public $resource;
 
     public function toArray($request)
     {
-        /**
-         * @var Turn $this
-         */
         return [
             'count'=>$this->count,
             'channel'=>$this->channel,

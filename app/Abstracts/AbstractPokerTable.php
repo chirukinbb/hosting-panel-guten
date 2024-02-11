@@ -22,7 +22,6 @@ abstract class AbstractPokerTable
     const ROUND_TURN_STEP = 3;
     const ROUND_RIVER_STEP = 4;
     const ROUND_SHOWDOWN_STEP = 5;
-    const ROUND_PAYMENT_STEP = 6;
 
     protected int $blind;
     protected int $playersCount;
@@ -455,5 +454,16 @@ abstract class AbstractPokerTable
     {
         return $player->isCurrentShowdown() ?
             ($this->round->getLastAuctionPlayerPlace() ? $this->getTimeOnTurn() : 0) : 0;
+    }
+
+    public function isNewLoopWithoutBid()
+    {
+        if ($this->round->getCurrentStep() > self::ROUND_FLOP_STEP)
+            return false;
+
+        if ($this->players->hasRaisePotential())
+            return false;
+
+        return true;
     }
 }

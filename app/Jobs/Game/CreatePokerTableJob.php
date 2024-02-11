@@ -3,28 +3,31 @@
 namespace App\Jobs\Game;
 
 use App\Abstracts\AbstractGameJob;
+use App\Abstracts\AbstractPokerTable;
 use App\Events\Game\Broadcasters\CreatePokerTableBroadcaster;
+use App\Events\PokerTableStateEvent;
 use App\Game\Player;
+use App\Models\Game\Table;
 use App\Repositories\PokerTableRepository;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
-class CreatePokerTableJob extends AbstractGameJob
+class CreatePokerTableJob implements ShouldQueue
 {
-    protected string $broadcasterClass = CreatePokerTableBroadcaster::class;
-    protected string $nextJobClass = StartPokerRoundJob::class;
-    protected string $slug =  'turn';
-
-    public function action(): PokerTableRepository
+    public function __construct(protected string $className)
     {
-        return $this->repository->createTable();
     }
 
-    protected function eachPlayerFunc(Player $player)
+    public function handle()
     {
-        broadcast(new $this->broadcasterClass(
-            $this->repository->getTableId(),
-            $this->screen,
-            $this->slug.'.'.$player->getUserId(),
-            $player->getUserId()
-        ));
+        $repository = PokerTableRepository::instance($this->className);
+        $repository->createTable();
+
+        $repository->eachPlayer(function (Player $player) use ($repository){
+            broadcast(new PokerTableStateEvent($repository->getTableObject(),$player->getUserId()));
+        });
+
+        dispatch(new StartPokerRoundJob($repository->getTableId()));
     }
 }

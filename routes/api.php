@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -15,22 +14,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/admin/upload/image',[\App\Http\Controllers\Api\UploadController::class,'image'])
-    ->middleware('auth:sanctum','ability:Admin')->name('admin.upload.image');
-
-Route::post('/turn/state',[\App\Http\Controllers\Game\Api\TurnController::class,'state'])
-    ->middleware('auth:sanctum','ability:User,Admin')->name('state');
-Route::post('/turn/stand',[\App\Http\Controllers\Game\Api\TurnController::class,'stand'])
-    ->middleware('auth:sanctum','ability:User,Admin')->name('stand');
-Route::post('/turn/leave',[\App\Http\Controllers\Game\Api\TurnController::class,'leave'])
-    ->middleware('auth:sanctum','ability:User,Admin')->name('leave');
-
-Route::post('/table/turn-action', [\App\Http\Controllers\Game\Api\TableController::class,'turnAction'])
-    ->middleware('auth:sanctum','ability:User,Admin')->name('action');
-Route::post('/table/showdown-action', [\App\Http\Controllers\Game\Api\TableController::class,'showDownAction'])
-    ->middleware('auth:sanctum','ability:User,Admin')->name('action');
-Route::post('/table/leave', [\App\Http\Controllers\Game\Api\TableController::class,'leave'])
-    ->middleware('auth:sanctum','ability:User,Admin')->name('leave');
+Route::prefix('v1')->middleware(['auth:sanctum', 'ability:User,Admin'])->group(function () {
+    Route::prefix('game')->group(function () {
+        Route::get('check', [\App\Http\Controllers\Game\Api\TableController::class, 'check']);
+        Route::get('fold', [\App\Http\Controllers\Game\Api\TableController::class, 'fold']);
+        Route::get('raise/{amount}', [\App\Http\Controllers\Game\Api\TableController::class, 'raise']);
+        Route::get('default', [\App\Http\Controllers\Game\Api\TableController::class, 'default']);
+        Route::get('call', [\App\Http\Controllers\Game\Api\TableController::class, 'call']);
+    });
+    Route::prefix('wait')->group(function () {
+        Route::get('stand/{className}', [\App\Http\Controllers\Game\Api\TurnController::class, 'stand']);
+        Route::get('leave', [\App\Http\Controllers\Game\Api\TurnController::class, 'leave']);
+    });
+    Route::prefix('user')->group(function () {
+        Route::get('profile', [\App\Http\Controllers\Game\Api\UserController::class, 'profile']);
+    });
+    Route::prefix('lobby')->group(function () {
+        Route::get('list', [\App\Http\Controllers\Game\Api\LobbyController::class, 'list']);
+    });
+});
 
 Broadcast::routes(
     [
@@ -42,6 +44,6 @@ Broadcast::routes(
     ]
 );
 
-Route::get('/next', function (){
+Route::get('/next', function () {
     return Artisan::call('queue:work --once');
 });

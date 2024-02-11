@@ -2,9 +2,9 @@
 
 namespace App\Events\Game\Broadcasters;
 
-use App\Abstracts\AbstractBroadcaster;
+use App\Abstracts\AbstractGameBroadcaster;
 
-class StandardPokerTableBroadcaster extends AbstractBroadcaster
+class StandardPokerTableBroadcaster extends AbstractGameBroadcaster
 {
 
 }

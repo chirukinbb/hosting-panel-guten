@@ -119,10 +119,7 @@ namespace App\Models\Game{
  * App\Models\Game\Table
  *
  * @property int $id
- * @property int $removed_job_id
  * @property int $status
- * @property string $table_class
- * @property string $broadcaster_class
  * @property AbstractPokerTable $object
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at

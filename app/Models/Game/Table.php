@@ -6,16 +6,12 @@ use App\Abstracts\AbstractModel;
 
 class Table extends AbstractModel
 {
-    const SEARCHED = 0;
     const CONTINUE = 1;
     const FINISHED = 2;
 
     protected $fillable = [
-        'round_no',
         'object',
-        'status',
-        'broadcaster_class',
-        'removed_job_id'
+        'status'
     ];
 
     public function setObjectAttribute($value)

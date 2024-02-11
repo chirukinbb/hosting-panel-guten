@@ -21,7 +21,7 @@
         :table="table"
         :channel="channel"
     ></table-component>
-      <button class="btn btn-primary position-absolute bottom-0 mb-3" v-on:click="nextJob">{{text}}</button>
+      <button class="btn btn-primary position-absolute bottom-0 mb-3" style="z-index: 999;" v-on:click="nextJob">{{text}}</button>
   </div>
 </template>
 

@@ -11,19 +11,21 @@ class PokerTableRepository
 {
     protected AbstractPokerTable $tableObj;
     protected object $table;
-    protected int $deletedJobId;
 
     public function __construct(protected int $tableId)
     {
         $tableObj = Table::find($this->tableId);
 
         $this->tableObj = $tableObj->object;
-        $this->deletedJobId = $tableObj->removed_job_id ?? 0;
+        //..$this->deletedJobId = $tableObj->removed_job_id ?? 0;
     }
 
-    public function getDeletedJobId(): int
+    public function __destruct()
     {
-        return $this->deletedJobId;
+        Table::updateOrCreate(
+            ['id' => $this->tableId],
+            ['object' => $this->tableObj]
+        );
     }
 
     public function startTurnStep(): static
@@ -33,7 +35,7 @@ class PokerTableRepository
         return $this;
     }
 
-    public function startPreFloStep(): static
+    public function startPreFlopStep(): static
     {
         $this->tableObj->setCurrentStepInRound($this->tableObj::ROUND_PREFLOP_STEP);
 
@@ -57,11 +59,6 @@ class PokerTableRepository
     public function getCurrentStepInRound()
     {
         return $this->tableObj->getCurrentStepInRound();
-    }
-
-    public function getChannelName($slug, $userId)
-    {
-        return $this->tableObj->getChannelName($slug . '.' . $userId);
     }
 
     /**
@@ -88,6 +85,7 @@ class PokerTableRepository
 
         $table->object = new $tableClass(now()->timestamp);
         $table->table_class = $tableClass;
+        $table->status = Table::CONTINUE;
 
         $table->save();
 
@@ -128,11 +126,12 @@ class PokerTableRepository
      */
     public function createRound(): static
     {
+        $this->tableObj->removePlayersCards();
+        $this->tableObj->removePlayersCombos();
+
         $this->tableObj->startRound();
         $this->tableObj->changeStatuses();
         $this->tableObj->payBlinds();
-        $this->tableObj->removePlayersCards();
-        $this->tableObj->removePlayersCombos();
         $this->tableObj->preFlop();
         $this->tableObj->calculateHandValues();
         $this->tableObj->flop();
@@ -214,19 +213,6 @@ class PokerTableRepository
         return $this;
     }
 
-    public function save($deletedJobId  = null)
-    {
-        $updateAttrs = [
-            'object' => $this->tableObj,
-            'removed_job_id' =>  $deletedJobId
-        ];
-
-        Table::updateOrCreate(
-            ['id' => $this->tableId],
-            $updateAttrs
-        );
-    }
-
     /**
      * @return object
      */
@@ -250,7 +236,7 @@ class PokerTableRepository
         return $this->tableObj->isTableFinish();
     }
 
-    public function isNewLoop():bool
+    public function isNewLoop(): bool
     {
         return $this->tableObj->isNewLoop();
     }
@@ -284,9 +270,9 @@ class PokerTableRepository
         return $this;
     }
 
-    public function allIn()
+    public function default()
     {
-        $this->tableObj->allIn();
+        $this->tableObj->default();
 
         return $this;
     }
@@ -332,12 +318,12 @@ class PokerTableRepository
         return $isCount && $isStep;
     }
 
-    public function isExtractBidsToBank():bool
+    public function isExtractBidsToBank(): bool
     {
         return $this->tableObj->isExtractBidsToBank();
     }
 
-    public function bidsToBank():static
+    public function bidsToBank(): static
     {
         $this->tableObj->bidsToBank();
 
@@ -349,12 +335,12 @@ class PokerTableRepository
         return $this;
     }
 
-    public function isShowdownAction():bool
+    public function isShowdownAction(): bool
     {
         return $this->tableObj->isShowdownAction();
     }
 
-    public function payments():static
+    public function payments(): static
     {
         $this->tableObj->setCurrentStepInRound($this->tableObj::ROUND_PAYMENT_STEP);
         $this->tableObj->payToWinners();
@@ -405,5 +391,25 @@ class PokerTableRepository
     public function result(Player $player)
     {
         return $this->tableObj->result($player);
+    }
+
+    public function getRoundNumber()
+    {
+        return $this->tableObj->getRoundNumber();
+    }
+
+    public function getActivePlayerId()
+    {
+        return $this->tableObj->getActivePlayerId();
+    }
+
+    public function finishPlayerRoundOfBetting()
+    {
+        $this->tableObj->finishPlayerRoundOfBetting();
+    }
+
+    public function isNewLoopWithoutBid()
+    {
+        return $this->tableObj->isNewLoopWithoutBid();
     }
 }

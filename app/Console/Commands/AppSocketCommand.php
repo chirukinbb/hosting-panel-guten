@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Repositories\Admin\UserRepository;
-use App\Sockets\AppSocket;
 use Illuminate\Console\Command;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;

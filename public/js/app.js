@@ -19984,7 +19984,7 @@ __webpack_require__.r(__webpack_exports__);
       return this.player.round.isActive;
     },
     showCloseCard: function showCloseCard() {
-      return this.player.round.isActive && this.player.round.cards.length === 0 && this.step > 0;
+      return this.player.round.isActive && this.player.round.cards.length === 0 && this.step >= 0;
     },
     isNotYourShowdown: function isNotYourShowdown() {
       if (this.step !== 6) return false;
@@ -20151,6 +20151,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* PROPS */
   , ["onSetTable", "table", "channel"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "btn btn-primary position-absolute bottom-0 mb-3",
+    style: {
+      "z-index": "999"
+    },
     onClick: _cache[0] || (_cache[0] = function () {
       return $options.nextJob && $options.nextJob.apply($options, arguments);
     })
@@ -20319,6 +20322,10 @@ var _hoisted_4 = {
   "class": "poker-table position-relative"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_showdown_component = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("showdown-component");
+
+  var _component_finish_component = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("finish-component");
+
   var _component_cards_component = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("cards-component");
 
   var _component_button_component = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("button-component");
@@ -20327,14 +20334,22 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   var _component_buttons_component = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("buttons-component");
 
-  var _component_showdown_component = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("showdown-component");
-
-  var _component_finish_component = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("finish-component");
-
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.table.title), 1
   /* TEXT */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [$props.table.round.cards.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_cards_component, {
-    key: 0,
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [$options.player.round.showdown.turn ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_showdown_component, {
+    key: 0
+  })) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.player.place !== null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_finish_component, {
+    key: 1,
+    place: $options.player.place,
+    rating: $options.player.rating,
+    style: {
+      "z-index": "99"
+    },
+    "class": "position-absolute top-0 bottom-0 start-0 end-0"
+  }, null, 8
+  /* PROPS */
+  , ["place", "rating"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.table.round.cards.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_cards_component, {
+    key: 2,
     count: 5,
     cards: $props.table.round.cards,
     "cards-in-combo": $options.cardsInCombo,
@@ -20378,19 +20393,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }
   }, null, 8
   /* PROPS */
-  , ["actions", "amount-in-hand"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.player.round.showdown.turn ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_showdown_component, {
-    key: 1
-  })) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.player.place !== null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_finish_component, {
-    key: 2,
-    place: $options.player.place,
-    rating: $options.player.rating,
-    style: {
-      "z-index": "99"
-    },
-    "class": "position-absolute top-0 bottom-0 start-0 end-0"
-  }, null, 8
-  /* PROPS */
-  , ["place", "rating"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
+  , ["actions", "amount-in-hand"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
 }
 
 /***/ }),

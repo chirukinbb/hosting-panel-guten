@@ -8,6 +8,7 @@ use App\Game\Card;
 use App\Game\Player;
 use App\Repositories\PokerTableRepository;
 use Illuminate\Notifications\Action;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PokerTableBuilder
@@ -76,7 +77,8 @@ class PokerTableBuilder
                 'isBB'=>$player->isBB()
             ],
             'timer'=>$this->pokerTable->getTimerForPlayer($player),
-            'combo'=>$player->getCombo($this->pokerTable->getCurrentStepInRound())?->getName(),
+            'combo'=>$player->getUserId() === $this->userId ?
+                $player->getCombo($this->pokerTable->getCurrentStepInRound())?->getName() : null,
             'showdown'=>(object)[
                 'turn'=>$player->isCurrentShowdown()
             ]
@@ -88,7 +90,7 @@ class PokerTableBuilder
 
     protected function setCardsInCombo(Player $player)
     {
-        if (is_null($player->getCombo($this->pokerTable->getCurrentStepInRound()))){
+        if (is_null($player->getCombo($this->pokerTable->getCurrentStepInRound())) || ($player->getUserId() !== $this->userId)){
             $this->table->players[$player->getPlace()]->round->showdown->cards = [];
         }else {
             $player->getCombo($this->pokerTable->getCurrentStepInRound())->eachCard(function (Card $card) use ($player) {
@@ -102,13 +104,16 @@ class PokerTableBuilder
 
     protected function setCardsForPlayer(Player $player)
     {
-        $this->table->players[$player->getPlace()]->round->cards = [];
-        $player->eachCard(function (Card $card) use ($player){
-            $this->table->players[$player->getPlace()]->round->cards[] = (object)[
-                'nominal'=>$card->getNominalName(),
-                'suit'=>$card->getSuitIndex()
-            ];
-        });
+        if ($player->getUserId() !== $this->userId) {
+            $this->table->players[ $player->getPlace() ]->round->cards = [];
+        }else {
+            $player->eachCard( function ( Card $card ) use ( $player ) {
+                $this->table->players[ $player->getPlace() ]->round->cards[] = (object) [
+                    'nominal' => $card->getNominalName(),
+                    'suit'    => $card->getSuitIndex()
+                ];
+            } );
+        }
     }
 
     protected function setActions(Player $player) {

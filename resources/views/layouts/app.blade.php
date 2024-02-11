@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    @yield('meta')
+@yield('meta')
 
-    <!-- Bootstrap CSS -->
+<!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/bootstrap-grid.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
@@ -17,10 +17,6 @@
     <title> @yield('title') </title>
 </head>
 <body>
-@role('Admin')
-<x-admin-bar/>
-@endrole
-<x-header/>
 <div class="container">
     <x-alert/>
     @yield('content')

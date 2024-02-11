@@ -23,7 +23,7 @@ class Player
     protected ActionCollection $actions;
     protected BidStorage $bid;
     protected int $amount;
-    protected int $lastActionId;
+    protected int $lastActionId = -1;
     // его ли ход на шоудауне
     protected  bool $isCurrentShowdown = false;
     // открыты ли карты
@@ -227,6 +227,7 @@ class Player
 
     public function addToBid(int $amount,int $step)
     {
+        $this->amount -= $amount;
         $this->bid->add($amount, $step);
     }
 

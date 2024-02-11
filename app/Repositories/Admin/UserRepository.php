@@ -9,7 +9,6 @@ use \Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
-use function PHPUnit\Framework\isNull;
 
 class UserRepository extends AbstractRepository
 {
@@ -25,14 +24,17 @@ class UserRepository extends AbstractRepository
 
     public function create(array $attributes)
     {
+        $password = \Str::random(8);
         /**
          * @var User $user
          */
-        $user = parent::create($attributes);
+        $user = parent::create(
+            array_merge($attributes,['password'=>Hash::make($password)])
+        );
         $user->assignRole('User');
         $user->delete();
 
-        \Queue::push(new SendRegistrationMail($user, $attributes['password']));
+        \Queue::push(new SendRegistrationMail($user, $password));
 
         return $user;
     }
@@ -81,5 +83,10 @@ class UserRepository extends AbstractRepository
         return $returnedUserObj ?
             $this->builder->find($tokenData['tokenable_id']) :
             $tokenData['tokenable_id'];
+    }
+
+    public function attemp($args)
+    {
+        return Auth::attempt($args) ? Auth::getLastAttempted() : false;
     }
 }

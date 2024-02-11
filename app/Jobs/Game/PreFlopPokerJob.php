@@ -4,14 +4,13 @@ namespace App\Jobs\Game;
 
 use App\Abstracts\AbstractGameJob;
 use App\Events\Game\Broadcasters\PreFlopBroadcaster;
-use App\Repositories\PokerTableRepository;
 
 class PreFlopPokerJob extends AbstractGameJob
 {
-    protected string $nextJobClass = StartAuctionForPlayerJob::class;
+    protected string $nextJobClass = StartPlayerRoundOfBettingJob::class;
 
-    public function action(): PokerTableRepository
+    public function action()
     {
-        return $this->repository->startPreFloStep();
+        $this->repository->startPreFlopStep();
     }
 }

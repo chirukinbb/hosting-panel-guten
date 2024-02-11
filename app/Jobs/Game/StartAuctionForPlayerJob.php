@@ -24,23 +24,11 @@ class StartAuctionForPlayerJob extends AbstractGameJob
 
     public function handle()
     {
-        $this->setBroadcasterClass();
-
         $this->removedJobId = Queue::later(
             now()->addSeconds($this->repository->getTimeOnTurn()),
-            (string)new FinishPlayerAuctionJob($this->classNameOrTableId, 'table')
+            $this->serializeJob(new FinishPlayerAuctionJob($this->classNameOrTableId, 'table'))
         );
 
         parent::handle();
-    }
-
-    protected function setBroadcasterClass()
-    {
-        $this->broadcasterClass = match ($this->repository->getCurrentStepInRound()) {
-            0 => StartPlayerAuctionAfterPreFlopBroadcaster::class,
-            1 => StartPlayerAuctionAfterFlopBroadcaster::class,
-            2 => StartPlayerAuctionAfterTurnBroadcaster::class,
-            3 => StartPlayerAuctionAfterRiverBroadcaster::class
-        };
     }
 }

@@ -2,10 +2,8 @@
 
 namespace App\Game\Collections;
 
-use \App\Abstracts\AbstractGameCollection;
+use App\Abstracts\AbstractGameCollection;
 use App\Game\Player;
-use Illuminate\Support\Arr;
-use Ratchet\ConnectionInterface;
 
 class PlayersCollection extends AbstractGameCollection
 {
@@ -27,7 +25,7 @@ class PlayersCollection extends AbstractGameCollection
     {
         $collection = [];
 
-        foreach ($this->collection as $item){
+        foreach ($this->collection as $item) {
             $collection[$item->getPlace()] = $item;
         }
 
@@ -40,11 +38,11 @@ class PlayersCollection extends AbstractGameCollection
 
     public function sortFromDealer(): PlayersCollection
     {
-        $dealerIndex  = null;
+        $dealerIndex = null;
 
         foreach ($this->collection as $index => $player) {
             if ($player->isDealer())
-                $dealerIndex  = $index;
+                $dealerIndex = $index;
         }
 
         $collection = array_merge(
@@ -63,7 +61,7 @@ class PlayersCollection extends AbstractGameCollection
 
         foreach ($this->collection as $index => $player) {
             if ($player->isLB())
-                $dealerIndex  = $index;
+                $dealerIndex = $index;
         }
 
         $collection = array_merge(
@@ -78,10 +76,10 @@ class PlayersCollection extends AbstractGameCollection
 
     public function getWithStrongestHand(): array
     {
-        $collection  = [];
+        $collection = [];
 
         foreach ($this->collection as $player) {
-            $combo =  $player->getCombo(3);
+            $combo = $player->getCombo(3);
             $collection[$combo->getComboIndex()][$combo->getHighCardIndex()][$combo->getComboMeterCardIndex()][] = $player->getPlace();
         }
 
@@ -93,10 +91,10 @@ class PlayersCollection extends AbstractGameCollection
 
     public function getByHandPower()
     {
-        $collection  = [];
+        $collection = [];
 
         foreach ($this->collection as $player) {
-            $combo =  $player->getCombo(3);
+            $combo = $player->getCombo(3);
             $collection[$combo->getComboIndex()][$combo->getComboMeterCardIndex()][$combo->getHighCardIndex()][$player->getBid()] = $player;
             krsort($collection[$combo->getComboIndex()][$combo->getComboMeterCardIndex()][$combo->getHighCardIndex()]);
             krsort($collection[$combo->getComboIndex()][$combo->getComboMeterCardIndex()]);
@@ -107,8 +105,8 @@ class PlayersCollection extends AbstractGameCollection
         $players = [];
 
         foreach ($collection as $combos) {
-            foreach ($combos as $combs){
-                foreach ($combs as $playersWithCombo){
+            foreach ($combos as $combs) {
+                foreach ($combs as $playersWithCombo) {
                     $players[] = $playersWithCombo;
                 }
             }
@@ -116,10 +114,11 @@ class PlayersCollection extends AbstractGameCollection
 
         return $players;
     }
+
     function getById($id)
     {
-        foreach ($this->collection as $item){
-            if ($item->getUserId()===$id)
+        foreach ($this->collection as $item) {
+            if ($item->getUserId() === $id)
                 return $item;
         }
     }
@@ -183,8 +182,8 @@ class PlayersCollection extends AbstractGameCollection
             $player->setBBStatus(false);
 
             if ($currentDealerIndex === $player->getPlace()) {
-                if ($player->isInGame()){
-                    call_user_func([$player,'set'.array_shift($statuses).'Status'],true);
+                if ($player->isInGame()) {
+                    call_user_func([$player, 'set' . array_shift($statuses) . 'Status'], true);
                     $dealerAlreadySet = true;
                 }
             }
@@ -232,7 +231,7 @@ class PlayersCollection extends AbstractGameCollection
                 $bid -= $bank[$i];
             }
 
-            $i  ++;
+            $i++;
         } while ($count !== count($bank));
 
         return $bank;
@@ -247,13 +246,13 @@ class PlayersCollection extends AbstractGameCollection
     {
         $i = $currentPlayerPlace + 1;
 
-        do{
+        do {
             $i = $this->cycle($i);
             if ($this->collection[$i]->isInRound() && ($this->collection[$i]->getAmount() > 0))
                 return $this->collection[$i];
 
-            $i ++;
-        }while($i !== $currentPlayerPlace);
+            $i++;
+        } while ($i !== $currentPlayerPlace);
 
         return false;
     }
@@ -263,8 +262,8 @@ class PlayersCollection extends AbstractGameCollection
         $inRound = 0;
         $allIn = 0;
 
-        foreach ($this->collection as $player){
-            $inRound = $player->isInRound() ? $inRound + 1 :  $inRound;
+        foreach ($this->collection as $player) {
+            $inRound = $player->isInRound() ? $inRound + 1 : $inRound;
             $allIn = $player->getLastActionId() === 3 ? $allIn + 1 : $allIn;
         }
 
@@ -275,24 +274,24 @@ class PlayersCollection extends AbstractGameCollection
     {
         $inRound = 0;
 
-        foreach ($this->collection as $player){
-            $inRound = $player->isInRound() ? $inRound + 1 :  $inRound;
+        foreach ($this->collection as $player) {
+            $inRound = $player->isInRound() ? $inRound + 1 : $inRound;
         }
 
         return $inRound === 1;
     }
 
-    public function isNextPlayerLastRaise($currentPlace,$lastRaisePlace):bool
+    public function isNextPlayerLastRaise($currentPlace, $lastRaisePlace): bool
     {
         $current = false;
         $nextPlayer = null;
 
-        foreach ($this->collection as $player){
-            if ($current && $player->isInRound()){
+        foreach ($this->collection as $player) {
+            if ($current && $player->isInRound()) {
                 $nextPlayer = $player;
                 break;
             }
-            if ($player->getPlace() === $currentPlace){
+            if ($player->getPlace() === $currentPlace) {
                 $current = true;
             }
         }
@@ -306,7 +305,7 @@ class PlayersCollection extends AbstractGameCollection
      * @param int $lastRaiseUserPlace
      * @return $this
      */
-    public function showdownPlayerActions(int $lastRaiseUserPlace):self
+    public function showdownPlayerActions(int $lastRaiseUserPlace): self
     {
         $canBeChange = true;
         $i = 0;
@@ -314,22 +313,22 @@ class PlayersCollection extends AbstractGameCollection
 
         if ($lastRaiseUserPlace === -1) {
             $this->sortFromDealer();
-        }else {
+        } else {
             if ($showdownPlayerPlace > -1)
                 $this->sortFromPlace($showdownPlayerPlace);
             else
                 $this->sortFromPlace($lastRaiseUserPlace - 1);
         }
 
-        $this->each(function (Player $player) use (&$canBeChange,&$i){
+        $this->each(function (Player $player) use (&$canBeChange, &$i) {
             $player->setIsCurrentShowdown(false);
 
-            if ($player->isInRound() && $canBeChange && $i > 0 && $player->getLastActionId() !== 3){
+            if ($player->isInRound() && $canBeChange && $i > 0 && $player->getLastActionId() !== 3) {
                 $player->setIsCurrentShowdown(true);
                 $canBeChange = false;
             }
 
-            $i ++;
+            $i++;
         });
 
         $this->sortByPlaces();
@@ -337,9 +336,9 @@ class PlayersCollection extends AbstractGameCollection
         return $this;
     }
 
-    private function getShowdownPlayerPlace():int
+    private function getShowdownPlayerPlace(): int
     {
-        foreach ($this->collection as $player){
+        foreach ($this->collection as $player) {
             if ($player->isCurrentShowdown())
                 return $player->getPlace();
         }
@@ -347,9 +346,9 @@ class PlayersCollection extends AbstractGameCollection
         return -1;
     }
 
-    public function existsLosers():bool
+    public function existsLosers(): bool
     {
-        foreach ($this->collection as $player){
+        foreach ($this->collection as $player) {
             if ($player->getAmount() === 0)
                 return true;
         }
@@ -363,15 +362,15 @@ class PlayersCollection extends AbstractGameCollection
 
         foreach ($this->collection as $player) {
             if ($player->isInRound())
-                $count ++;
+                $count++;
         }
 
         return $count;
     }
 
-    public function isNextPlayerShowdownAction():bool
+    public function isNextPlayerShowdownAction(): bool
     {
-        foreach ($this->collection as $player){
+        foreach ($this->collection as $player) {
             if ($player->isInRound() && !$player->isShowdownPass())
                 return true;
         }
@@ -381,9 +380,21 @@ class PlayersCollection extends AbstractGameCollection
 
     public function setShowdownAction(bool $action)
     {
-        foreach ($this->collection as $player){
+        foreach ($this->collection as $player) {
             if ($player->isCurrentShowdown())
                 $player->setIsOpenCards($action);
         }
+    }
+
+    public function hasRaisePotential()
+    {
+        $countActiveUsersWithMoney = 0;
+
+        $this->each(function (Player $player) use (&$countActiveUsersWithMoney) {
+            if ($player->isInGame() && $player->getAmount() > 0)
+                $countActiveUsersWithMoney++;
+        });
+
+        return $countActiveUsersWithMoney > 1;
     }
 }

@@ -35,9 +35,9 @@ class FinishPlayerAuctionJob extends AbstractGameJob
     public function setNextJobClass(): void
     {
         if ($this->repository->isExtractBidsToBank())
-            $this->nextJobClass = ExtractBidsToBankJob::class;
+            $this->nextJobClass = BankCalculatingJob::class;
         else
-            $this->nextJobClass = StartAuctionForPlayerJob::class;
+            $this->nextJobClass = StartPlayerRoundOfBettingJob::class;
     }
 
     public function setBroadcasterClass(): void
